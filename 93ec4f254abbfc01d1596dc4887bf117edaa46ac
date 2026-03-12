@@ -1,0 +1,43 @@
+components/demo-card.tsx
+  8751f70625e0a304 1-35
+components/project-card.tsx
+  8751f70625e0a304 1-65
+app/shipped/page.tsx
+  8751f70625e0a304 1-65
+app/digests/page.tsx
+  8751f70625e0a304 1-60
+app/intake/page.tsx
+  8751f70625e0a304 1-169
+app/page.tsx
+  8751f70625e0a304 1-6,8-18,24,27-36
+components/shipped-entry.tsx
+  8751f70625e0a304 1-52
+app/demos/page.tsx
+  8751f70625e0a304 1-70
+app/roadmap/page.tsx
+  8751f70625e0a304 1-63,65-70
+components/org-card.tsx
+  8751f70625e0a304 1-37
+components/digest-entry.tsx
+  8751f70625e0a304 1-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.10",
+  "base_commit_sha": "93ec4f254abbfc01d1596dc4887bf117edaa46ac",
+  "prompts": {
+    "8751f70625e0a304": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2cc97698-14f1-49ae-a741-d3e1e681c03e",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 702,
+      "total_deletions": 10,
+      "accepted_lines": 692,
+      "overriden_lines": 0
+    }
+  }
+}
