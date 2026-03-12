@@ -8,7 +8,7 @@ import type {
   ProjectSummary,
 } from "@/lib/types";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 function mapHealth(raw: string | undefined | null): HealthStatus {
   if (raw === "onTrack") return "onTrack";

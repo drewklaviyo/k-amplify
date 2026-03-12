@@ -3,7 +3,7 @@ import { getLinearClient } from "@/lib/linear";
 import { ORG_CONFIGS, orgSlugForTeamName } from "@/lib/config";
 import type { DigestEntry, HealthStatus, OrgSlug } from "@/lib/types";
 
-export const revalidate = 1800;
+export const dynamic = "force-dynamic";
 
 function mapHealth(raw: string | undefined | null): HealthStatus {
   if (raw === "onTrack") return "onTrack";

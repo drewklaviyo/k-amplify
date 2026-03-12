@@ -4,7 +4,7 @@ import { orgSlugForTeamName } from "@/lib/config";
 import { extractLoomUrls } from "@/lib/loom";
 import type { DemoEntry, OrgSlug } from "@/lib/types";
 
-export const revalidate = 900;
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
