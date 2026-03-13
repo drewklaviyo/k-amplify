@@ -1,0 +1,29 @@
+components/nav.tsx
+  8751f70625e0a304 8
+lib/scoreboard-data.json
+  8751f70625e0a304 1-66
+app/api/scoreboard/route.ts
+  8751f70625e0a304 1-155
+app/scoreboard/page.tsx
+  8751f70625e0a304 1-356
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "46b5968edd3c416f6e9b4cbda37572720659e346",
+  "prompts": {
+    "8751f70625e0a304": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2cc97698-14f1-49ae-a741-d3e1e681c03e",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 578,
+      "total_deletions": 0,
+      "accepted_lines": 578,
+      "overriden_lines": 0
+    }
+  }
+}
