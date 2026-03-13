@@ -6,6 +6,10 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const client = getLinearClient();
+    // Also fetch all Amplify teams
+    const allTeams = await client.teams();
+    const amplifyTeams = allTeams.nodes.filter(t => t.name.startsWith("Amplify")).map(t => t.name);
+
     const projects = await client.projects({ first: 250 });
 
     // Find all unique states and all Amplify projects
@@ -25,6 +29,7 @@ export async function GET() {
     }
 
     return NextResponse.json({
+      amplifyTeams,
       totalProjects: projects.nodes.length,
       allStates: [...states],
       amplifyCount: amplifyProjects.length,

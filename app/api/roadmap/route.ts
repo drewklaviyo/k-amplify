@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
 
     for (const project of projectsResult.nodes) {
       // Filter by active state types (project.state is a deprecated string field containing the type)
-      if (!["planned", "started", "paused"].includes(project.state)) continue;
+      if (!["backlog", "planned", "started", "paused"].includes(project.state)) continue;
 
       const projectTeams = await project.teams();
       const firstTeam = projectTeams.nodes[0];
