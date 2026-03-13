@@ -1,0 +1,66 @@
+{
+  "lastUpdated": "2026-03-13",
+  "dataSource": "snowflake",
+  "topLine": {
+    "hoursSavedYTD": 142000,
+    "hoursSavedTarget": 835000,
+    "arrPerHC": 583000,
+    "arrPerHCTarget": 711000,
+    "hcAvoided": 87,
+    "hcAvoidedTarget": 401,
+    "agentAutonomyRate": 0.08,
+    "agentAutonomyTarget": 0.20
+  },
+  "orgMetrics": {
+    "sales": {
+      "hoursSaved": 38000,
+      "hoursTarget": 78000,
+      "keyMetricLabel": "PPR Change",
+      "keyMetricValue": "+9%",
+      "keyMetricTarget": "+15%",
+      "adoptionLabel": "BDRs Active",
+      "adoptionValue": "42",
+      "adoptionTarget": "100"
+    },
+    "support": {
+      "hoursSaved": 12000,
+      "hoursTarget": 13000,
+      "keyMetricLabel": "AI Resolution Rate",
+      "keyMetricValue": "41%",
+      "keyMetricTarget": "55%",
+      "adoptionLabel": "Agents GA",
+      "adoptionValue": "2",
+      "adoptionTarget": "5"
+    },
+    "cs": {
+      "hoursSaved": 22000,
+      "hoursTarget": 20000,
+      "keyMetricLabel": "Time w/ Customers",
+      "keyMetricValue": "+18%",
+      "keyMetricTarget": "+30%",
+      "adoptionLabel": "CSM Adoption",
+      "adoptionValue": "85%",
+      "adoptionTarget": "95%"
+    },
+    "rnd": {
+      "hoursSaved": 51000,
+      "hoursTarget": 63000,
+      "keyMetricLabel": "R&D Efficiency",
+      "keyMetricValue": "+7%",
+      "keyMetricTarget": "+13%",
+      "adoptionLabel": "Tools in Use",
+      "adoptionValue": "4",
+      "adoptionTarget": "8"
+    },
+    "marketing": {
+      "hoursSaved": 8000,
+      "hoursTarget": 8000,
+      "keyMetricLabel": "Ops Efficiency",
+      "keyMetricValue": "+4%",
+      "keyMetricTarget": "+15%",
+      "adoptionLabel": "CMS Migration",
+      "adoptionValue": "60%",
+      "adoptionTarget": "100%"
+    }
+  }
+}
