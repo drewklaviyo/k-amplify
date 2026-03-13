@@ -6,10 +6,14 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const client = getLinearClient();
-    // Also fetch all Amplify teams
-    const allTeams = await client.teams();
-    const amplifyTeams = allTeams.nodes.filter(t => t.name.startsWith("Amplify")).map(t => t.name);
+    // Fetch ALL teams (no filter) and find Amplify ones
+    const allTeams = await client.teams({ first: 250 });
+    const amplifyTeams = allTeams.nodes
+      .filter(t => t.name.toLowerCase().includes("amplify") || t.name.toLowerCase().includes("amp:") || t.name.toLowerCase().includes("amp "))
+      .map(t => ({ name: t.name, id: t.id }));
 
+    // Fetch projects specifically for Amplify team IDs
+    const amplifyTeamIds = new Set(amplifyTeams.map(t => t.id));
     const projects = await client.projects({ first: 250 });
 
     // Find all unique states and all Amplify projects
