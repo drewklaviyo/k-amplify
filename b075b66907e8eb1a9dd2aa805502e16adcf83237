@@ -1,0 +1,31 @@
+app/api/digests/route.ts
+  8751f70625e0a304 23-26,33,35-36,42-47,49,56,66
+lib/config.ts
+  8751f70625e0a304 35
+app/api/demos/route.ts
+  8751f70625e0a304 17-19,23,25-26,30,32-35,38,40-43,45,50,59-60
+app/api/roadmap/route.ts
+  8751f70625e0a304 3,43-46,49,51,53-54,58-70,73,82,87,97,101
+app/api/shipped/route.ts
+  8751f70625e0a304 17-21,24,26-27,31-36,38-39,54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.11",
+  "base_commit_sha": "b075b66907e8eb1a9dd2aa805502e16adcf83237",
+  "prompts": {
+    "8751f70625e0a304": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2cc97698-14f1-49ae-a741-d3e1e681c03e",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 155,
+      "total_deletions": 189,
+      "accepted_lines": 86,
+      "overriden_lines": 0
+    }
+  }
+}
