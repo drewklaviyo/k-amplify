@@ -32,7 +32,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
   {
     slug: "marketing",
     label: "Marketing",
-    teamNames: ["Amplify Marketing"],
+    teamNames: ["Amplify Marketing", "Amplify Content Platform"],
     goalName: "Improve G&A, Marketing, Ops efficiency by 15%",
     pmOwner: "Richard Ng",
   },

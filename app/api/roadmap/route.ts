@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getLinearClient } from "@/lib/linear";
-import { ORG_CONFIGS, ORG_BY_SLUG, orgSlugForTeamName } from "@/lib/config";
+import { ORG_CONFIGS, orgSlugForTeamName } from "@/lib/config";
 import type {
   GoalSummary,
   HealthStatus,
@@ -40,68 +40,65 @@ export async function GET(request: NextRequest) {
 
     const client = getLinearClient();
 
-    // Fetch all teams starting with "Amplify" to build ID -> name mapping
-    const teamsResult = await client.teams({
-      filter: { name: { startsWith: "Amplify" } },
-    });
-    const teamMap = new Map<string, string>();
-    for (const t of teamsResult.nodes) {
-      teamMap.set(t.id, t.name);
-    }
+    // Fetch ALL teams and find Amplify ones by name
+    const allTeams = await client.teams({ first: 250 });
+    const amplifyTeams = allTeams.nodes.filter(
+      (t) => t.name.startsWith("Amplify")
+    );
 
-    // Fetch active projects — filter in JS since SDK filter types vary by version
-    const projectsResult = await client.projects({ first: 250 });
-
-    // Build project summaries
+    // Build project summaries by fetching projects per team
     const projectsByOrg = new Map<OrgSlug, ProjectSummary[]>();
+    const seenProjectIds = new Set<string>();
 
-    for (const project of projectsResult.nodes) {
-      // Filter by active state types (project.state is a deprecated string field containing the type)
-      if (!["backlog", "planned", "started", "paused"].includes(project.state)) continue;
-
-      const projectTeams = await project.teams();
-      const firstTeam = projectTeams.nodes[0];
-      if (!firstTeam) continue;
-
-      // Only include Amplify teams
-      const teamName = teamMap.get(firstTeam.id) ?? firstTeam.name;
-      if (!teamName.startsWith("Amplify")) continue;
-
-      const orgSlug = orgSlugForTeamName(teamName);
+    for (const team of amplifyTeams) {
+      const orgSlug = orgSlugForTeamName(team.name);
       if (!orgSlug) continue;
       if (teamFilter && orgSlug !== teamFilter) continue;
 
-      // Get latest project update
-      const updates = await project.projectUpdates({ first: 1 });
-      const latestUpdate = updates.nodes[0] ?? null;
+      // Fetch projects for this team
+      const teamProjects = await team.projects({ first: 100 });
 
-      // Get milestones
-      const milestonesResult = await project.projectMilestones();
-      const milestones = milestonesResult.nodes.map((m) => ({
-        id: m.id,
-        name: m.name,
-        targetDate: m.targetDate ?? null,
-        sortOrder: m.sortOrder,
-      }));
+      for (const project of teamProjects.nodes) {
+        // Skip duplicates (project may belong to multiple teams)
+        if (seenProjectIds.has(project.id)) continue;
+        seenProjectIds.add(project.id);
 
-      const summary: ProjectSummary = {
-        id: project.id,
-        name: project.name,
-        health: mapHealth(latestUpdate?.health),
-        teamName,
-        orgSlug,
-        latestUpdate: latestUpdate?.body ?? null,
-        latestUpdateDate: latestUpdate?.createdAt
-          ? new Date(latestUpdate.createdAt).toISOString()
-          : null,
-        milestones,
-        completedAt: null,
-        updatedAt: new Date(project.updatedAt).toISOString(),
-      };
+        // Only active states
+        if (!["backlog", "planned", "started", "paused"].includes(project.state))
+          continue;
 
-      const existing = projectsByOrg.get(orgSlug) ?? [];
-      existing.push(summary);
-      projectsByOrg.set(orgSlug, existing);
+        // Get latest project update
+        const updates = await project.projectUpdates({ first: 1 });
+        const latestUpdate = updates.nodes[0] ?? null;
+
+        // Get milestones
+        const milestonesResult = await project.projectMilestones();
+        const milestones = milestonesResult.nodes.map((m) => ({
+          id: m.id,
+          name: m.name,
+          targetDate: m.targetDate ?? null,
+          sortOrder: m.sortOrder,
+        }));
+
+        const summary: ProjectSummary = {
+          id: project.id,
+          name: project.name,
+          health: mapHealth(latestUpdate?.health),
+          teamName: team.name,
+          orgSlug,
+          latestUpdate: latestUpdate?.body ?? null,
+          latestUpdateDate: latestUpdate?.createdAt
+            ? new Date(latestUpdate.createdAt).toISOString()
+            : null,
+          milestones,
+          completedAt: null,
+          updatedAt: new Date(project.updatedAt).toISOString(),
+        };
+
+        const existing = projectsByOrg.get(orgSlug) ?? [];
+        existing.push(summary);
+        projectsByOrg.set(orgSlug, existing);
+      }
     }
 
     // Build GoalSummary objects
@@ -114,7 +111,6 @@ export async function GET(request: NextRequest) {
     for (const config of configs) {
       const projects = projectsByOrg.get(config.slug) ?? [];
 
-      // Sort: At Risk/Off Track first, then by most recently updated
       projects.sort((a, b) => {
         const pa = HEALTH_PRIORITY[a.health];
         const pb = HEALTH_PRIORITY[b.health];
@@ -126,7 +122,6 @@ export async function GET(request: NextRequest) {
 
       const goalHealth = worstHealth(projects.map((p) => p.health));
 
-      // Latest update across all projects in this org
       let latestGoalUpdate: string | null = null;
       let latestGoalUpdateDate: string | null = null;
       for (const p of projects) {
