@@ -1,0 +1,31 @@
+components/roadmap-timeline.tsx
+  0c541c0586663312 1-322
+lib/types.ts
+  0c541c0586663312 13-17,29-33
+app/roadmap/page.tsx
+  0c541c0586663312 9,11,18,34-64,70-71
+components/timeline-bar.tsx
+  0c541c0586663312 1-169
+app/api/roadmap/route.ts
+  0c541c0586663312 83-88,102-109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "689d05d2f165896a38a0d8fa3bfe18df98ded8a8",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 552,
+      "total_deletions": 1,
+      "accepted_lines": 552,
+      "overriden_lines": 0
+    }
+  }
+}
