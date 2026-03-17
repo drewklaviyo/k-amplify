@@ -1,0 +1,29 @@
+app/page.tsx
+  0c541c0586663312 4,9,13-29,51
+components/org-card.tsx
+  0c541c0586663312 6-7,9-15,22-37,50-58
+app/scoreboard/page.tsx
+  0c541c0586663312 45-55,61,348-422
+app/api/scoreboard/route.ts
+  0c541c0586663312 4,25-35,52-56,61-63,73-77,89-100,110,114-129,202-216,222
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "ecbe8b1641940c3c57cad5e6d765559a3595c403",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 226,
+      "total_deletions": 9,
+      "accepted_lines": 213,
+      "overriden_lines": 0
+    }
+  }
+}
