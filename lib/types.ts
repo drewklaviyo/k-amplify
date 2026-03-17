@@ -10,6 +10,11 @@ export interface OrgConfig {
   pmOwner: string;
 }
 
+export interface ProjectStatus {
+  name: string;
+  color: string;
+}
+
 export interface ProjectSummary {
   id: string;
   name: string;
@@ -21,6 +26,11 @@ export interface ProjectSummary {
   milestones: MilestoneSummary[];
   completedAt: string | null;
   updatedAt: string;
+  startDate: string | null;
+  targetDate: string | null;
+  progress: number;
+  status: ProjectStatus;
+  lead: string | null;
 }
 
 export interface MilestoneSummary {

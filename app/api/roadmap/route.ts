@@ -80,6 +80,12 @@ export async function GET(request: NextRequest) {
           sortOrder: m.sortOrder,
         }));
 
+        // Get project lead
+        const lead = await project.lead;
+
+        // Get status info
+        const statusInfo = await project.status;
+
         const summary: ProjectSummary = {
           id: project.id,
           name: project.name,
@@ -93,6 +99,14 @@ export async function GET(request: NextRequest) {
           milestones,
           completedAt: null,
           updatedAt: new Date(project.updatedAt).toISOString(),
+          startDate: project.startDate ?? null,
+          targetDate: project.targetDate ?? null,
+          progress: project.progress ?? 0,
+          status: {
+            name: statusInfo?.name ?? "Unknown",
+            color: statusInfo?.color ?? "#8b8b9e",
+          },
+          lead: lead?.name ?? null,
         };
 
         const existing = projectsByOrg.get(orgSlug) ?? [];
