@@ -42,11 +42,23 @@ interface RiskItem {
   date: string;
 }
 
+interface HygieneStats {
+  slug: OrgSlug;
+  label: string;
+  pmOwner: string;
+  totalProjects: number;
+  missingHealth: number;
+  staleUpdates: number;
+  demosThisMonth: number;
+  shippedMissingDescription: number;
+}
+
 interface ScoreboardData {
   lastUpdated: string;
   topLine: TopLine;
   orgs: OrgScore[];
   risks: RiskItem[];
+  hygiene?: HygieneStats[];
 }
 
 function pct(value: number, target: number): number {
@@ -329,6 +341,81 @@ export default function ScoreboardPage() {
                 </span>
               </div>
             ))}
+          </div>
+        </>
+      )}
+
+      {/* Linear Hygiene */}
+      {data.hygiene && data.hygiene.length > 0 && (
+        <>
+          <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
+            Linear Hygiene
+          </h2>
+          <p className="text-text-secondary text-[0.78rem] mb-4">
+            Keep Linear data fresh so K Amplify stays useful. Post weekly project updates, set health status, and link Loom demos.
+          </p>
+          <div className="table-wrap border border-border rounded-xl overflow-hidden mb-10">
+            <table className="w-full text-[0.82rem]">
+              <thead className="bg-surface-2">
+                <tr>
+                  <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
+                    PM
+                  </th>
+                  <th className="text-center px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
+                    Projects
+                  </th>
+                  <th className="text-center px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
+                    Missing Health
+                  </th>
+                  <th className="text-center px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
+                    Stale (14d+)
+                  </th>
+                  <th className="text-center px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
+                    Demos This Month
+                  </th>
+                  <th className="text-center px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
+                    Shipped Missing Desc.
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.hygiene.map((h) => {
+                  const issues = h.missingHealth + h.staleUpdates + (h.demosThisMonth === 0 ? 1 : 0) + h.shippedMissingDescription;
+                  return (
+                    <tr
+                      key={h.slug}
+                      className="border-t border-border hover:bg-surface-2/30 transition-colors"
+                    >
+                      <td className="px-4 py-3">
+                        <div className="font-semibold">{h.pmOwner}</div>
+                        <div className="text-[0.7rem] text-text-secondary">{h.label}</div>
+                      </td>
+                      <td className="px-4 py-3 text-center">{h.totalProjects}</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className={h.missingHealth > 0 ? "text-orange font-semibold" : "text-green"}>
+                          {h.missingHealth > 0 ? h.missingHealth : "\u2713"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <span className={h.staleUpdates > 0 ? "text-orange font-semibold" : "text-green"}>
+                          {h.staleUpdates > 0 ? h.staleUpdates : "\u2713"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <span className={h.demosThisMonth === 0 ? "text-text-secondary" : "text-green font-semibold"}>
+                          {h.demosThisMonth}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <span className={h.shippedMissingDescription > 0 ? "text-orange font-semibold" : "text-green"}>
+                          {h.shippedMissingDescription > 0 ? h.shippedMissingDescription : "\u2713"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </>
       )}

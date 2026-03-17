@@ -1,17 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { GoalSummary } from "@/lib/types";
+import { GoalSummary, DemoEntry, OrgSlug } from "@/lib/types";
 import { OrgCard } from "@/components/org-card";
 
 export default function HomePage() {
   const [goals, setGoals] = useState<GoalSummary[]>([]);
+  const [demoCounts, setDemoCounts] = useState<Record<OrgSlug, number> | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/roadmap")
-      .then((r) => r.json())
-      .then((data) => setGoals(data.goals ?? []))
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    Promise.all([
+      fetch("/api/roadmap").then((r) => r.json()),
+      fetch("/api/demos").then((r) => r.json()),
+    ])
+      .then(([roadmapData, demosData]) => {
+        setGoals(roadmapData.goals ?? []);
+        const counts: Record<string, number> = {};
+        for (const entry of (demosData.entries ?? []) as DemoEntry[]) {
+          if (new Date(entry.date) >= monthStart) {
+            counts[entry.orgSlug] = (counts[entry.orgSlug] ?? 0) + 1;
+          }
+        }
+        setDemoCounts(counts as Record<OrgSlug, number>);
+      })
       .catch(() => setGoals([]))
       .finally(() => setLoading(false));
   }, []);
@@ -30,7 +45,11 @@ export default function HomePage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {goals.map((goal) => (
-            <OrgCard key={goal.id} goal={goal} />
+            <OrgCard
+              key={goal.id}
+              goal={goal}
+              demoCount={demoCounts?.[goal.orgSlug] ?? 0}
+            />
           ))}
         </div>
       )}
