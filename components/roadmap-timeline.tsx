@@ -129,6 +129,18 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
     }
   }, [todayOffset, columnWidth]);
 
+  // Keyboard navigation for timeline scroll
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") { el.scrollBy({ left: 100, behavior: "smooth" }); e.preventDefault(); }
+      if (e.key === "ArrowLeft") { el.scrollBy({ left: -100, behavior: "smooth" }); e.preventDefault(); }
+    };
+    el.addEventListener("keydown", handleKeyDown);
+    return () => el.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   function getLeadInitials(lead: string | null): string {
     if (!lead) return "";
     const parts = lead.split(/[@.\s]+/).filter(Boolean);
@@ -271,7 +283,7 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
             </div>
 
             {/* TIMELINE AREA */}
-            <div ref={scrollRef} className="flex-1 overflow-x-auto bg-bg timeline-scroll">
+            <div ref={scrollRef} tabIndex={0} role="region" aria-label="Timeline scroll area — use arrow keys to scroll" className="flex-1 overflow-x-auto bg-bg timeline-scroll focus:outline-none">
               {/* Time axis */}
               <div className="relative border-b border-border bg-surface-2/30 sticky top-0 z-10" style={{ height: HEADER_HEIGHT, minWidth: totalWidth }}>
                 {timeLabels.map((tl, i) => (

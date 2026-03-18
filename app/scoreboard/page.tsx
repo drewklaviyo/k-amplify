@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { useLayout } from "@/components/layout-context";
 import { HealthBadge } from "@/components/health-badge";
 import { MetricsSkeleton, TableSkeleton } from "@/components/skeleton";
@@ -84,7 +84,7 @@ function paceStatus(value: number, target: number): {
 }
 
 /* Donut chart SVG for hero metrics */
-function DonutChart({
+const DonutChart = memo(function DonutChart({
   value,
   target,
   color,
@@ -121,7 +121,7 @@ function DonutChart({
       />
     </svg>
   );
-}
+});
 
 function ProgressBar({
   value,
@@ -195,24 +195,58 @@ export default function ScoreboardPage() {
 
   const { topLine, orgs, risks } = data;
   const hoursPace = paceStatus(topLine.hoursSavedYTD, topLine.hoursSavedTarget);
+  // Compute estimated value: hours saved * $100/hr avg cost as a rough proxy
+  const estimatedValueM = (topLine.hoursSavedYTD * 100) / 1_000_000;
+  const totalActiveProjects = orgs.reduce((sum, o) => sum + o.activeProjects, 0);
+  const totalShipped = orgs.reduce((sum, o) => sum + o.shippedProjects, 0);
 
   return (
     <div className="pt-10 animate-in">
-      <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
-        <h1 className="text-xl font-bold tracking-tight">Scoreboard</h1>
-        <div className="flex items-center gap-2">
-          <span className="text-[0.68rem] text-text-secondary bg-surface-2 px-2.5 py-1 rounded-lg border border-border flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" />
-            Linear: Live
-          </span>
-          <span className="text-[0.68rem] text-text-secondary bg-surface-2 px-2.5 py-1 rounded-lg border border-border">
-            Snowflake: {data.lastUpdated}
-          </span>
+      {/* Hero header */}
+      <div className="relative rounded-2xl bg-gradient-to-br from-surface via-surface to-surface-2 border border-border p-8 mb-8 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 via-transparent to-accent-light/5 pointer-events-none" />
+        <div className="relative">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight mb-1">Scoreboard</h1>
+              <p className="text-text-secondary text-sm">
+                Is Amplify on track to deliver $66M in value this year?
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[0.68rem] text-text-secondary bg-bg/50 px-2.5 py-1 rounded-lg border border-border flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" />
+                Linear: Live
+              </span>
+              <span className="text-[0.68rem] text-text-secondary bg-bg/50 px-2.5 py-1 rounded-lg border border-border">
+                Snowflake: {data.lastUpdated}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-end gap-8 flex-wrap">
+            <div>
+              <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1">Est. Value Delivered YTD</div>
+              <div className="text-4xl font-extrabold tracking-tight tabular-nums animate-count text-gradient">
+                ${estimatedValueM.toFixed(1)}M
+              </div>
+            </div>
+            <div className="flex gap-6 pb-1">
+              <div className="text-center">
+                <div className="text-lg font-bold tabular-nums">{totalActiveProjects}</div>
+                <div className="text-[0.65rem] text-text-secondary font-medium">Active</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold tabular-nums text-green">{totalShipped}</div>
+                <div className="text-[0.65rem] text-text-secondary font-medium">Shipped</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold tabular-nums">{orgs.length}</div>
+                <div className="text-[0.65rem] text-text-secondary font-medium">Orgs</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      <p className="text-text-secondary text-sm mb-8">
-        Is Amplify on track to deliver $66M in value this year?
-      </p>
 
       {/* Top-line metrics with donut charts */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10 stagger-in">

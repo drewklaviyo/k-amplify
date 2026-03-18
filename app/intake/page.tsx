@@ -81,7 +81,7 @@ export default function IntakePage() {
         Submit a request to any Amplify team.
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-5 max-w-lg">
+      <form onSubmit={handleSubmit} className="space-y-5 max-w-lg bg-surface border border-border rounded-2xl p-6">
         <div>
           <label className="block text-sm font-medium mb-1.5">Name</label>
           <input

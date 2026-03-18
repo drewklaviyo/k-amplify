@@ -78,12 +78,14 @@ export default function HomePage() {
 
   return (
     <div className="pt-10 animate-in">
-      <h1 className="text-[2.2rem] font-bold tracking-tight leading-tight mb-2 text-gradient">
-        K Amplify
-      </h1>
-      <p className="text-text-secondary text-sm mb-8">
-        What Amplify is building across every partner org — live from Linear.
-      </p>
+      <div className="mb-8">
+        <h1 className="text-[2.2rem] font-extrabold tracking-tight leading-tight mb-2 text-gradient">
+          K Amplify
+        </h1>
+        <p className="text-text-secondary text-[0.92rem] max-w-lg">
+          What Amplify is building across every partner org — live from Linear.
+        </p>
+      </div>
 
       {loading ? (
         <div aria-live="polite" aria-busy="true">
