@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { DemoEntry, OrgSlug } from "@/lib/types";
 import { OrgFilter } from "@/components/org-filter";
 import { DemoCard } from "@/components/demo-card";
+import { CardSkeleton } from "@/components/skeleton";
 
 function weekLabel(dateStr: string): string {
   const d = new Date(dateStr);
@@ -41,29 +42,47 @@ export default function DemosPage() {
   const grouped = groupByWeek(entries);
 
   return (
-    <div className="pt-10">
+    <div className="pt-10 animate-in">
       <h1 className="text-xl font-bold tracking-tight mb-1">Demos</h1>
       <p className="text-text-secondary text-sm mb-6">
         Loom walkthroughs from project updates.
       </p>
 
-      <OrgFilter selected={filter} onChange={setFilter} />
+      <div className="mb-6">
+        <OrgFilter selected={filter} onChange={setFilter} />
+      </div>
 
       {loading ? (
-        <div className="text-text-secondary text-sm">Loading...</div>
+        <div>
+          <CardSkeleton />
+          <CardSkeleton />
+        </div>
       ) : entries.length === 0 ? (
-        <div className="text-text-secondary text-sm">
-          No demos found. Post Loom links in Linear project updates to see them here.
+        <div className="rounded-xl border border-border bg-surface p-12 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-surface-2 mb-4">
+            <svg className="w-6 h-6 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </div>
+          <p className="text-text-secondary text-sm font-medium mb-1">No demos found</p>
+          <p className="text-text-secondary/60 text-xs">Post Loom links in Linear project updates to see them here.</p>
         </div>
       ) : (
-        Array.from(grouped.entries()).map(([week, demos]) => (
-          <div key={week} className="mb-8">
-            <h2 className="text-sm font-semibold text-text-secondary mb-3">{week}</h2>
-            {demos.map((demo) => (
-              <DemoCard key={demo.id} entry={demo} />
-            ))}
-          </div>
-        ))
+        <div className="animate-in">
+          {Array.from(grouped.entries()).map(([week, demos]) => (
+            <div key={week} className="mb-8">
+              <div className="flex items-center gap-3 mb-3">
+                <h2 className="text-sm font-semibold text-text-secondary">{week}</h2>
+                <span className="text-[10px] text-text-secondary bg-surface-2 border border-border px-2 py-0.5 rounded-md font-medium">
+                  {demos.length}
+                </span>
+              </div>
+              {demos.map((demo) => (
+                <DemoCard key={demo.id} entry={demo} />
+              ))}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

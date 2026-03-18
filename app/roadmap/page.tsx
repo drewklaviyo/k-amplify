@@ -7,6 +7,7 @@ import { ORG_BY_SLUG } from "@/lib/config";
 import { OrgFilter } from "@/components/org-filter";
 import { ProjectCard } from "@/components/project-card";
 import { RoadmapTimeline } from "@/components/roadmap-timeline";
+import { TimelineSkeleton, CardSkeleton } from "@/components/skeleton";
 
 type ViewMode = "timeline" | "list";
 
@@ -39,7 +40,7 @@ function RoadmapContent() {
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
               view === "timeline"
                 ? "bg-accent/15 text-accent-light shadow-sm border border-accent/20"
-                : "text-text-secondary hover:text-text"
+                : "text-text-secondary hover:text-text border border-transparent"
             }`}
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -52,7 +53,7 @@ function RoadmapContent() {
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
               view === "list"
                 ? "bg-accent/15 text-accent-light shadow-sm border border-accent/20"
-                : "text-text-secondary hover:text-text"
+                : "text-text-secondary hover:text-text border border-transparent"
             }`}
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -64,28 +65,48 @@ function RoadmapContent() {
       </div>
 
       {loading ? (
-        <div className="text-text-secondary text-sm">Loading...</div>
+        view === "timeline" ? (
+          <TimelineSkeleton />
+        ) : (
+          <div>
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+          </div>
+        )
       ) : goals.length === 0 ? (
-        <div className="text-text-secondary text-sm">No projects found.</div>
+        <div className="rounded-xl border border-border bg-surface p-12 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-surface-2 mb-4">
+            <svg className="w-6 h-6 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <p className="text-text-secondary text-sm font-medium mb-1">No projects found</p>
+          <p className="text-text-secondary/60 text-xs">Projects will appear here once they are added to Linear.</p>
+        </div>
       ) : view === "timeline" ? (
         <RoadmapTimeline goals={goals} />
       ) : filter === "all" ? (
-        goals.map((goal) => (
-          <div key={goal.id} className="mb-8">
-            <h2 className="text-sm font-semibold text-text-secondary mb-3">
-              {ORG_BY_SLUG[goal.orgSlug].label} — {goal.name}
-            </h2>
-            {goal.projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        ))
+        <div className="animate-in">
+          {goals.map((goal) => (
+            <div key={goal.id} className="mb-8">
+              <h2 className="text-sm font-semibold text-text-secondary mb-3">
+                {ORG_BY_SLUG[goal.orgSlug].label} — {goal.name}
+              </h2>
+              {goal.projects.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))}
+            </div>
+          ))}
+        </div>
       ) : (
-        goals.flatMap((goal) =>
-          goal.projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))
-        )
+        <div className="animate-in">
+          {goals.flatMap((goal) =>
+            goal.projects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))
+          )}
+        </div>
       )}
     </>
   );
@@ -93,12 +114,12 @@ function RoadmapContent() {
 
 export default function RoadmapPage() {
   return (
-    <div className="pt-10">
+    <div className="pt-10 animate-in">
       <h1 className="text-xl font-bold tracking-tight mb-1">Roadmap</h1>
       <p className="text-text-secondary text-sm mb-6">
         Active projects across all Amplify teams.
       </p>
-      <Suspense fallback={<div className="text-text-secondary text-sm">Loading...</div>}>
+      <Suspense fallback={<TimelineSkeleton />}>
         <RoadmapContent />
       </Suspense>
     </div>

@@ -15,14 +15,16 @@ export function OrgFilter({ selected, onChange }: OrgFilterProps) {
   ];
 
   return (
-    <div className="flex gap-1 mb-6">
+    <div className="flex gap-1 flex-wrap" role="tablist" aria-label="Filter by team">
       {options.map((opt) => (
         <button
           key={opt.slug}
           onClick={() => onChange(opt.slug)}
-          className={`text-[0.78rem] font-medium px-3 py-1.5 rounded-md transition-all border ${
+          role="tab"
+          aria-selected={selected === opt.slug}
+          className={`text-[0.78rem] font-medium px-3 py-1.5 rounded-lg transition-all border ${
             selected === opt.slug
-              ? "text-accent-light bg-accent/12 border-accent/25"
+              ? "text-accent-light bg-accent/12 border-accent/25 shadow-sm"
               : "text-text-secondary bg-surface border-border hover:text-text hover:bg-surface-2"
           }`}
         >
