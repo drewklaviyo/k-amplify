@@ -7,9 +7,10 @@ interface TimelineBarProps {
   startDate: Date;
   columnWidth: number;
   rowHeight: number;
+  onClick?: () => void;
 }
 
-export function TimelineBar({ project, startDate, columnWidth, rowHeight }: TimelineBarProps) {
+export function TimelineBar({ project, startDate, columnWidth, rowHeight, onClick }: TimelineBarProps) {
   const pStart = project.startDate ? new Date(project.startDate) : null;
   const pEnd = project.targetDate ? new Date(project.targetDate) : null;
 
@@ -39,6 +40,7 @@ export function TimelineBar({ project, startDate, columnWidth, rowHeight }: Time
     <div
       className="absolute group"
       style={{ left: openLeft ? 0 : barLeft, width: barWidth, height: barHeight, top: barTop }}
+      onClick={onClick}
     >
       <div
         className={`relative h-full w-full rounded-xl overflow-hidden cursor-pointer transition-all duration-200 group-hover:scale-[1.02] ${

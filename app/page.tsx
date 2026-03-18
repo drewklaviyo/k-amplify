@@ -2,19 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { usePageTitle } from "@/lib/use-page-title";
-import { GoalSummary, DemoEntry, ShippedEntry, OrgSlug } from "@/lib/types";
+import { GoalSummary, ActivityItem, OrgSlug } from "@/lib/types";
 import { OrgCard } from "@/components/org-card";
 import { GridSkeleton } from "@/components/skeleton";
 import { ORG_BY_SLUG } from "@/lib/config";
 import Link from "next/link";
-
-interface ActivityItem {
-  type: "shipped" | "demo";
-  title: string;
-  orgSlug: OrgSlug;
-  date: string;
-  detail: string;
-}
 
 export default function HomePage() {
   const [goals, setGoals] = useState<GoalSummary[]>([]);
@@ -24,49 +16,12 @@ export default function HomePage() {
   usePageTitle("Home");
 
   useEffect(() => {
-    const now = new Date();
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-
-    Promise.all([
-      fetch("/api/roadmap").then((r) => r.json()),
-      fetch("/api/demos").then((r) => r.json()),
-      fetch("/api/shipped").then((r) => r.json()),
-    ])
-      .then(([roadmapData, demosData, shippedData]) => {
+    fetch("/api/roadmap")
+      .then((r) => r.json())
+      .then((roadmapData) => {
         setGoals(roadmapData.goals ?? []);
-
-        // Count demos per org this month
-        const counts: Record<string, number> = {};
-        const demoEntries = (demosData.entries ?? []) as DemoEntry[];
-        for (const entry of demoEntries) {
-          if (new Date(entry.date) >= monthStart) {
-            counts[entry.orgSlug] = (counts[entry.orgSlug] ?? 0) + 1;
-          }
-        }
-        setDemoCounts(counts as Record<OrgSlug, number>);
-
-        // Build activity feed (last 5 items)
-        const items: ActivityItem[] = [];
-        for (const demo of demoEntries.slice(0, 8)) {
-          items.push({
-            type: "demo",
-            title: demo.title,
-            orgSlug: demo.orgSlug,
-            date: demo.date,
-            detail: demo.projectName,
-          });
-        }
-        for (const entry of ((shippedData.entries ?? []) as ShippedEntry[]).slice(0, 8)) {
-          items.push({
-            type: "shipped",
-            title: entry.projectName,
-            orgSlug: entry.orgSlug,
-            date: entry.completedAt,
-            detail: ORG_BY_SLUG[entry.orgSlug]?.label ?? "",
-          });
-        }
-        items.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        setActivity(items.slice(0, 6));
+        setDemoCounts(roadmapData.demoCountByOrg ?? {});
+        setActivity(roadmapData.recentActivity ?? []);
       })
       .catch(() => setGoals([]))
       .finally(() => setLoading(false));

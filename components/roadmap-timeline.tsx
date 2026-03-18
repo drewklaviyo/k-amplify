@@ -5,6 +5,7 @@ import type { GoalSummary, ProjectSummary, OrgSlug } from "@/lib/types";
 import { ORG_BY_SLUG } from "@/lib/config";
 import { TimelineBar } from "./timeline-bar";
 import { HealthBadge } from "./health-badge";
+import { ProjectDetailPanel } from "./project-detail-panel";
 
 type ZoomLevel = "quarter" | "month" | "week";
 
@@ -31,6 +32,7 @@ interface OrgGroup {
 export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
   const [zoom, setZoom] = useState<ZoomLevel>("month");
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const toggleGroup = useCallback((slug: string) => {
@@ -234,8 +236,11 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
                         {group.projects.map((project) => (
                           <div
                             key={project.id}
-                            className="pl-5 pr-4 border-b border-border hover:bg-surface-2/50 transition-all flex items-center"
+                            className={`pl-5 pr-4 border-b border-border hover:bg-surface-2/50 transition-all flex items-center cursor-pointer ${
+                              selectedProjectId === project.id ? "bg-surface-2/70" : ""
+                            }`}
                             style={{ height: ROW_HEIGHT }}
+                            onClick={() => setSelectedProjectId(project.id)}
                           >
                             <div className="flex items-center gap-2.5 min-w-0 ml-1">
                               {project.lead && (
@@ -323,6 +328,7 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
                           startDate={startDate}
                           columnWidth={columnWidth}
                           rowHeight={ROW_HEIGHT}
+                          onClick={() => setSelectedProjectId(project.id)}
                         />
                         {todayOffset >= 0 && todayOffset <= totalDays && (
                           <div
@@ -338,6 +344,20 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
           </div>
         </div>
       )}
+
+      {/* Project detail slide-out panel */}
+      {selectedProjectId && (() => {
+        const selectedProject = allProjects.find((p) => p.id === selectedProjectId);
+        if (!selectedProject) return null;
+        const orgLabel = ORG_BY_SLUG[selectedProject.orgSlug]?.label ?? selectedProject.orgSlug;
+        return (
+          <ProjectDetailPanel
+            project={selectedProject}
+            orgLabel={orgLabel}
+            onClose={() => setSelectedProjectId(null)}
+          />
+        );
+      })()}
 
       {/* Undated projects */}
       {undatedProjects.length > 0 && (

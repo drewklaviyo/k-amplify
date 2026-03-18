@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getLinearClient } from "@/lib/linear";
-import { ORG_CONFIGS, orgSlugForTeamName } from "@/lib/config";
+import { fetchAmplifyData } from "@/lib/linear";
+import { ORG_CONFIGS } from "@/lib/config";
 import type { DigestEntry, HealthStatus, OrgSlug } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 1800; // 30 minutes ISR
 
 function mapHealth(raw: string | undefined | null): HealthStatus {
   if (raw === "onTrack") return "onTrack";
@@ -18,36 +18,26 @@ export async function GET(request: NextRequest) {
       | OrgSlug
       | null;
 
-    const client = getLinearClient();
-
-    const allTeams = await client.teams({ first: 250 });
-    const amplifyTeams = allTeams.nodes.filter((t) =>
-      t.name.startsWith("Amplify")
-    );
+    const data = await fetchAmplifyData();
 
     const configs = teamFilter
       ? ORG_CONFIGS.filter((c) => c.slug === teamFilter)
       : ORG_CONFIGS;
 
     const entries: DigestEntry[] = [];
-    const seenIds = new Set<string>();
 
-    for (const team of amplifyTeams) {
-      const orgSlug = orgSlugForTeamName(team.name);
-      if (!orgSlug) continue;
+    // Scan both active and completed projects for all updates
+    const allOrgProjects = [
+      ...Array.from(data.projectsByOrg.entries()),
+      ...Array.from(data.completedByOrg.entries()),
+    ];
 
+    for (const [orgSlug, projects] of allOrgProjects) {
       const config = configs.find((c) => c.slug === orgSlug);
       if (!config) continue;
 
-      const teamProjects = await team.projects({ first: 100 });
-
-      for (const project of teamProjects.nodes) {
-        if (seenIds.has(project.id)) continue;
-        seenIds.add(project.id);
-
-        const updates = await project.projectUpdates({ first: 12 });
-
-        for (const update of updates.nodes) {
+      for (const project of projects) {
+        for (const update of project.updates) {
           const updateDate = new Date(update.createdAt);
           const month = updateDate.toLocaleDateString("en-US", {
             month: "long",
@@ -68,7 +58,7 @@ export async function GET(request: NextRequest) {
     }
 
     entries.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
 
     return NextResponse.json({ entries });
@@ -76,7 +66,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching digests:", error);
     return NextResponse.json(
       { error: "Failed to fetch digest data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

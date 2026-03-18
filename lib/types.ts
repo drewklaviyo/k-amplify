@@ -18,6 +18,8 @@ export interface ProjectStatus {
 export interface ProjectSummary {
   id: string;
   name: string;
+  url: string | null;
+  description: string | null;
   health: HealthStatus;
   teamName: string;
   orgSlug: OrgSlug;

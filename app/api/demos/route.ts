@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getLinearClient } from "@/lib/linear";
-import { orgSlugForTeamName } from "@/lib/config";
+import { fetchAmplifyData } from "@/lib/linear";
 import { extractLoomUrls } from "@/lib/loom";
 import type { DemoEntry, OrgSlug } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900; // 15 minutes ISR
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,32 +11,20 @@ export async function GET(request: NextRequest) {
       | OrgSlug
       | null;
 
-    const client = getLinearClient();
-
-    const allTeams = await client.teams({ first: 250 });
-    const amplifyTeams = allTeams.nodes.filter((t) =>
-      t.name.startsWith("Amplify")
-    );
-
+    const data = await fetchAmplifyData();
     const entries: DemoEntry[] = [];
-    const seenIds = new Set<string>();
 
-    for (const team of amplifyTeams) {
-      const orgSlug = orgSlugForTeamName(team.name);
-      if (!orgSlug) continue;
+    // Scan both active and completed projects for Loom URLs
+    const allOrgProjects = [
+      ...Array.from(data.projectsByOrg.entries()),
+      ...Array.from(data.completedByOrg.entries()),
+    ];
+
+    for (const [orgSlug, projects] of allOrgProjects) {
       if (teamFilter && orgSlug !== teamFilter) continue;
 
-      const teamProjects = await team.projects({ first: 100 });
-
-      for (const project of teamProjects.nodes) {
-        if (seenIds.has(project.id)) continue;
-        seenIds.add(project.id);
-        if (!["backlog", "planned", "started", "paused", "completed"].includes(project.state))
-          continue;
-
-        const updates = await project.projectUpdates({ first: 20 });
-
-        for (const update of updates.nodes) {
+      for (const project of projects) {
+        for (const update of project.updates) {
           if (!update.body) continue;
           const loomUrls = extractLoomUrls(update.body);
           if (loomUrls.length === 0) continue;
@@ -63,7 +50,7 @@ export async function GET(request: NextRequest) {
     }
 
     entries.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
 
     return NextResponse.json({ entries });
@@ -71,7 +58,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching demos:", error);
     return NextResponse.json(
       { error: "Failed to fetch demo data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

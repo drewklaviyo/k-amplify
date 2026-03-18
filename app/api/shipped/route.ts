@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getLinearClient } from "@/lib/linear";
-import { orgSlugForTeamName } from "@/lib/config";
+import { fetchAmplifyData } from "@/lib/linear";
 import { extractLoomUrls } from "@/lib/loom";
 import type { ShippedEntry, OrgSlug } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900; // 15 minutes ISR
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,31 +11,14 @@ export async function GET(request: NextRequest) {
       | OrgSlug
       | null;
 
-    const client = getLinearClient();
-
-    // Fetch ALL teams and find Amplify ones
-    const allTeams = await client.teams({ first: 250 });
-    const amplifyTeams = allTeams.nodes.filter((t) =>
-      t.name.startsWith("Amplify")
-    );
-
+    const data = await fetchAmplifyData();
     const entries: ShippedEntry[] = [];
-    const seenIds = new Set<string>();
 
-    for (const team of amplifyTeams) {
-      const orgSlug = orgSlugForTeamName(team.name);
-      if (!orgSlug) continue;
+    for (const [orgSlug, projects] of data.completedByOrg) {
       if (teamFilter && orgSlug !== teamFilter) continue;
 
-      const teamProjects = await team.projects({ first: 100 });
-
-      for (const project of teamProjects.nodes) {
-        if (seenIds.has(project.id)) continue;
-        seenIds.add(project.id);
-        if (project.state !== "completed") continue;
-
-        const updates = await project.projectUpdates({ first: 1 });
-        const latestUpdate = updates.nodes[0] ?? null;
+      for (const project of projects) {
+        const latestUpdate = project.updates[0] ?? null;
         const loomUrls = latestUpdate?.body
           ? extractLoomUrls(latestUpdate.body)
           : [];
@@ -56,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     entries.sort(
       (a, b) =>
-        new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime()
+        new Date(b.completedAt).getTime() - new Date(a.completedAt).getTime(),
     );
 
     return NextResponse.json({ entries });
@@ -64,7 +46,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching shipped:", error);
     return NextResponse.json(
       { error: "Failed to fetch shipped data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

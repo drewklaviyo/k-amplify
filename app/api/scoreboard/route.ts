@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getLinearClient } from "@/lib/linear";
-import { ORG_CONFIGS, orgSlugForTeamName } from "@/lib/config";
+import { NextResponse } from "next/server";
+import { fetchAmplifyData } from "@/lib/linear";
+import { ORG_CONFIGS } from "@/lib/config";
 import { extractLoomUrls } from "@/lib/loom";
 import type { HealthStatus, OrgSlug } from "@/lib/types";
 import scoreboardData from "@/lib/scoreboard-data.json";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // 5 minutes ISR
 
 function mapHealth(raw: string | undefined | null): HealthStatus {
   if (raw === "onTrack") return "onTrack";
@@ -35,15 +35,17 @@ interface HygieneStats {
 
 export async function GET() {
   try {
-    const client = getLinearClient();
+    const data = await fetchAmplifyData();
 
-    // Fetch Amplify teams
-    const allTeams = await client.teams({ first: 250 });
-    const amplifyTeams = allTeams.nodes.filter((t) =>
-      t.name.startsWith("Amplify")
+    const now = Date.now();
+    const monthStart = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1,
     );
+    const STALE_DAYS = 14;
 
-    // Per-org Linear data
+    // Per-org aggregation
     const orgData: Record<
       string,
       {
@@ -57,17 +59,17 @@ export async function GET() {
       }
     > = {};
     const risks: RiskItem[] = [];
-    const seenIds = new Set<string>();
-    const now = Date.now();
-    const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-    const STALE_DAYS = 14;
 
-    for (const team of amplifyTeams) {
-      const orgSlug = orgSlugForTeamName(team.name);
-      if (!orgSlug) continue;
+    const HEALTH_PRIORITIES: Record<HealthStatus, number> = {
+      offTrack: 0,
+      atRisk: 1,
+      onTrack: 2,
+      none: 3,
+    };
 
-      if (!orgData[orgSlug]) {
-        orgData[orgSlug] = {
+    function ensureOrg(slug: string) {
+      if (!orgData[slug]) {
+        orgData[slug] = {
           health: "none",
           activeProjects: 0,
           shippedProjects: 0,
@@ -77,75 +79,46 @@ export async function GET() {
           shippedMissingDescription: 0,
         };
       }
+    }
 
-      const teamProjects = await team.projects({ first: 100 });
-
-      for (const project of teamProjects.nodes) {
-        if (seenIds.has(project.id)) continue;
-        seenIds.add(project.id);
-
-        if (project.state === "completed") {
-          orgData[orgSlug].shippedProjects++;
-          // Check if shipped project has a description
-          const completedUpdates = await project.projectUpdates({ first: 1 });
-          const lastBody = completedUpdates.nodes[0]?.body ?? "";
-          if (!lastBody.trim()) {
-            orgData[orgSlug].shippedMissingDescription++;
-          }
-          // Check for demos on completed projects too
-          for (const upd of completedUpdates.nodes) {
-            if (upd.body && new Date(upd.createdAt) >= monthStart) {
-              orgData[orgSlug].demosThisMonth += extractLoomUrls(upd.body).length;
-            }
-          }
-          continue;
-        }
-
-        if (!["backlog", "planned", "started", "paused"].includes(project.state))
-          continue;
-
+    // Process active projects
+    for (const [orgSlug, projects] of data.projectsByOrg) {
+      ensureOrg(orgSlug);
+      for (const project of projects) {
         orgData[orgSlug].activeProjects++;
 
-        // Get latest update for health and risk detection
-        const updates = await project.projectUpdates({ first: 5 });
-        const latestUpdate = updates.nodes[0] ?? null;
+        const latestUpdate = project.updates[0] ?? null;
         const health = mapHealth(latestUpdate?.health);
 
-        // Hygiene: missing health
-        if (health === "none") {
-          orgData[orgSlug].missingHealth++;
-        }
+        if (health === "none") orgData[orgSlug].missingHealth++;
 
-        // Hygiene: stale updates (no update or last update > 14 days ago)
-        if (!latestUpdate?.createdAt || (now - new Date(latestUpdate.createdAt).getTime()) > STALE_DAYS * 86400000) {
+        if (
+          !latestUpdate?.createdAt ||
+          now - new Date(latestUpdate.createdAt).getTime() >
+            STALE_DAYS * 86400000
+        ) {
           orgData[orgSlug].staleUpdates++;
         }
 
-        // Hygiene: count demos this month from recent updates
-        for (const upd of updates.nodes) {
+        // Count demos this month
+        for (const upd of project.updates) {
           if (upd.body && new Date(upd.createdAt) >= monthStart) {
             orgData[orgSlug].demosThisMonth += extractLoomUrls(upd.body).length;
           }
         }
 
-        // Track worst health per org
-        const priorities: Record<HealthStatus, number> = {
-          offTrack: 0,
-          atRisk: 1,
-          onTrack: 2,
-          none: 3,
-        };
-        if (priorities[health] < priorities[orgData[orgSlug].health]) {
+        // Track worst health
+        if (HEALTH_PRIORITIES[health] < HEALTH_PRIORITIES[orgData[orgSlug].health]) {
           orgData[orgSlug].health = health;
         }
 
         // Collect risks
         if (health === "atRisk" || health === "offTrack") {
           const body = latestUpdate?.body ?? "";
-          // Extract first 150 chars as summary
-          const summary = body.length > 150
-            ? body.substring(0, 150).replace(/\s\S*$/, "").trim() + "..."
-            : body;
+          const summary =
+            body.length > 150
+              ? body.substring(0, 150).replace(/\s\S*$/, "").trim() + "..."
+              : body;
 
           risks.push({
             projectName: project.name,
@@ -160,15 +133,29 @@ export async function GET() {
       }
     }
 
-    // Sort risks: offTrack first, then by date
-    risks.sort((a, b) => {
-      if (a.health !== b.health) {
-        return a.health === "offTrack" ? -1 : 1;
+    // Process completed projects
+    for (const [orgSlug, projects] of data.completedByOrg) {
+      ensureOrg(orgSlug);
+      for (const project of projects) {
+        orgData[orgSlug].shippedProjects++;
+        const lastBody = project.updates[0]?.body ?? "";
+        if (!lastBody.trim()) {
+          orgData[orgSlug].shippedMissingDescription++;
+        }
+        for (const upd of project.updates) {
+          if (upd.body && new Date(upd.createdAt) >= monthStart) {
+            orgData[orgSlug].demosThisMonth += extractLoomUrls(upd.body).length;
+          }
+        }
       }
+    }
+
+    // Sort risks
+    risks.sort((a, b) => {
+      if (a.health !== b.health) return a.health === "offTrack" ? -1 : 1;
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 
-    // Build response combining Linear data + Snowflake data (from JSON for now)
     const orgs = ORG_CONFIGS.map((config) => {
       const linear = orgData[config.slug] ?? {
         health: "none" as HealthStatus,
@@ -176,18 +163,21 @@ export async function GET() {
         shippedProjects: 0,
       };
       const snowflake =
-        (scoreboardData.orgMetrics as Record<string, typeof scoreboardData.orgMetrics.sales>)[config.slug] ?? null;
+        (
+          scoreboardData.orgMetrics as Record<
+            string,
+            (typeof scoreboardData.orgMetrics)["sales"]
+          >
+        )[config.slug] ?? null;
 
       return {
         slug: config.slug,
         label: config.label,
         pmOwner: config.pmOwner,
         goalName: config.goalName,
-        // From Linear
         health: linear.health,
         activeProjects: linear.activeProjects,
         shippedProjects: linear.shippedProjects,
-        // From Snowflake (JSON placeholder)
         hoursSaved: snowflake?.hoursSaved ?? 0,
         hoursTarget: snowflake?.hoursTarget ?? 0,
         keyMetricLabel: snowflake?.keyMetricLabel ?? "",
@@ -199,7 +189,6 @@ export async function GET() {
       };
     });
 
-    // Build hygiene stats
     const hygiene: HygieneStats[] = ORG_CONFIGS.map((config) => {
       const d = orgData[config.slug];
       return {
@@ -225,7 +214,7 @@ export async function GET() {
     console.error("Error fetching scoreboard:", error);
     return NextResponse.json(
       { error: "Failed to fetch scoreboard data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
