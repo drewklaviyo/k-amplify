@@ -224,8 +224,8 @@ export default function ScoreboardPage() {
             </div>
           </div>
           <div className="flex items-end gap-8 flex-wrap">
-            <div>
-              <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1">Est. Value Delivered YTD</div>
+            <div className="opacity-40">
+              <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1">Est. Value Delivered YTD <span className="text-orange normal-case">(sample)</span></div>
               <div className="text-4xl font-extrabold tracking-tight tabular-nums animate-count text-gradient">
                 ${estimatedValueM.toFixed(1)}M
               </div>
@@ -248,8 +248,15 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Top-line metrics with donut charts */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10 stagger-in">
+      {/* Top-line metrics with donut charts — SAMPLE DATA until Snowflake connected */}
+      <div className="relative">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-[0.6rem] font-semibold uppercase tracking-wider text-orange bg-orange/10 border border-dashed border-orange/30 px-2 py-0.5 rounded-md">
+            Sample Data — Snowflake not connected
+          </span>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10 stagger-in opacity-50">
         {/* Hours Saved */}
         <div className="bg-surface border border-border rounded-xl p-5 hover:border-border/80 transition-colors">
           <div className="flex items-start justify-between mb-3">
@@ -353,14 +360,14 @@ export default function ScoreboardPage() {
               <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
                 Health
               </th>
-              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
-                Hours Saved
+              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary opacity-40">
+                Hours Saved *
               </th>
-              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
-                Key Metric
+              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary opacity-40">
+                Key Metric *
               </th>
-              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
-                Adoption
+              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary opacity-40">
+                Adoption *
               </th>
               <th className="text-right px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
                 Projects
@@ -387,7 +394,7 @@ export default function ScoreboardPage() {
                 <td className="px-4 py-3">
                   <HealthBadge status={org.health} />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 opacity-40">
                   <div className="font-medium tabular-nums">
                     {(org.hoursSaved / 1000).toFixed(0)}K{" "}
                     <span className="text-text-secondary font-normal">
@@ -396,13 +403,13 @@ export default function ScoreboardPage() {
                   </div>
                   <ProgressBar value={org.hoursSaved} target={org.hoursTarget} />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 opacity-40">
                   <div className="font-medium">{org.keyMetricValue}</div>
                   <div className="text-[0.7rem] text-text-secondary">
                     {org.keyMetricLabel} (target: {org.keyMetricTarget})
                   </div>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 opacity-40">
                   <div className="font-medium">{org.adoptionValue}</div>
                   <div className="text-[0.7rem] text-text-secondary">
                     {org.adoptionLabel} (target: {org.adoptionTarget})

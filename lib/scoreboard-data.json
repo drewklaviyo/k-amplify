@@ -22,6 +22,16 @@
       "adoptionValue": "42",
       "adoptionTarget": "100"
     },
+    "demos": {
+      "hoursSaved": 11000,
+      "hoursTarget": 25000,
+      "keyMetricLabel": "Demo Completion",
+      "keyMetricValue": "78%",
+      "keyMetricTarget": "90%",
+      "adoptionLabel": "Self-Service Demos",
+      "adoptionValue": "12",
+      "adoptionTarget": "30"
+    },
     "support": {
       "hoursSaved": 12000,
       "hoursTarget": 13000,

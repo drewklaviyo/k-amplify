@@ -4,8 +4,15 @@ export const ORG_CONFIGS: OrgConfig[] = [
   {
     slug: "sales",
     label: "Sales",
-    teamNames: ["Amplify Sales", "Amplify Demos"],
+    teamNames: ["Amplify Sales"],
     goalName: "Increase Seller PPR by 30%",
+    pmOwner: "Jay Chiruvolu",
+  },
+  {
+    slug: "demos",
+    label: "Demos",
+    teamNames: ["Amplify Demos"],
+    goalName: "Scale demo delivery & self-service",
     pmOwner: "Jay Chiruvolu",
   },
   {

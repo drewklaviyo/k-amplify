@@ -1,4 +1,4 @@
-export type OrgSlug = "sales" | "support" | "cs" | "rnd" | "marketing";
+export type OrgSlug = "sales" | "demos" | "support" | "cs" | "rnd" | "marketing";
 
 export type HealthStatus = "onTrack" | "atRisk" | "offTrack" | "none";
 

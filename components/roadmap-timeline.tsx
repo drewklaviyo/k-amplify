@@ -15,6 +15,7 @@ const HEADER_HEIGHT = 40;
 
 const ORG_COLORS: Record<OrgSlug, string> = {
   sales: "#6c5ce7",
+  demos: "#a29bfe",
   support: "#00b894",
   cs: "#74b9ff",
   rnd: "#fdcb6e",
