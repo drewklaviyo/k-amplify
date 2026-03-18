@@ -1,0 +1,31 @@
+lib/config.ts
+  0c541c0586663312 7,11-15
+components/roadmap-timeline.tsx
+  0c541c0586663312 18
+lib/scoreboard-data.json
+  0c541c0586663312 25-34
+lib/types.ts
+  0c541c0586663312 1
+app/scoreboard/page.tsx
+  0c541c0586663312 227-228,251-259,363-364,366-367,369-370,397,406,412
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "a2128aa7dfe8344668d0934b7bf04c641d3110bc",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 40,
+      "total_deletions": 15,
+      "accepted_lines": 40,
+      "overriden_lines": 0
+    }
+  }
+}
