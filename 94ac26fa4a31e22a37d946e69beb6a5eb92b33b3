@@ -1,0 +1,33 @@
+components/project-card.tsx
+  0c541c0586663312 15
+app/page.tsx
+  0c541c0586663312 4,24,90-95
+components/demo-card.tsx
+  0c541c0586663312 12,19,21-28
+components/digest-entry.tsx
+  0c541c0586663312 13
+components/shipped-entry.tsx
+  0c541c0586663312 13-14
+lib/use-page-title.ts
+  0c541c0586663312 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "94ac26fa4a31e22a37d946e69beb6a5eb92b33b3",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 35,
+      "total_deletions": 4,
+      "accepted_lines": 35,
+      "overriden_lines": 0
+    }
+  }
+}
