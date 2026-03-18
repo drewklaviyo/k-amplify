@@ -9,14 +9,23 @@ export function DemoCard({ entry }: { entry: DemoEntry }) {
   const config = ORG_BY_SLUG[entry.orgSlug];
 
   return (
-    <div className="bg-surface border border-border rounded-xl overflow-hidden mb-4 hover:border-border/80 transition-all shadow-sm shadow-black/10">
+    <div className="bg-surface border border-border rounded-xl overflow-hidden mb-4 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 transition-all shadow-sm shadow-black/10 group">
       <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
         <iframe
           src={toEmbedUrl(entry.loomUrl)}
           className="absolute inset-0 w-full h-full"
           allowFullScreen
           allow="autoplay; fullscreen"
+          title={`Demo: ${entry.title}`}
         />
+        {/* Play button overlay hint */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity bg-black/10">
+          <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <svg className="w-6 h-6 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+        </div>
       </div>
       <div className="p-4">
         <div className="flex items-center gap-2 mb-1">

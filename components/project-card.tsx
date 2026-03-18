@@ -12,7 +12,7 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
   const isLong = updateText.length > 180;
 
   return (
-    <div className="bg-surface border border-border rounded-xl p-5 mb-3 hover:border-border/80 transition-all">
+    <div className="bg-surface border border-border rounded-xl p-5 mb-3 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 transition-all">
       <div className="flex items-start justify-between gap-3 mb-2">
         <div className="flex items-center gap-2 flex-wrap">
           <h3 className="font-semibold text-sm">{project.name}</h3>

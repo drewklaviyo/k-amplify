@@ -10,7 +10,7 @@ export function DigestEntryCard({ entry }: { entry: DigestEntry }) {
   const config = ORG_BY_SLUG[entry.orgSlug];
 
   return (
-    <div className="bg-surface border border-border rounded-xl mb-3 overflow-hidden hover:border-border/80 transition-all">
+    <div className="bg-surface border border-border rounded-xl mb-3 overflow-hidden hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 transition-all">
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between p-5 text-left hover:bg-surface-2/30 transition-colors"

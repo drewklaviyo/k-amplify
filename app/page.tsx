@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePageTitle } from "@/lib/use-page-title";
 import { GoalSummary, DemoEntry, ShippedEntry, OrgSlug } from "@/lib/types";
 import { OrgCard } from "@/components/org-card";
 import { GridSkeleton } from "@/components/skeleton";
@@ -20,6 +21,7 @@ export default function HomePage() {
   const [demoCounts, setDemoCounts] = useState<Record<OrgSlug, number> | null>(null);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
+  usePageTitle("Home");
 
   useEffect(() => {
     const now = new Date();
@@ -85,6 +87,12 @@ export default function HomePage() {
         <p className="text-text-secondary text-[0.92rem] max-w-lg">
           What Amplify is building across every partner org — live from Linear.
         </p>
+        {!loading && goals.length > 0 && (
+          <p className="text-xs text-text-secondary mt-3 flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" />
+            {onTrackCount} of {goals.length} orgs on track &middot; {totalProjects} active projects
+          </p>
+        )}
       </div>
 
       {loading ? (

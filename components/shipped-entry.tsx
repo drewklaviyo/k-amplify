@@ -10,7 +10,8 @@ export function ShippedEntryCard({ entry }: { entry: ShippedEntry }) {
   const isLong = entry.lastUpdate.length > 180;
 
   return (
-    <div className="bg-surface border border-border rounded-xl p-5 mb-3 hover:border-border/80 transition-all">
+    <div className="bg-surface border border-border rounded-xl p-5 mb-3 hover:border-green/30 hover:shadow-lg hover:shadow-green/5 transition-all relative overflow-hidden">
+      <div className="absolute left-0 top-0 w-0.5 h-full bg-green/40" />
       <div className="flex items-center gap-2 flex-wrap mb-2">
         <div className="w-5 h-5 rounded-full bg-green/15 flex items-center justify-center shrink-0">
           <svg className="w-3 h-3 text-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
