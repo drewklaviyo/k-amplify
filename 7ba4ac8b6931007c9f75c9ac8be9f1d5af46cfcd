@@ -1,0 +1,59 @@
+components/roadmap-timeline.tsx
+  0c541c0586663312 87,90,94,98-99,106,111,129,132-134,136-139,141,151,161-168,171,178,191,194,200,208,240,260,266-268,276,279,303,319-328,333
+components/health-badge.tsx
+  0c541c0586663312 3-7,13-14
+app/page.tsx
+  0c541c0586663312 6,35-40,42,51,53-86,94-95
+app/globals.css
+  0c541c0586663312 24-80
+components/nav.tsx
+  0c541c0586663312 21-22,25,27-30,32-38,42-46,50-51
+components/project-card.tsx
+  0c541c0586663312 15,19,26-41,63,76-82,84-85
+components/timeline-bar.tsx
+  0c541c0586663312 40,44,46,49,55,71,75,78,96-97,100,105,107-109,113,117-123,126,128,131,133-142,144,146-147,149-153,155
+components/skeleton.tsx
+  0c541c0586663312 1-109
+components/shipped-entry.tsx
+  0c541c0586663312 13,15-19,21,50,52-55
+app/roadmap/page.tsx
+  0c541c0586663312 10,43,56,68-74,76,78-85,90-91,100-101,103-104,108-109,117,122
+app/digests/page.tsx
+  0c541c0586663312 7,37,43-45,48-50,53-57,59-77
+app/demos/page.tsx
+  0c541c0586663312 7,45,51-53,56-58,61-68,71-80,84-85
+components/org-card.tsx
+  0c541c0586663312 42,45,50-62
+components/org-filter.tsx
+  0c541c0586663312 18,23-25,27
+components/demo-card.tsx
+  0c541c0586663312 12,24
+app/intake/page.tsx
+  0c541c0586663312 52,54-58,62,66,75,78,93,103,118,129,133-137,146,162,167-170,178,180-188,190
+app/scoreboard/page.tsx
+  0c541c0586663312 5,75,97,118-125,132-142,150-151,154-155,158,168,170,174,190,194,209,213,226-229,232,243-246,248,258,303,324-325,338-339,341-345,350,363,378-379,381-383,387,422,424,429,434,439,453-455,457,461,465-466
+app/shipped/page.tsx
+  0c541c0586663312 7,42,48-50,53-56,59-63,65-83
+components/digest-entry.tsx
+  0c541c0586663312 13,16,18-19,22,26,36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "7ba4ac8b6931007c9f75c9ac8be9f1d5af46cfcd",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 710,
+      "total_deletions": 289,
+      "accepted_lines": 637,
+      "overriden_lines": 0
+    }
+  }
+}
