@@ -13,7 +13,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
     label: "Demos",
     teamNames: ["Amplify Demos"],
     goalName: "Scale demo delivery & self-service",
-    pmOwner: "Jay Chiruvolu",
+    pmOwner: "Jenna Eldredge",
   },
   {
     slug: "support",
