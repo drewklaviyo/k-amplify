@@ -140,11 +140,6 @@ body {
   opacity: 0.3;
 }
 
-/* Wide layout for timeline/scoreboard pages */
-.layout-wide {
-  max-width: 1200px;
-  transition: max-width 0.3s ease;
-}
 
 /* Activity feed pulse */
 @keyframes feedPulse {

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/nav";
+import { LayoutProvider } from "@/components/layout-context";
+import { MainContainer } from "@/components/main-container";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,10 +25,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Nav />
-        <main id="main-content" className="max-w-[900px] mx-auto px-8 pt-[76px] pb-20 transition-[max-width] duration-300">
-          {children}
-        </main>
+        <LayoutProvider>
+          <Nav />
+          <MainContainer>
+            {children}
+          </MainContainer>
+        </LayoutProvider>
       </body>
     </html>
   );

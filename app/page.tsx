@@ -86,7 +86,9 @@ export default function HomePage() {
       </p>
 
       {loading ? (
-        <GridSkeleton count={5} />
+        <div aria-live="polite" aria-busy="true">
+          <GridSkeleton count={5} />
+        </div>
       ) : (
         <>
           {/* Executive summary strip */}

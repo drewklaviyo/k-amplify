@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { GoalSummary, OrgSlug } from "@/lib/types";
 import { ORG_BY_SLUG } from "@/lib/config";
+import { useLayout } from "@/components/layout-context";
 import { OrgFilter } from "@/components/org-filter";
 import { ProjectCard } from "@/components/project-card";
 import { RoadmapTimeline } from "@/components/roadmap-timeline";
@@ -19,6 +20,7 @@ function RoadmapContent() {
   const [view, setView] = useState<ViewMode>("timeline");
   const [goals, setGoals] = useState<GoalSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const { setWide } = useLayout();
 
   useEffect(() => {
     setLoading(true);
@@ -32,15 +34,9 @@ function RoadmapContent() {
 
   // Widen the layout when in timeline view
   useEffect(() => {
-    const main = document.getElementById("main-content");
-    if (!main) return;
-    if (view === "timeline") {
-      main.classList.add("layout-wide");
-    } else {
-      main.classList.remove("layout-wide");
-    }
-    return () => { main.classList.remove("layout-wide"); };
-  }, [view]);
+    setWide(view === "timeline");
+    return () => { setWide(false); };
+  }, [view, setWide]);
 
   return (
     <>

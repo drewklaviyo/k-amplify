@@ -75,9 +75,9 @@ export function TimelineBar({ project, startDate, columnWidth, rowHeight }: Time
                 className="w-2.5 h-2.5 rotate-45 bg-[var(--bg)] border-2 shadow-sm transition-all group-hover/ms:scale-125"
                 style={{ borderColor: barColor, boxShadow: `0 0 6px ${barColor}50` }}
               />
-              <div className="hidden group-hover/ms:block absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-3 py-1.5 bg-[var(--surface-2)] text-[var(--text)] text-[11px] rounded-lg whitespace-nowrap shadow-xl border border-[var(--border)] z-30 pointer-events-none">
+              <div className="hidden group-hover/ms:block absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-3 py-1.5 bg-surface-2/95 backdrop-blur-sm text-text text-[11px] rounded-lg whitespace-nowrap shadow-xl border border-border z-30 pointer-events-none">
                 {ms.name}
-                {ms.targetDate && <span className="text-text-secondary ml-1.5">{ms.targetDate}</span>}
+                {ms.targetDate && <span className="text-text-secondary ml-1.5">{new Date(ms.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>}
               </div>
             </div>
           );
@@ -94,7 +94,9 @@ export function TimelineBar({ project, startDate, columnWidth, rowHeight }: Time
       </div>
 
       {/* CSS-based tooltip on hover */}
-      <div className="hidden group-hover:block absolute z-40 left-0 top-full mt-3 w-72 rounded-xl bg-surface-2 border border-border p-4 shadow-2xl pointer-events-none">
+      <div className="hidden group-hover:block absolute z-40 top-full mt-3 w-72 rounded-xl bg-surface-2/95 backdrop-blur-sm border border-border p-4 shadow-2xl pointer-events-none"
+        style={{ left: barWidth > 200 ? 0 : "50%", transform: barWidth > 200 ? "none" : "translateX(-25%)" }}
+      >
         <p className="font-semibold text-text text-sm">{project.name}</p>
         {project.lead && <p className="text-text-secondary text-xs mt-0.5">Lead: {project.lead}</p>}
 
@@ -137,14 +139,14 @@ export function TimelineBar({ project, startDate, columnWidth, rowHeight }: Time
               <div key={ms.id} className="flex items-center gap-1.5 text-xs text-text-secondary mt-0.5">
                 <div className="w-1.5 h-1.5 rotate-45 border shrink-0" style={{ borderColor: barColor }} />
                 <span className="truncate">{ms.name}</span>
-                {ms.targetDate && <span className="text-text-secondary/60 ml-auto shrink-0">{ms.targetDate}</span>}
+                {ms.targetDate && <span className="text-text-secondary/60 ml-auto shrink-0">{new Date(ms.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>}
               </div>
             ))}
           </div>
         )}
 
         <div className="mt-2 text-xs text-text-secondary/60 tabular-nums">
-          {project.startDate ?? "TBD"} &rarr; {project.targetDate ?? "TBD"}
+          {project.startDate ? new Date(project.startDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "TBD"} &rarr; {project.targetDate ? new Date(project.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "TBD"}
         </div>
 
         {project.latestUpdate && (

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLayout } from "@/components/layout-context";
 import { HealthBadge } from "@/components/health-badge";
 import { MetricsSkeleton, TableSkeleton } from "@/components/skeleton";
 import Link from "next/link";
@@ -145,6 +146,7 @@ function ProgressBar({
 export default function ScoreboardPage() {
   const [data, setData] = useState<ScoreboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const { setWide } = useLayout();
 
   useEffect(() => {
     fetch("/api/scoreboard")
@@ -156,10 +158,9 @@ export default function ScoreboardPage() {
 
   // Widen layout for scoreboard tables
   useEffect(() => {
-    const main = document.getElementById("main-content");
-    if (main) main.classList.add("layout-wide");
-    return () => { document.getElementById("main-content")?.classList.remove("layout-wide"); };
-  }, []);
+    setWide(true);
+    return () => { setWide(false); };
+  }, [setWide]);
 
   if (loading) {
     return (
@@ -336,7 +337,7 @@ export default function ScoreboardPage() {
             {orgs.map((org) => (
               <tr
                 key={org.slug}
-                className="border-t border-border hover:bg-surface-2/30 transition-colors"
+                className="border-t border-border hover:bg-surface-2/30 transition-colors even:bg-surface-2/10"
               >
                 <td className="px-4 py-3">
                   <Link
@@ -400,8 +401,13 @@ export default function ScoreboardPage() {
             {risks.map((risk, i) => (
               <div
                 key={i}
-                className="bg-surface border border-border rounded-xl p-4 flex items-start gap-3 hover:border-border/80 transition-colors"
+                className={`bg-surface border rounded-xl p-4 flex items-start gap-3 hover:border-border/80 transition-colors relative overflow-hidden ${
+                  risk.health === "offTrack" ? "border-red/25" : "border-orange/25"
+                }`}
               >
+                <div className={`absolute left-0 top-0 w-1 h-full ${
+                  risk.health === "offTrack" ? "bg-red" : "bg-orange"
+                }`} />
                 <HealthBadge status={risk.health} />
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-[0.88rem]">
