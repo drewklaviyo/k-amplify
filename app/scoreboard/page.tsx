@@ -70,15 +70,56 @@ function pct(value: number, target: number): number {
 function paceStatus(value: number, target: number): {
   label: string;
   color: string;
+  bgColor: string;
 } {
   const p = pct(value, target);
   const monthsElapsed = new Date().getMonth() + 1;
   const expectedPct = Math.round((monthsElapsed / 12) * 100);
   if (p >= expectedPct - 5)
-    return { label: "On Pace", color: "text-green" };
+    return { label: "On Pace", color: "text-green", bgColor: "bg-green" };
   if (p >= expectedPct - 15)
-    return { label: "Slightly Behind", color: "text-orange" };
-  return { label: "Behind Pace", color: "text-red" };
+    return { label: "Slightly Behind", color: "text-orange", bgColor: "bg-orange" };
+  return { label: "Behind Pace", color: "text-red", bgColor: "bg-red" };
+}
+
+/* Donut chart SVG for hero metrics */
+function DonutChart({
+  value,
+  target,
+  color,
+  size = 56,
+}: {
+  value: number;
+  target: number;
+  color: string;
+  size?: number;
+}) {
+  const p = Math.min(pct(value, target), 100);
+  const radius = 40;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (p / 100) * circumference;
+
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" className="shrink-0 -rotate-90">
+      <circle
+        cx="50" cy="50" r={radius}
+        fill="none"
+        stroke="var(--color-surface-2)"
+        strokeWidth="10"
+      />
+      <circle
+        cx="50" cy="50" r={radius}
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+        strokeLinecap="round"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        className="donut-ring"
+        style={{ "--donut-target": offset } as React.CSSProperties}
+      />
+    </svg>
+  );
 }
 
 function ProgressBar({
@@ -113,6 +154,13 @@ export default function ScoreboardPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Widen layout for scoreboard tables
+  useEffect(() => {
+    const main = document.getElementById("main-content");
+    if (main) main.classList.add("layout-wide");
+    return () => { document.getElementById("main-content")?.classList.remove("layout-wide"); };
+  }, []);
+
   if (loading) {
     return (
       <div className="pt-10 animate-in">
@@ -145,6 +193,7 @@ export default function ScoreboardPage() {
   }
 
   const { topLine, orgs, risks } = data;
+  const hoursPace = paceStatus(topLine.hoursSavedYTD, topLine.hoursSavedTarget);
 
   return (
     <div className="pt-10 animate-in">
@@ -164,42 +213,46 @@ export default function ScoreboardPage() {
         Is Amplify on track to deliver $66M in value this year?
       </p>
 
-      {/* Top-line metrics */}
+      {/* Top-line metrics with donut charts */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10 stagger-in">
         {/* Hours Saved */}
         <div className="bg-surface border border-border rounded-xl p-5 hover:border-border/80 transition-colors">
-          <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-2">
-            Hours Saved YTD
+          <div className="flex items-start justify-between mb-3">
+            <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide">
+              Hours Saved YTD
+            </div>
+            <DonutChart value={topLine.hoursSavedYTD} target={topLine.hoursSavedTarget} color="var(--color-accent)" />
           </div>
-          <div className="text-2xl font-bold tracking-tight tabular-nums">
+          <div className="text-2xl font-bold tracking-tight tabular-nums animate-count">
             {(topLine.hoursSavedYTD / 1000).toFixed(0)}K
           </div>
-          <div className="text-xs text-text-secondary">
+          <div className="text-xs text-text-secondary mb-1">
             of {(topLine.hoursSavedTarget / 1000).toFixed(0)}K target
           </div>
-          <ProgressBar value={topLine.hoursSavedYTD} target={topLine.hoursSavedTarget} />
           <div
-            className={`text-[0.68rem] font-medium mt-1.5 ${paceStatus(topLine.hoursSavedYTD, topLine.hoursSavedTarget).color}`}
+            className={`text-[0.68rem] font-medium mt-1 ${hoursPace.color}`}
           >
-            {paceStatus(topLine.hoursSavedYTD, topLine.hoursSavedTarget).label}{" "}
+            {hoursPace.label}{" "}
             ({pct(topLine.hoursSavedYTD, topLine.hoursSavedTarget)}%)
           </div>
         </div>
 
         {/* ARR/HC */}
         <div className="bg-surface border border-border rounded-xl p-5 hover:border-border/80 transition-colors">
-          <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-2">
-            ARR / HC
+          <div className="flex items-start justify-between mb-3">
+            <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide">
+              ARR / HC
+            </div>
+            <DonutChart value={topLine.arrPerHC} target={topLine.arrPerHCTarget} color="var(--color-green)" />
           </div>
-          <div className="text-2xl font-bold tracking-tight tabular-nums">
+          <div className="text-2xl font-bold tracking-tight tabular-nums animate-count">
             ${(topLine.arrPerHC / 1000).toFixed(0)}K
           </div>
-          <div className="text-xs text-text-secondary">
+          <div className="text-xs text-text-secondary mb-1">
             target ${(topLine.arrPerHCTarget / 1000).toFixed(0)}K
           </div>
-          <ProgressBar value={topLine.arrPerHC} target={topLine.arrPerHCTarget} />
           <div
-            className={`text-[0.68rem] font-medium mt-1.5 ${paceStatus(topLine.arrPerHC, topLine.arrPerHCTarget).color}`}
+            className={`text-[0.68rem] font-medium mt-1 ${paceStatus(topLine.arrPerHC, topLine.arrPerHCTarget).color}`}
           >
             {pct(topLine.arrPerHC, topLine.arrPerHCTarget)}% of target
           </div>
@@ -207,43 +260,43 @@ export default function ScoreboardPage() {
 
         {/* HC Avoided */}
         <div className="bg-surface border border-border rounded-xl p-5 hover:border-border/80 transition-colors">
-          <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-2">
-            HC Avoided
+          <div className="flex items-start justify-between mb-3">
+            <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide">
+              HC Avoided
+            </div>
+            <DonutChart value={topLine.hcAvoided} target={topLine.hcAvoidedTarget} color="var(--color-blue)" />
           </div>
-          <div className="text-2xl font-bold tracking-tight tabular-nums">
+          <div className="text-2xl font-bold tracking-tight tabular-nums animate-count">
             {topLine.hcAvoided}
           </div>
-          <div className="text-xs text-text-secondary">
+          <div className="text-xs text-text-secondary mb-1">
             of {topLine.hcAvoidedTarget} target hires
           </div>
-          <ProgressBar value={topLine.hcAvoided} target={topLine.hcAvoidedTarget} />
-          <div className="text-[0.68rem] font-medium mt-1.5 text-text-secondary">
+          <div className="text-[0.68rem] font-medium mt-1 text-text-secondary">
             {pct(topLine.hcAvoided, topLine.hcAvoidedTarget)}% of target
           </div>
         </div>
 
-        {/* Agent Autonomy */}
-        <div className="bg-surface border border-accent/20 rounded-xl p-5 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none" />
+        {/* Agent Autonomy - North Star */}
+        <div className="bg-surface border border-accent/20 rounded-xl p-5 relative overflow-hidden glow-card">
+          <div className="absolute inset-0 bg-gradient-to-br from-accent/8 to-transparent pointer-events-none" />
           <div className="relative">
-            <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-2">
-              Agent Autonomy Rate
+            <div className="flex items-start justify-between mb-3">
+              <div className="text-[0.65rem] font-semibold text-accent-light uppercase tracking-wide flex items-center gap-1.5">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                Agent Autonomy
+              </div>
+              <DonutChart value={topLine.agentAutonomyRate} target={topLine.agentAutonomyTarget} color="var(--color-accent-light)" />
             </div>
-            <div className="text-2xl font-bold tracking-tight tabular-nums">
+            <div className="text-2xl font-bold tracking-tight tabular-nums animate-count">
               {Math.round(topLine.agentAutonomyRate * 100)}%
             </div>
-            <div className="text-xs text-text-secondary">
+            <div className="text-xs text-text-secondary mb-1">
               target {Math.round(topLine.agentAutonomyTarget * 100)}% EOY
             </div>
-            <ProgressBar
-              value={topLine.agentAutonomyRate}
-              target={topLine.agentAutonomyTarget}
-              color="bg-accent-light"
-            />
-            <div className="text-[0.68rem] font-medium mt-1.5 text-accent-light flex items-center gap-1">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
+            <div className="text-[0.68rem] font-medium mt-1 text-accent-light">
               North Star Metric
             </div>
           </div>

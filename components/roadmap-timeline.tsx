@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import type { GoalSummary, ProjectSummary, OrgSlug } from "@/lib/types";
 import { ORG_BY_SLUG } from "@/lib/config";
 import { TimelineBar } from "./timeline-bar";
@@ -25,11 +25,13 @@ interface OrgGroup {
   label: string;
   pmOwner: string;
   projects: ProjectSummary[];
+  health: string;
 }
 
 export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
   const [zoom, setZoom] = useState<ZoomLevel>("month");
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const toggleGroup = useCallback((slug: string) => {
     setCollapsedGroups((prev) => {
@@ -59,6 +61,7 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
         label: ORG_BY_SLUG[g.orgSlug].label,
         pmOwner: ORG_BY_SLUG[g.orgSlug].pmOwner,
         projects: g.projects.filter((p) => p.startDate || p.targetDate),
+        health: g.health,
       }))
       .filter((g) => g.projects.length > 0);
   }, [goals]);
@@ -118,6 +121,14 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
   const todayOffset = Math.floor((Date.now() - startDate.getTime()) / 86400000);
   const totalWidth = totalDays * columnWidth;
 
+  // Auto-scroll to today on mount and zoom change
+  useEffect(() => {
+    if (scrollRef.current && todayOffset > 0) {
+      const scrollTarget = todayOffset * columnWidth - scrollRef.current.clientWidth / 3;
+      scrollRef.current.scrollTo({ left: Math.max(0, scrollTarget), behavior: "smooth" });
+    }
+  }, [todayOffset, columnWidth]);
+
   function getLeadInitials(lead: string | null): string {
     if (!lead) return "";
     const parts = lead.split(/[@.\s]+/).filter(Boolean);
@@ -168,14 +179,14 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
           <p className="text-text-secondary/60 text-xs">Set start or target dates in Linear to see the timeline view.</p>
         </div>
       ) : (
-        <div className="border border-border rounded-xl overflow-hidden bg-surface shadow-lg shadow-black/20">
+        <div className="border border-border rounded-xl overflow-hidden bg-surface shadow-xl shadow-black/25">
           <div className="flex">
             {/* LEFT PANEL */}
             <div className="w-[280px] shrink-0 border-r border-border bg-surface">
               {/* Header */}
               <div className="border-b border-border bg-surface-2/50 px-4 flex items-center" style={{ height: HEADER_HEIGHT }}>
                 <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider">Projects</span>
-                <span className="ml-auto text-[10px] text-text-secondary bg-[var(--bg)] px-2 py-0.5 rounded-md font-medium">{datedProjects.length}</span>
+                <span className="ml-auto text-[10px] text-text-secondary bg-bg px-2 py-0.5 rounded-md font-medium">{datedProjects.length}</span>
               </div>
 
               {groups.map((group) => {
@@ -187,6 +198,8 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
                       onClick={() => toggleGroup(group.orgSlug)}
                       className="w-full flex items-center gap-2.5 border-b border-border bg-surface-2/60 hover:bg-surface-2 transition-colors relative"
                       style={{ height: GROUP_HEADER_HEIGHT }}
+                      aria-expanded={!isCollapsed}
+                      aria-label={`${group.label} - ${group.projects.length} projects`}
                     >
                       <div className="absolute left-0 top-0 w-1 h-full rounded-r-full" style={{ backgroundColor: groupColor }} />
                       <div className="flex items-center gap-2 pl-5 pr-4 w-full">
@@ -197,7 +210,7 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
                           <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                         </svg>
                         <span className="text-sm font-semibold truncate">{group.label}</span>
-                        <span className="text-[10px] text-text-secondary ml-auto bg-[var(--bg)] px-1.5 py-0.5 rounded-md shrink-0 font-medium">
+                        <span className="text-[10px] text-text-secondary ml-auto bg-bg px-1.5 py-0.5 rounded-md shrink-0 font-medium">
                           {group.projects.length}
                         </span>
                       </div>
@@ -220,6 +233,7 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
                                     backgroundColor: project.status.color || groupColor,
                                     boxShadow: `0 0 8px ${project.status.color || groupColor}30`,
                                   }}
+                                  title={project.lead}
                                 >
                                   {getLeadInitials(project.lead)}
                                 </div>
@@ -235,7 +249,7 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
                                   </span>
                                   {project.progress > 0 && (
                                     <div className="flex items-center gap-1.5">
-                                      <div className="w-12 h-1 rounded-full bg-[var(--bg)] overflow-hidden">
+                                      <div className="w-12 h-1 rounded-full bg-bg overflow-hidden">
                                         <div
                                           className="h-full rounded-full transition-all duration-500"
                                           style={{ width: `${project.progress * 100}%`, backgroundColor: project.status.color || groupColor }}
@@ -257,14 +271,14 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
             </div>
 
             {/* TIMELINE AREA */}
-            <div className="flex-1 overflow-x-auto bg-[var(--bg)] timeline-scroll">
+            <div ref={scrollRef} className="flex-1 overflow-x-auto bg-bg timeline-scroll">
               {/* Time axis */}
               <div className="relative border-b border-border bg-surface-2/30 sticky top-0 z-10" style={{ height: HEADER_HEIGHT, minWidth: totalWidth }}>
                 {timeLabels.map((tl, i) => (
                   <div
                     key={i}
                     className={`absolute top-0 h-full border-l border-border/50 px-3 text-[11px] flex items-center font-medium ${
-                      tl.isCurrentMonth ? "text-accent-light" : "text-text-secondary"
+                      tl.isCurrentMonth ? "text-accent-light bg-accent/5" : "text-text-secondary"
                     }`}
                     style={{ left: tl.left, width: tl.width }}
                   >
@@ -319,7 +333,7 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
           <div className="flex items-center gap-3 mb-3">
             <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider">Needs Dates in Linear</h3>
             <div className="flex-1 h-px bg-border" />
-            <span className="text-[10px] text-text-secondary bg-surface border border-border px-2 py-0.5 rounded-md font-medium">
+            <span className="text-[10px] text-orange bg-orange/10 border border-orange/20 px-2 py-0.5 rounded-md font-medium">
               {undatedProjects.length} project{undatedProjects.length !== 1 ? "s" : ""}
             </span>
           </div>

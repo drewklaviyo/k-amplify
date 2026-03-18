@@ -30,6 +30,18 @@ function RoadmapContent() {
       .finally(() => setLoading(false));
   }, [filter]);
 
+  // Widen the layout when in timeline view
+  useEffect(() => {
+    const main = document.getElementById("main-content");
+    if (!main) return;
+    if (view === "timeline") {
+      main.classList.add("layout-wide");
+    } else {
+      main.classList.remove("layout-wide");
+    }
+    return () => { main.classList.remove("layout-wide"); };
+  }, [view]);
+
   return (
     <>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
