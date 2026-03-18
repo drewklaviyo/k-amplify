@@ -1,0 +1,35 @@
+components/timeline-bar.tsx
+  0c541c0586663312 78,80,97-98,142,149
+components/layout-context.tsx
+  0c541c0586663312 1-27
+app/layout.tsx
+  0c541c0586663312 3-4,28-30,32-33
+app/page.tsx
+  0c541c0586663312 89-91
+app/roadmap/page.tsx
+  0c541c0586663312 7,23,37-39
+components/main-container.tsx
+  0c541c0586663312 1-18
+app/scoreboard/page.tsx
+  0c541c0586663312 4,149,161-163,340,404-406,408-410
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "e92f6da6142886b582831459a15c0de4a15dca98",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 80,
+      "total_deletions": 30,
+      "accepted_lines": 78,
+      "overriden_lines": 0
+    }
+  }
+}
