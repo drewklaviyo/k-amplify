@@ -1148,11 +1148,20 @@ Need:
 </main>
 
 <script>
+  // FAQ toggles
   document.querySelectorAll('.faq-q').forEach(q => {
     q.addEventListener('click', () => {
       q.closest('.faq-item').classList.toggle('open');
     });
   });
+
+  // Embedded mode: hide internal nav when loaded inside K Amplify iframe
+  if (window.location.search.includes('embedded=1')) {
+    const nav = document.querySelector('nav');
+    if (nav) nav.style.display = 'none';
+    const main = document.querySelector('main');
+    if (main) main.style.paddingTop = '2rem';
+  }
 </script>
 
 </body>
