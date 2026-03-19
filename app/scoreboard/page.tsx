@@ -249,7 +249,7 @@ export default function ScoreboardPage() {
       </div>
 
       {/* Top-line metrics with donut charts — SAMPLE DATA until Snowflake connected */}
-      <div className="relative">
+      <div id="top-line" className="relative" style={{ scrollMarginTop: 70 }}>
         <div className="flex items-center gap-2 mb-3">
           <span className="text-[0.6rem] font-semibold uppercase tracking-wider text-orange bg-orange/10 border border-dashed border-orange/30 px-2 py-0.5 rounded-md">
             Sample Data — Snowflake not connected
@@ -346,7 +346,7 @@ export default function ScoreboardPage() {
       </div>
 
       {/* Per-org breakdown */}
-      <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3">
+      <h2 id="per-org" className="text-sm font-semibold text-text-secondary uppercase tracking-wide mb-3" style={{ scrollMarginTop: 70 }}>
         Per-Org Breakdown
       </h2>
 
@@ -430,7 +430,7 @@ export default function ScoreboardPage() {
       {/* Risk Watch List */}
       {risks.length > 0 && (
         <>
-          <div className="flex items-center gap-3 mb-3">
+          <div id="risks" className="flex items-center gap-3 mb-3" style={{ scrollMarginTop: 70 }}>
             <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">
               Risk Watch List
             </h2>
@@ -475,7 +475,7 @@ export default function ScoreboardPage() {
       {/* Linear Hygiene */}
       {data.hygiene && data.hygiene.length > 0 && (
         <>
-          <div className="flex items-center gap-3 mb-3">
+          <div id="hygiene" className="flex items-center gap-3 mb-3" style={{ scrollMarginTop: 70 }}>
             <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">
               Linear Hygiene
             </h2>

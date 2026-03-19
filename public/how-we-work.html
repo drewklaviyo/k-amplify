@@ -73,6 +73,7 @@
   .hero p { font-size: 1rem; color: var(--text-secondary); max-width: 640px; line-height: 1.7; }
 
   section { margin-bottom: 3.5rem; scroll-margin-top: 70px; }
+  .ritual[id], .rule[id], .faq-item[id] { scroll-margin-top: 70px; }
   section > h2 {
     font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em;
     margin-bottom: 0.4rem; padding-bottom: 0.65rem;
@@ -412,7 +413,7 @@
     <span class="cadence-title">Standups</span>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="standup">
     <div class="ritual-header">
       <div class="ritual-name">Async Standup</div>
       <div class="ritual-meta">
@@ -460,7 +461,7 @@ Blocked: Need RISE API access &mdash; @spencer can you unblock?</div>
     <span class="cadence-title">Flow Reviews &amp; Project Updates</span>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="pm-sync">
     <div class="ritual-header">
       <div class="ritual-name">PM Sync</div>
       <div class="ritual-meta">
@@ -486,7 +487,7 @@ Richard: CMS migration blocked on content model approval from marketing VP.
     </div>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="flow-review">
     <div class="ritual-header">
       <div class="ritual-name">Flow Review</div>
       <div class="ritual-meta">
@@ -515,7 +516,7 @@ Richard: CMS migration blocked on content model approval from marketing VP.
     </div>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="demo">
     <div class="ritual-header">
       <div class="ritual-name">Weekly Demo</div>
       <div class="ritual-meta">
@@ -543,7 +544,7 @@ Demoed BDR enrichment pipeline to Sales Ops.
     </div>
   </div>
 
-  <div class="ritual" style="border-color: var(--accent); border-width: 1.5px;">
+  <div class="ritual" id="friday-updates" style="border-color: var(--accent); border-width: 1.5px;">
     <div class="ritual-header">
       <div class="ritual-name">Project Status Updates in Linear</div>
       <div class="ritual-meta">
@@ -623,7 +624,7 @@ Ship outreach draft quality scoring to eval pipeline.</div>
     <div class="flow-step"><strong>After MER:</strong> Partner Digest</div>
   </div>
 
-  <div class="ritual" style="border-color: var(--orange); border-width: 1.5px;">
+  <div class="ritual" id="goal-updates" style="border-color: var(--orange); border-width: 1.5px;">
     <div class="ritual-header">
       <div class="ritual-name">Goal Status Update in Linear</div>
       <div class="ritual-meta">
@@ -674,7 +675,7 @@ movement by mid-April.</div>
     </div>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="mer">
     <div class="ritual-header">
       <div class="ritual-name">Monthly Execution Review (MER)</div>
       <div class="ritual-meta">
@@ -688,7 +689,7 @@ movement by mid-April.</div>
     </div>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="partner-digest">
     <div class="ritual-header">
       <div class="ritual-name">Monthly Partner Digest</div>
       <div class="ritual-meta">
@@ -721,7 +722,7 @@ Need from Sales: Salesforce data hygiene fix prioritized.
     <p>Don't wait for MER to update your partners. Run <strong>bi-weekly syncs with your partner's core group</strong> (e.g., Sales Ops lead, CS Ops lead) so there are no surprises at MER. The monthly digest confirms what partners already know &mdash; it doesn't break news. If your partner is surprised by your MER update, you're behind.</p>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="discovery-hours">
     <div class="ritual-header">
       <div class="ritual-name">Discovery Hours</div>
       <div class="ritual-meta">
@@ -753,7 +754,7 @@ ride-alongs next week to watch them work.</div>
     <p>The best product decisions come from direct observation, not secondhand reports. If you haven't been in your partner's world this month, your roadmap is based on assumptions. Discovery hours are how you pressure-test those assumptions.</p>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="retro">
     <div class="ritual-header">
       <div class="ritual-name">Monthly Retro</div>
       <div class="ritual-meta">
@@ -790,7 +791,7 @@ ride-alongs next week to watch them work.</div>
     <div class="flow-step"><strong>Week 1 of new Q:</strong> QBR</div>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="quarterly-planning">
     <div class="ritual-header">
       <div class="ritual-name">Quarterly Commitment Review</div>
       <div class="ritual-meta">
@@ -830,7 +831,7 @@ Need:
     </div>
   </div>
 
-  <div class="ritual">
+  <div class="ritual" id="qbr">
     <div class="ritual-header">
       <div class="ritual-name">Quarterly Business Review (QBR)</div>
       <div class="ritual-meta">
@@ -857,42 +858,42 @@ Need:
   <h2>The Rules</h2>
   <p class="desc">Non-negotiable standards for every Amplify PM.</p>
 
-  <div class="rule">
+  <div class="rule" id="rule-1">
     <div class="rn">Rule 1</div>
     <div class="rt">Every project ties to a goal</div>
     <p class="rd">No orphan projects. If your project doesn't connect to one of the goals under "Working AI First," it either needs to be connected or it shouldn't exist.</p>
   </div>
-  <div class="rule">
+  <div class="rule" id="rule-2">
     <div class="rn">Rule 2</div>
     <div class="rt">Linear is the source. Everything else is a view.</div>
     <p class="rd">No slides or presentations. Roadmaps and updates live in Linear Docs, Google Docs, or webpages generated from Linear. When things change, you update Linear &mdash; not a separate artifact.</p>
   </div>
-  <div class="rule">
+  <div class="rule" id="rule-3">
     <div class="rn">Rule 3</div>
     <div class="rt">Projects need milestones</div>
     <p class="rd">At least one milestone per quarter per project. Name them clearly (e.g., "BDR Intelligence POC &mdash; Go/No-Go" not "M1").</p>
   </div>
-  <div class="rule">
+  <div class="rule" id="rule-4">
     <div class="rn">Rule 4</div>
     <div class="rt">Friday project updates are non-negotiable</div>
     <p class="rd">Every Friday. Every active project. 4:00 PM calendar block. 10 minutes. Metric impact with leading indicators, blockers, next week. Set the health indicator.</p>
   </div>
-  <div class="rule">
+  <div class="rule" id="rule-5">
     <div class="rn">Rule 5</div>
     <div class="rt">Goal updates come before MER, not after</div>
     <p class="rd">Write your goal-level status update before the Monthly Execution Review. The MER discusses your update &mdash; it's not the place to present it for the first time.</p>
   </div>
-  <div class="rule">
+  <div class="rule" id="rule-6">
     <div class="rn">Rule 6</div>
     <div class="rt">Issues go in the right team</div>
     <p class="rd">Work for Sales goes in Amplify Sales. Work for Support goes in Amplify Support. If an issue spans teams, put it in the primary team and link related issues.</p>
   </div>
-  <div class="rule">
+  <div class="rule" id="rule-7">
     <div class="rn">Rule 7</div>
     <div class="rt">Keep the Kanban board honest</div>
     <p class="rd">If someone is working on it, it should be In Progress. If it's blocked, mark it Blocked. Don't let the board lie &mdash; it's how the triad spots problems at Flow Review.</p>
   </div>
-  <div class="rule">
+  <div class="rule" id="rule-8">
     <div class="rn">Rule 8</div>
     <div class="rt">At Risk / Off Track triggers a conversation, not a punishment</div>
     <p class="rd">If you set a project or goal to At Risk or Off Track, bring it to PM Sync on Monday. Drew will help unblock, escalate, or re-scope. The worst thing you can do is mark something On Track when it isn't &mdash; that's how partners lose trust.</p>
@@ -906,62 +907,62 @@ Need:
   <h2>FAQ</h2>
   <p class="desc">Common questions, especially if you're new to Amplify.</p>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-standups">
     <div class="faq-q"><span class="arrow">&#9654;</span> Where exactly do I post standups?</div>
     <div class="faq-a">In your team's Slack channel: <code>#amplify-sales</code>, <code>#amplify-support</code>, <code>#amplify-cs</code>, <code>#amplify-rnd</code>, or <code>#amplify-marketing</code>. Post by 10 AM local. Three lines, no thread &mdash; just drop it in the channel.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-status-updates">
     <div class="faq-q"><span class="arrow">&#9654;</span> How do I write a status update in Linear?</div>
     <div class="faq-a">Open your project in Linear &rarr; click the "Updates" tab (or the status icon next to the project name) &rarr; click "New update." Set the health indicator (On Track / At Risk / Off Track), then write using the three-part format: metric impact, blockers, next week. Same flow for goal-level updates on your sub-initiative.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-my-projects">
     <div class="faq-q"><span class="arrow">&#9654;</span> How do I know which projects are mine?</div>
     <div class="faq-a">Your projects live in the Linear team for your partner org (e.g., "Amplify R&D" for Christina). Look at the projects under your team &mdash; those are yours. If you're new, your first task is to audit what exists and confirm with Drew. If projects are missing, create them. If there are orphans, connect them to your goal or archive them.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-leading-metrics">
     <div class="faq-q"><span class="arrow">&#9654;</span> What are "leading metrics" and how do I find them?</div>
     <div class="faq-a">Your goal has a lagging metric (e.g., "PPR +30%") that moves slowly. Leading metrics are the inputs you can track weekly that predict whether the lagging metric will move. Examples: for Sales, it's accounts researched/day, meetings booked, BDR active rate. For Support, it's AI resolution rate, false positive rate, ticket categories covered. For CS, it's CSM time-in-tool, accounts auto-triaged, health score accuracy. Define 2-3 leading metrics per project in your first week and track them in every Friday update. If you don't know yours yet, talk to Drew.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-at-risk">
     <div class="faq-q"><span class="arrow">&#9654;</span> What happens when I set something to At Risk or Off Track?</div>
     <div class="faq-a">Bring it to PM Sync on Monday. The team will help: escalate a blocker, re-scope, shift capacity, or adjust the timeline. Setting At Risk early is a sign of good judgment, not failure. Setting On Track when you know it's not &mdash; that's the problem. See Rule 8.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-intake">
     <div class="faq-q"><span class="arrow">&#9654;</span> How do partner requests come in? Is there an intake process?</div>
     <div class="faq-a">Partner requests come from <strong>meetings and core group syncs</strong> &mdash; not a ticket queue. You're embedded with your partner org, so you hear needs in real time. Capture them, add to your Backlog, triage at PM Sync on Monday. Every request gets a response within two weeks: "yes and here's when," "not now, here's why," or "let's discuss." Don't let requests sit unacknowledged.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-pm-sync-prep">
     <div class="faq-q"><span class="arrow">&#9654;</span> What should I prepare for PM Sync on Monday?</div>
     <div class="faq-a">Three things: (1) one thing that changed for your partner this week, (2) any capacity asks or tradeoffs you need help with, and (3) any intake items to triage. You don't need a doc &mdash; just come ready to talk. If something is At Risk or Off Track, lead with that.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-eng-lead">
     <div class="faq-q"><span class="arrow">&#9654;</span> Who is my eng lead and what's their role?</div>
     <div class="faq-a">Each team is led by a <strong>triad: PM + Eng Lead + Design Lead</strong> (5 of 6 teams). The PM owns the what and why (scope, priorities, partner alignment). The eng lead owns the how (technical approach, issue breakdown, code review). The design lead shapes solutions in the Understand and Identify stages. The triad reviews the Kanban board together at Monday Flow Review. You write the Friday project update; the triad can contribute but the PM is accountable.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-partner-meetings">
     <div class="faq-q"><span class="arrow">&#9654;</span> Should I be meeting with my partner org outside of MER?</div>
     <div class="faq-a"><strong>Yes &mdash; and this is what separates good from great.</strong> Every PM should have a regular cadence with their partner's core group (e.g., Sales Ops lead, CS Ops lead, Support Eng lead). At minimum bi-weekly, ideally weekly for active partners like Sales and CS. These aren't in the "required" cadence because the format varies per org &mdash; but if your partner is ever surprised by your MER update, you're not meeting enough. Set these up in your first two weeks.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-digest-format">
     <div class="faq-q"><span class="arrow">&#9654;</span> What does a Monthly Partner Digest look like?</div>
     <div class="faq-a">It's a Slack post &mdash; not a doc, not a deck. 10-15 lines max. Structure: status (On Track / At Risk / Off Track), what shipped, key metrics, what's next, what you need from them. See the example in the Monthly section above. Keep it scannable &mdash; your partner VP should be able to read it in 30 seconds.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-no-slides">
     <div class="faq-q"><span class="arrow">&#9654;</span> What formats do we use instead of slides?</div>
     <div class="faq-a">Linear Docs, Google Docs, or webpages generated from Linear. No slide decks. If you're presenting at a QBR or leadership review, your data comes from your goal updates and project statuses in Linear. The doc is the presentation.</div>
   </div>
 
-  <div class="faq-item">
+  <div class="faq-item" id="faq-onboarding">
     <div class="faq-q"><span class="arrow">&#9654;</span> I'm new &mdash; what do I do in my first two weeks?</div>
     <div class="faq-a"><strong>Week 1:</strong> Audit your Linear team &mdash; what projects exist, what's their status, are they connected to your goal? Read the last month of project updates. Meet your eng lead. Meet Drew 1:1 to align on your goal's target metrics and leading indicators. <strong>Week 2:</strong> Set up your partner meetings (bi-weekly minimum with core group). Write your first Friday project updates. Define your 2-3 leading metrics per project. Post your first standup. You should feel oriented by end of week 2.</div>
   </div>
@@ -980,7 +981,7 @@ Need:
   </div>
 
   <!-- WEEK 1 -->
-  <div class="ritual" style="border-left: 3px solid var(--green); border-color: var(--green);">
+  <div class="ritual" id="week-1" style="border-left: 3px solid var(--green); border-color: var(--green);">
     <div class="ritual-header">
       <div class="ritual-name">Week 1: Foundation</div>
       <div class="ritual-meta">
@@ -1007,7 +1008,7 @@ Need:
   </div>
 
   <!-- WEEK 2 -->
-  <div class="ritual" style="border-left: 3px solid var(--accent-light); border-color: var(--accent-light);">
+  <div class="ritual" id="week-2" style="border-left: 3px solid var(--accent-light); border-color: var(--accent-light);">
     <div class="ritual-header">
       <div class="ritual-name">Week 2: Flow</div>
       <div class="ritual-meta">
@@ -1034,7 +1035,7 @@ Need:
   </div>
 
   <!-- WEEK 3 -->
-  <div class="ritual" style="border-left: 3px solid var(--orange); border-color: var(--orange);">
+  <div class="ritual" id="week-3" style="border-left: 3px solid var(--orange); border-color: var(--orange);">
     <div class="ritual-header">
       <div class="ritual-name">Week 3: Visibility</div>
       <div class="ritual-meta">
@@ -1060,7 +1061,7 @@ Need:
   </div>
 
   <!-- WEEK 4 -->
-  <div class="ritual" style="border-left: 3px solid var(--blue); border-color: var(--blue);">
+  <div class="ritual" id="week-4" style="border-left: 3px solid var(--blue); border-color: var(--blue);">
     <div class="ritual-header">
       <div class="ritual-name">Week 4: Monthly Cycle</div>
       <div class="ritual-meta">
@@ -1086,7 +1087,7 @@ Need:
   </div>
 
   <!-- WEEK 5 -->
-  <div class="ritual" style="border-left: 3px solid var(--text); border-color: var(--text); background: linear-gradient(135deg, var(--surface), var(--surface-2));">
+  <div class="ritual" id="week-5" style="border-left: 3px solid var(--text); border-color: var(--text); background: linear-gradient(135deg, var(--surface), var(--surface-2));">
     <div class="ritual-header">
       <div class="ritual-name">Week 5: Lock In</div>
       <div class="ritual-meta">
