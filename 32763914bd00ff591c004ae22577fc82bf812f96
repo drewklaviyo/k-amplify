@@ -1,0 +1,23 @@
+app/roadmap/page.tsx
+  0c541c0586663312 3-4,17,19,22,27-44,65,68,81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "32763914bd00ff591c004ae22577fc82bf812f96",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 27,
+      "total_deletions": 6,
+      "accepted_lines": 27,
+      "overriden_lines": 0
+    }
+  }
+}
