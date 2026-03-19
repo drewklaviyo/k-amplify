@@ -1155,12 +1155,12 @@ Need:
     });
   });
 
-  // Embedded mode: hide internal nav when loaded inside K Amplify iframe
+  // Embedded mode: shift internal nav down below K Amplify's nav (52px)
   if (window.location.search.includes('embedded=1')) {
     const nav = document.querySelector('nav');
-    if (nav) nav.style.display = 'none';
+    if (nav) nav.style.top = '0px';
     const main = document.querySelector('main');
-    if (main) main.style.paddingTop = '2rem';
+    if (main) main.style.paddingTop = '76px';
   }
 </script>
 
