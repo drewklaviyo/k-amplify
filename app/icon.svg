@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Ground shadow -->
+  <ellipse cx="16" cy="28" rx="11" ry="2" fill="#1a1a26" opacity="0.5"/>
+
+  <!-- Back log -->
+  <rect x="5" y="23" width="22" height="3.5" rx="1.75" fill="#4A3520" transform="rotate(-8 16 24.75)"/>
+  <rect x="5.5" y="23.3" width="21" height="1.2" rx="0.6" fill="#5C4025" transform="rotate(-8 16 24)" opacity="0.6"/>
+
+  <!-- Front log -->
+  <rect x="5" y="25" width="22" height="3.5" rx="1.75" fill="#3D2B18" transform="rotate(6 16 26.75)"/>
+  <rect x="5.5" y="25.5" width="21" height="1" rx="0.5" fill="#4A3520" transform="rotate(6 16 26)" opacity="0.5"/>
+
+  <!-- Log cross piece (small stick) -->
+  <rect x="13.5" y="22" width="5" height="2" rx="1" fill="#3D2B18" transform="rotate(35 16 23)"/>
+
+  <!-- Ember glow on ground -->
+  <ellipse cx="16" cy="24" rx="5" ry="2" fill="#E17055" opacity="0.15"/>
+  <ellipse cx="16" cy="24" rx="3" ry="1.2" fill="#FDCB6E" opacity="0.1"/>
+
+  <!-- Outer flame - red/orange, organic shape -->
+  <path d="M16 3 C14 7, 10.5 11, 9.5 15 C8.5 19, 9.5 22, 12 23.5 C13.5 24.3, 14.8 24.5, 16 24.5 C17.2 24.5, 18.5 24.3, 20 23.5 C22.5 22, 23.5 19, 22.5 15 C21.5 11, 18 7, 16 3Z" fill="#C0392B"/>
+
+  <!-- Outer flame highlight -->
+  <path d="M16 5 C14.5 8, 11.5 12, 10.5 15.5 C9.5 19, 10.5 21.5, 12.5 23 C14 23.8, 15 24, 16 24 C15 23, 12 20, 12 17 C12 13, 14 9, 16 5Z" fill="#E74C3C" opacity="0.7"/>
+
+  <!-- Middle flame - orange -->
+  <path d="M16 7 C14.2 10.5, 11.8 14, 11.5 17 C11 20.5, 12.5 22.5, 14.5 23.2 C15.3 23.5, 16 23.5, 16.8 23.3 C19 22.8, 20.5 20.5, 20.5 17.5 C20.5 14, 17.8 10.5, 16 7Z" fill="#E67E22"/>
+
+  <!-- Inner orange-yellow flame -->
+  <path d="M16 10 C14.8 12.5, 13 15, 13 17.5 C13 20, 14 21.5, 15.5 22 C16 22.2, 16.5 22.2, 17 22 C18.5 21.5, 19.5 20, 19.5 17.5 C19.5 15, 17.2 12.5, 16 10Z" fill="#F39C12"/>
+
+  <!-- Bright yellow core -->
+  <path d="M16 13 C15.2 15, 14.2 16.5, 14.2 18.2 C14.2 20, 15 21, 16 21.2 C17 21, 17.8 20, 17.8 18.2 C17.8 16.5, 16.8 15, 16 13Z" fill="#F1C40F"/>
+
+  <!-- White-hot center -->
+  <path d="M16 16 C15.5 17, 15 17.8, 15 18.8 C15 19.8, 15.5 20.3, 16 20.3 C16.5 20.3, 17 19.8, 17 18.8 C17 17.8, 16.5 17, 16 16Z" fill="#FEF9E7" opacity="0.8"/>
+
+  <!-- Wispy left flame tendril -->
+  <path d="M13.5 8 C12 10, 11 12.5, 12 14 C12.5 14.8, 13 14, 13 13 C13 11.5, 13.5 10, 13.5 8Z" fill="#E74C3C" opacity="0.5"/>
+
+  <!-- Wispy right flame tendril -->
+  <path d="M18 9 C19.5 11, 20 13, 19.5 14.5 C19.2 15, 18.8 14.5, 19 13.5 C19.2 12, 18.5 10.5, 18 9Z" fill="#E74C3C" opacity="0.4"/>
+
+  <!-- Sparks / embers floating up -->
+  <circle cx="11.5" cy="6" r="0.6" fill="#F39C12" opacity="0.8"/>
+  <circle cx="20" cy="4.5" r="0.5" fill="#E67E22" opacity="0.6"/>
+  <circle cx="13" cy="3.5" r="0.4" fill="#F1C40F" opacity="0.7"/>
+  <circle cx="19" cy="7" r="0.5" fill="#F39C12" opacity="0.5"/>
+  <circle cx="14.5" cy="5" r="0.3" fill="#FEF9E7" opacity="0.6"/>
+
+  <!-- Tiny embers on logs -->
+  <circle cx="12" cy="23.5" r="0.6" fill="#E74C3C" opacity="0.4"/>
+  <circle cx="19" cy="24" r="0.5" fill="#E67E22" opacity="0.3"/>
+  <circle cx="15" cy="23" r="0.4" fill="#F39C12" opacity="0.5"/>
+</svg>
