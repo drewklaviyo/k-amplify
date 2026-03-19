@@ -1,0 +1,25 @@
+public/how-we-work.html
+  0c541c0586663312 76,416,464,490,519,547,627,678,692,725,757,794,834,861,866,871,876,881,886,891,896,910,915,920,925,930,935,940,945,950,955,960,965,984,1011,1038,1064,1090
+app/scoreboard/page.tsx
+  0c541c0586663312 252,349,433,478
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "00fbdf1d9debf469af4ac232e7738d7872cf755d",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 42,
+      "total_deletions": 41,
+      "accepted_lines": 42,
+      "overriden_lines": 0
+    }
+  }
+}
