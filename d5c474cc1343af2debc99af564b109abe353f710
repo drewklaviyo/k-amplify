@@ -1,0 +1,29 @@
+components/demo-card.tsx
+  0c541c0586663312 1,4-11,19,44-45
+components/nav.tsx
+  0c541c0586663312 5,20,32,38
+app/globals.css
+  0c541c0586663312 10-11,82-83
+components/shipped-entry.tsx
+  0c541c0586663312 4,7-15,19,33-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "d5c474cc1343af2debc99af564b109abe353f710",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 38,
+      "total_deletions": 12,
+      "accepted_lines": 34,
+      "overriden_lines": 0
+    }
+  }
+}
