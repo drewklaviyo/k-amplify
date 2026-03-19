@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useLayout } from "./layout-context";
 
 const links = [
   { href: "/", label: "Home" },
@@ -16,6 +17,7 @@ const links = [
 
 export function Nav() {
   const pathname = usePathname();
+  const { isWide } = useLayout();
 
   return (
     <>
@@ -27,15 +29,13 @@ export function Nav() {
         Skip to content
       </a>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-bg/80 backdrop-blur-2xl border-b border-border/60" role="navigation" aria-label="Main navigation">
-        <div className="max-w-[1200px] mx-auto flex items-center h-[52px] px-8 gap-8">
+        <div className={`mx-auto flex items-center h-[52px] px-8 gap-8 transition-[max-width] duration-300 ${isWide ? "max-w-[1200px]" : "max-w-[900px]"}`}>
           <Link
             href="/"
             className="font-bold text-[0.92rem] tracking-tight flex items-center gap-2.5 whitespace-nowrap hover:opacity-80 transition-opacity"
             aria-label="K Amplify home"
           >
-            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-accent to-accent-light flex items-center justify-center shadow-lg shadow-accent/20">
-              <span className="text-white text-[10px] font-black">K</span>
-            </div>
+            <img src="/icon.svg" alt="" className="w-6 h-6" aria-hidden="true" />
             <span>Amplify</span>
           </Link>
           <div className="flex gap-0.5 overflow-x-auto" role="tablist" aria-label="Page navigation">

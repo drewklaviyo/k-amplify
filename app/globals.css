@@ -7,8 +7,8 @@
   --color-border: #2a2a3a;
   --color-text: #e4e4ef;
   --color-text-secondary: #8888a0;
-  --color-accent: #6c5ce7;
-  --color-accent-light: #a29bfe;
+  --color-accent: #E67E22;
+  --color-accent-light: #F39C12;
   --color-green: #00b894;
   --color-orange: #fdcb6e;
   --color-red: #e17055;
@@ -79,8 +79,8 @@ body {
 
 /* Subtle glow effect for hero metrics */
 @keyframes subtleGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(108, 92, 231, 0.05); }
-  50% { box-shadow: 0 0 30px rgba(108, 92, 231, 0.12); }
+  0%, 100% { box-shadow: 0 0 20px rgba(230, 126, 34, 0.05); }
+  50% { box-shadow: 0 0 30px rgba(230, 126, 34, 0.12); }
 }
 
 .glow-card {
