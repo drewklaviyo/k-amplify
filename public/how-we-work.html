@@ -318,14 +318,15 @@
 
   <div class="callout" style="margin-bottom: 1.5rem;">
     <div class="ct">The Triad</div>
-    <p>Each team is led by a <strong>PM + Eng Lead + Design Lead</strong> (5 of 6 teams have all three). They co-own the what, why, and how &mdash; PMs represent partner needs, eng leads own technical execution, design leads shape solutions. The triad maintains the Kanban board and pipeline together.</p>
+    <p>Each team is led by a <strong>PM + Eng Lead + Design Lead</strong> (4 of 6 teams have all three &mdash; still hiring the EM for Amplify R&D and Amplify Sales). They co-own the what, why, and how &mdash; PMs represent partner needs, eng leads own technical execution, design leads shape solutions. The triad maintains the Kanban board and pipeline together.</p>
   </div>
 
   <div class="table-wrap">
     <table>
       <thead><tr><th>Goal</th><th>PM Owner</th><th>Linear Team</th></tr></thead>
       <tbody>
-        <tr><td>Increase Seller PPR by 30%</td><td>Jay Chiruvolu</td><td>Amplify Sales + Demos</td></tr>
+        <tr><td>Increase Seller PPR by 30%</td><td>Jay Chiruvolu</td><td>Amplify Sales</td></tr>
+        <tr><td>Scale demo delivery &amp; self-service</td><td>Jenna Eldredge</td><td>Amplify Demos</td></tr>
         <tr><td>Increase Success &amp; Services time w/ customers by 30%</td><td>Tyler Beck</td><td>Amplify Success &amp; Services</td></tr>
         <tr><td>Resolve 55% via automated resolution</td><td>Jeremy Blanchard</td><td>Amplify Support</td></tr>
         <tr><td>Increase R&D efficiency by 13%</td><td>Christina Valente</td><td>Amplify R&D</td></tr>
@@ -350,7 +351,7 @@
       <thead><tr><th>Stage</th><th>Who Drives</th><th>What Happens</th></tr></thead>
       <tbody>
         <tr><td><strong>Backlog</strong></td><td>PM</td><td>Raw ideas, partner requests, intake items. Unvetted.</td></tr>
-        <tr><td><strong>Understand</strong></td><td>PM + Design</td><td>Investigating the problem. Discovery, partner interviews, data analysis.</td></tr>
+        <tr><td><strong>Understand</strong></td><td>PM + Design (+ Eng)</td><td>Investigating the problem. Discovery, partner interviews, data analysis. Engineering involvement early is often valuable for feasibility and technical context.</td></tr>
         <tr><td><strong>Accepted</strong></td><td>PM</td><td>Problem validated, worth pursuing. Prioritized against other work.</td></tr>
         <tr><td><strong>Identify</strong></td><td>PM + Design + Eng</td><td>Shaping the solution. Design explores approaches, eng assesses feasibility and dependencies.</td></tr>
         <tr><td><strong>On Deck</strong></td><td>PM + Eng Lead</td><td>Fully shaped, ready to be pulled. Brief written, design done, technical approach clear.</td></tr>
@@ -415,15 +416,16 @@
 
   <div class="ritual" id="standup">
     <div class="ritual-header">
-      <div class="ritual-name">Async Standup</div>
+      <div class="ritual-name">Daily Standup</div>
       <div class="ritual-meta">
-        <span class="tag">Async</span>
-        Every day by 10 AM
+        <span class="tag">Daily</span>
+        In-person + async
       </div>
     </div>
     <div class="ritual-body">
       <div class="who">All eng + PMs</div>
-      <p>Posted in your team's Slack channel (<code>#amplify-sales</code>, <code>#amplify-support</code>, etc.) by start of day. Three lines max:</p>
+      <p><strong>Mon, Tue, Thu:</strong> In-person standup with your team. Quick round &mdash; what you did, what you're doing, what's blocked. Keep it under 10 minutes.</p>
+      <p><strong>Wed, Fri:</strong> Async in your team's Slack channel (<code>#amplify-sales</code>, <code>#amplify-support</code>, etc.) by start of day. Three lines max:</p>
       <div class="format-grid" style="margin-top: 0.5rem;">
         <div class="format-item">
           <div class="ft">Yesterday</div>
@@ -439,7 +441,7 @@
         </div>
       </div>
 
-      <div class="artifact-label">Artifact: Slack message</div>
+      <div class="artifact-label">Artifact: Slack message (async days)</div>
       <div class="example-block">Yesterday: Shipped account health v2 scoring to staging, reviewed 3 CSM feedback sessions
 Today: Writing eval criteria for health score accuracy, prepping Thursday demo
 Blocked: Need RISE API access &mdash; @spencer can you unblock?</div>
@@ -447,8 +449,8 @@ Blocked: Need RISE API access &mdash; @spencer can you unblock?</div>
   </div>
 
   <div class="callout green">
-    <div class="ct">Why daily?</div>
-    <p>Standups catch blockers before they fester. If something is stuck for a day, it surfaces here &mdash; not at the end of the week.</p>
+    <div class="ct">Why mostly in-person?</div>
+    <p>Async-only standups look good on paper but lose the quick back-and-forth that catches blockers fast. In-person most days, async on Wed/Fri to keep the rhythm without the overhead.</p>
   </div>
 </section>
 
@@ -756,15 +758,16 @@ ride-alongs next week to watch them work.</div>
 
   <div class="ritual" id="retro">
     <div class="ritual-header">
-      <div class="ritual-name">Monthly Retro</div>
+      <div class="ritual-name">Bi-weekly Retro</div>
       <div class="ritual-meta">
-        <span class="tag">Monthly</span>
+        <span class="tag">Every 2 weeks</span>
         30 min
       </div>
     </div>
     <div class="ritual-body">
       <div class="who">Per team: PM + Eng Lead + Design Lead + Engineers</div>
-      <p>What went well, what didn't, what should we change. Lightweight &mdash; 2-3 action items max. Focus on flow: are we pulling work smoothly? Is the pipeline healthy? Are handoffs between Identify → On Deck → In Progress working? Are blockers getting resolved fast enough?</p>
+      <p>What went well, what didn't, what should we change. Lightweight &mdash; 2-3 action items max. Focus on flow: are we pulling work smoothly? Is the pipeline healthy? Are handoffs between Identify &rarr; On Deck &rarr; In Progress working? Are blockers getting resolved fast enough?</p>
+      <p style="margin-top: 0.4rem;">Kanban removes sprint planning and scheduled refinement &mdash; but retros stay. Every two weeks keeps the feedback loop tight without waiting a full month to surface problems.</p>
     </div>
   </div>
 </section>
@@ -909,7 +912,7 @@ Need:
 
   <div class="faq-item" id="faq-standups">
     <div class="faq-q"><span class="arrow">&#9654;</span> Where exactly do I post standups?</div>
-    <div class="faq-a">In your team's Slack channel: <code>#amplify-sales</code>, <code>#amplify-support</code>, <code>#amplify-cs</code>, <code>#amplify-rnd</code>, or <code>#amplify-marketing</code>. Post by 10 AM local. Three lines, no thread &mdash; just drop it in the channel.</div>
+    <div class="faq-a"><strong>Mon, Tue, Thu:</strong> In-person with your team. <strong>Wed, Fri:</strong> Async in your team's Slack channel: <code>#amplify-sales</code>, <code>#amplify-support</code>, <code>#amplify-cs</code>, <code>#amplify-rnd</code>, or <code>#amplify-marketing</code>. Post by 10 AM local. Three lines, no thread &mdash; just drop it in the channel.</div>
   </div>
 
   <div class="faq-item" id="faq-status-updates">
@@ -944,7 +947,7 @@ Need:
 
   <div class="faq-item" id="faq-eng-lead">
     <div class="faq-q"><span class="arrow">&#9654;</span> Who is my eng lead and what's their role?</div>
-    <div class="faq-a">Each team is led by a <strong>triad: PM + Eng Lead + Design Lead</strong> (5 of 6 teams). The PM owns the what and why (scope, priorities, partner alignment). The eng lead owns the how (technical approach, issue breakdown, code review). The design lead shapes solutions in the Understand and Identify stages. The triad reviews the Kanban board together at Monday Flow Review. You write the Friday project update; the triad can contribute but the PM is accountable.</div>
+    <div class="faq-a">Each team is led by a <strong>triad: PM + Eng Lead + Design Lead</strong> (4 of 6 teams currently have all three). The PM owns the what and why (scope, priorities, partner alignment). The eng lead owns the how (technical approach, issue breakdown, code review). The design lead shapes solutions in the Understand and Identify stages. The triad reviews the Kanban board together at Monday Flow Review. You write the Friday project update; the triad can contribute but the PM is accountable.</div>
   </div>
 
   <div class="faq-item" id="faq-partner-meetings">
@@ -996,7 +999,7 @@ Need:
           <tbody>
             <tr><td><strong>Drew</strong></td><td>30-min all-hands kickoff: share operating model + K Amplify site, explain the 5-week plan</td><td>Mon</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Audit Linear: every project connected to goal, no orphans. Pipeline stages set. 1+ milestone per project.</td><td>Wed</td></tr>
-            <tr><td><strong>Each PM</strong></td><td>Start daily async standups in team Slack (Yesterday / Today / Blocked)</td><td>Mon&ndash;Fri</td></tr>
+            <tr><td><strong>Each PM</strong></td><td>Start daily standups: in-person Mon/Tue/Thu, async in team Slack Wed/Fri</td><td>Mon&ndash;Fri</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Meet eng lead 1:1 &mdash; align on triad model and Kanban</td><td>Thu</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Write first Friday project update on every active project (Metric Impact, Blockers, Next Week + health)</td><td>Fri</td></tr>
             <tr><td><strong>Drew</strong></td><td>Review all Friday updates. DM anyone who missed.</td><td>Fri</td></tr>
@@ -1078,7 +1081,7 @@ Need:
             <tr><td><strong>All PMs + eng leads</strong></td><td>Attend MER (60 min) &mdash; decisions and escalations, not presentations</td><td>Thu/Fri</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Post Monthly Partner Digest to <code>#amplify-x-[org]</code> Slack</td><td>After MER</td></tr>
             <tr><td><strong>Each PM</strong></td><td>One Discovery Hour: shadow a partner call, watch them use your tool</td><td>This week</td></tr>
-            <tr><td><strong>Each triad</strong></td><td>30-min Monthly Retro: what's working, what's not, 2&ndash;3 action items</td><td>Fri</td></tr>
+            <tr><td><strong>Each triad</strong></td><td>30-min Bi-weekly Retro: what's working, what's not, 2&ndash;3 action items</td><td>Fri</td></tr>
           </tbody>
         </table>
       </div>
