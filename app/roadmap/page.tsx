@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { GoalSummary, OrgSlug } from "@/lib/types";
 import { ORG_BY_SLUG } from "@/lib/config";
 import { useLayout } from "@/components/layout-context";
@@ -14,13 +14,34 @@ type ViewMode = "timeline" | "list";
 
 function RoadmapContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialTeam = (searchParams.get("team") as OrgSlug | null) ?? "all";
+  const initialView = (searchParams.get("view") as ViewMode | null) ?? "timeline";
 
   const [filter, setFilter] = useState<OrgSlug | "all">(initialTeam);
-  const [view, setView] = useState<ViewMode>("timeline");
+  const [view, setView] = useState<ViewMode>(initialView);
   const [goals, setGoals] = useState<GoalSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const { setWide } = useLayout();
+
+  // Update URL when filter or view changes
+  const updateUrl = useCallback((team: string, v: string) => {
+    const params = new URLSearchParams();
+    if (team !== "all") params.set("team", team);
+    if (v !== "timeline") params.set("view", v);
+    const qs = params.toString();
+    router.replace(`/roadmap${qs ? `?${qs}` : ""}`, { scroll: false });
+  }, [router]);
+
+  const handleFilterChange = useCallback((team: OrgSlug | "all") => {
+    setFilter(team);
+    updateUrl(team, view);
+  }, [view, updateUrl]);
+
+  const handleViewChange = useCallback((v: ViewMode) => {
+    setView(v);
+    updateUrl(filter, v);
+  }, [filter, updateUrl]);
 
   useEffect(() => {
     setLoading(true);
@@ -41,10 +62,10 @@ function RoadmapContent() {
   return (
     <>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <OrgFilter selected={filter} onChange={setFilter} />
+        <OrgFilter selected={filter} onChange={handleFilterChange} />
         <div className="flex gap-0.5 bg-surface border border-border rounded-xl p-1">
           <button
-            onClick={() => setView("timeline")}
+            onClick={() => handleViewChange("timeline")}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
               view === "timeline"
                 ? "bg-accent/15 text-accent-light shadow-sm border border-accent/20"
@@ -57,7 +78,7 @@ function RoadmapContent() {
             Timeline
           </button>
           <button
-            onClick={() => setView("list")}
+            onClick={() => handleViewChange("list")}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
               view === "list"
                 ? "bg-accent/15 text-accent-light shadow-sm border border-accent/20"
