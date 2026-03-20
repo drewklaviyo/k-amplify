@@ -3,7 +3,7 @@
   "dataSource": "snowflake",
   "topLine": {
     "hoursSavedYTD": 142000,
-    "hoursSavedTarget": 835000,
+    "hoursSavedTarget": 501000,
     "arrPerHC": 583000,
     "arrPerHCTarget": 711000,
     "hcAvoided": 87,
@@ -14,7 +14,7 @@
   "orgMetrics": {
     "sales": {
       "hoursSaved": 38000,
-      "hoursTarget": 78000,
+      "hoursTarget": 189000,
       "keyMetricLabel": "PPR Change",
       "keyMetricValue": "+9%",
       "keyMetricTarget": "+15%",
@@ -24,7 +24,7 @@
     },
     "demos": {
       "hoursSaved": 11000,
-      "hoursTarget": 25000,
+      "hoursTarget": 60000,
       "keyMetricLabel": "Demo Completion",
       "keyMetricValue": "78%",
       "keyMetricTarget": "90%",
@@ -34,7 +34,7 @@
     },
     "support": {
       "hoursSaved": 12000,
-      "hoursTarget": 13000,
+      "hoursTarget": 32000,
       "keyMetricLabel": "AI Resolution Rate",
       "keyMetricValue": "41%",
       "keyMetricTarget": "55%",
@@ -44,7 +44,7 @@
     },
     "cs": {
       "hoursSaved": 22000,
-      "hoursTarget": 20000,
+      "hoursTarget": 48000,
       "keyMetricLabel": "Time w/ Customers",
       "keyMetricValue": "+18%",
       "keyMetricTarget": "+30%",
@@ -54,7 +54,7 @@
     },
     "rnd": {
       "hoursSaved": 51000,
-      "hoursTarget": 63000,
+      "hoursTarget": 152000,
       "keyMetricLabel": "R&D Efficiency",
       "keyMetricValue": "+7%",
       "keyMetricTarget": "+13%",
@@ -64,7 +64,7 @@
     },
     "marketing": {
       "hoursSaved": 8000,
-      "hoursTarget": 8000,
+      "hoursTarget": 20000,
       "keyMetricLabel": "Ops Efficiency",
       "keyMetricValue": "+4%",
       "keyMetricTarget": "+15%",
