@@ -1,20 +1,22 @@
 {
   "lastUpdated": "2026-03-13",
   "dataSource": "snowflake",
+  "costPerHour": 79,
+  "amplifyShare": 0.60,
   "topLine": {
     "hoursSavedYTD": 142000,
     "hoursSavedTarget": 501000,
     "arrPerHC": 583000,
     "arrPerHCTarget": 711000,
     "hcAvoided": 87,
-    "hcAvoidedTarget": 401,
+    "hcAvoidedTarget": 241,
     "agentAutonomyRate": 0.08,
     "agentAutonomyTarget": 0.20
   },
   "orgMetrics": {
     "sales": {
       "hoursSaved": 38000,
-      "hoursTarget": 189000,
+      "hoursTarget": 188000,
       "keyMetricLabel": "PPR Change",
       "keyMetricValue": "+9%",
       "keyMetricTarget": "+15%",
@@ -24,7 +26,7 @@
     },
     "demos": {
       "hoursSaved": 11000,
-      "hoursTarget": 60000,
+      "hoursTarget": 38000,
       "keyMetricLabel": "Demo Completion",
       "keyMetricValue": "78%",
       "keyMetricTarget": "90%",
@@ -34,7 +36,7 @@
     },
     "support": {
       "hoursSaved": 12000,
-      "hoursTarget": 32000,
+      "hoursTarget": 31000,
       "keyMetricLabel": "AI Resolution Rate",
       "keyMetricValue": "41%",
       "keyMetricTarget": "55%",
@@ -44,7 +46,7 @@
     },
     "cs": {
       "hoursSaved": 22000,
-      "hoursTarget": 48000,
+      "hoursTarget": 47000,
       "keyMetricLabel": "Time w/ Customers",
       "keyMetricValue": "+18%",
       "keyMetricTarget": "+30%",
