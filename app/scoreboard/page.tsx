@@ -167,7 +167,7 @@ export default function ScoreboardPage() {
       <div className="pt-10 animate-in">
         <h1 className="text-xl font-bold tracking-tight mb-1">Scoreboard</h1>
         <p className="text-text-secondary text-sm mb-8">
-          Is Amplify on track to deliver $66M in value this year?
+          Is Amplify on track to deliver $50M in value this year?
         </p>
         <MetricsSkeleton />
         <div className="skeleton h-3 w-32 mb-3" />
@@ -210,7 +210,7 @@ export default function ScoreboardPage() {
             <div>
               <h1 className="text-2xl font-bold tracking-tight mb-1">Scoreboard</h1>
               <p className="text-text-secondary text-sm">
-                Is Amplify on track to deliver $66M in value this year?
+                Is Amplify on track to deliver $50M in value this year?
               </p>
             </div>
             <div className="flex items-center gap-2">
