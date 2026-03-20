@@ -58,6 +58,8 @@ interface HygieneStats {
 interface ScoreboardData {
   lastUpdated: string;
   topLine: TopLine;
+  weightedValueM?: number;
+  weightedTargetM?: number;
   orgs: OrgScore[];
   risks: RiskItem[];
   hygiene?: HygieneStats[];
@@ -167,7 +169,7 @@ export default function ScoreboardPage() {
       <div className="pt-10 animate-in">
         <h1 className="text-xl font-bold tracking-tight mb-1">Scoreboard</h1>
         <p className="text-text-secondary text-sm mb-8">
-          Is Amplify on track to deliver $40M in value this year?
+          Is Amplify on track to deliver its hours saved target this year?
         </p>
         <MetricsSkeleton />
         <div className="skeleton h-3 w-32 mb-3" />
@@ -196,8 +198,8 @@ export default function ScoreboardPage() {
   const { topLine, orgs, risks } = data;
   const hoursPace = paceStatus(topLine.hoursSavedYTD, topLine.hoursSavedTarget);
   // Compute estimated value: hours saved * $100/hr avg cost as a rough proxy
-  // $79/hr blended rate from Agentic Amplify strategy doc ($165K fully loaded / 2,080 hrs/yr)
-  const estimatedValueM = (topLine.hoursSavedYTD * 79) / 1_000_000;
+  const estimatedValueM = data.weightedValueM ?? 0;
+  const targetValueM = data.weightedTargetM ?? 40;
   const totalActiveProjects = orgs.reduce((sum, o) => sum + o.activeProjects, 0);
   const totalShipped = orgs.reduce((sum, o) => sum + o.shippedProjects, 0);
 
@@ -211,7 +213,7 @@ export default function ScoreboardPage() {
             <div>
               <h1 className="text-2xl font-bold tracking-tight mb-1">Scoreboard</h1>
               <p className="text-text-secondary text-sm">
-                Is Amplify on track to deliver $40M in value this year?
+                Is Amplify on track to deliver ${Math.round(targetValueM)}M in value this year?
               </p>
             </div>
             <div className="flex items-center gap-2">

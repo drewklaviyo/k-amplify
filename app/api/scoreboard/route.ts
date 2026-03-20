@@ -180,6 +180,7 @@ export async function GET() {
         shippedProjects: linear.shippedProjects,
         hoursSaved: snowflake?.hoursSaved ?? 0,
         hoursTarget: snowflake?.hoursTarget ?? 0,
+        costPerHour: (snowflake as Record<string, unknown>)?.costPerHour as number ?? 87,
         keyMetricLabel: snowflake?.keyMetricLabel ?? "",
         keyMetricValue: snowflake?.keyMetricValue ?? "",
         keyMetricTarget: snowflake?.keyMetricTarget ?? "",
@@ -203,9 +204,21 @@ export async function GET() {
       };
     });
 
+    // Compute weighted value using per-org cost rates
+    const weightedValueM = orgs.reduce((sum, o) => {
+      return sum + (o.hoursSaved * o.costPerHour);
+    }, 0) / 1_000_000;
+
+    // Compute weighted target value
+    const weightedTargetM = orgs.reduce((sum, o) => {
+      return sum + (o.hoursTarget * o.costPerHour);
+    }, 0) / 1_000_000;
+
     return NextResponse.json({
       lastUpdated: scoreboardData.lastUpdated,
       topLine: scoreboardData.topLine,
+      weightedValueM,
+      weightedTargetM,
       orgs,
       risks: risks.slice(0, 5),
       hygiene,
