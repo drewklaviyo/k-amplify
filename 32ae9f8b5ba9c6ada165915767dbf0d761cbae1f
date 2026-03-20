@@ -1,0 +1,27 @@
+public/how-we-work.html
+  0c541c0586663312 330-333
+lib/config.ts
+  0c541c0586663312 22,29,36,43
+lib/scoreboard-data.json
+  0c541c0586663312 2,25,27-28,40,42-43,55,57-59,61-65,74,76-77,81-83,92,94-100,109,111-118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "32ae9f8b5ba9c6ada165915767dbf0d761cbae1f",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 47,
+      "total_deletions": 38,
+      "accepted_lines": 47,
+      "overriden_lines": 0
+    }
+  }
+}
