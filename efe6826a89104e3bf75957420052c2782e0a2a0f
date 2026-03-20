@@ -1,0 +1,27 @@
+lib/scoreboard-data.json
+  0c541c0586663312 23-24,28,38-39,43,53-54,58,68-69,73,83-84,88,98-99,103
+app/api/scoreboard/route.ts
+  0c541c0586663312 183,207-216,220-221
+app/scoreboard/page.tsx
+  0c541c0586663312 61-62,172,201-202,216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "efe6826a89104e3bf75957420052c2782e0a2a0f",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 48,
+      "total_deletions": 24,
+      "accepted_lines": 37,
+      "overriden_lines": 0
+    }
+  }
+}
