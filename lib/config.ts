@@ -1,4 +1,61 @@
-import { OrgConfig, OrgSlug } from "./types";
+import { OrgConfig, OrgSlug, InitiativeTag, InitiativeSlug } from "./types";
+
+export const INITIATIVES: Record<InitiativeSlug, InitiativeTag> = {
+  waif: {
+    slug: "waif",
+    name: "Working AI First",
+    color: "#E67E22",
+    colorVar: "var(--color-accent)",
+  },
+  enterprise: {
+    slug: "enterprise",
+    name: "Enterprise",
+    color: "#74b9ff",
+    colorVar: "var(--color-blue)",
+  },
+  growth: {
+    slug: "growth",
+    name: "Growth",
+    color: "#00b894",
+    colorVar: "var(--color-green)",
+  },
+};
+
+export const INITIATIVE_LIST: InitiativeTag[] = Object.values(INITIATIVES);
+
+export const INITIATIVE_DETAILS: Record<
+  InitiativeSlug,
+  {
+    goal: string;
+    targetMetric: string;
+    owner: string;
+    linearInitiative: string;
+    keyProduct?: string;
+    keyWork?: string;
+  }
+> = {
+  waif: {
+    goal: "Save 501K hours (60% of 835K company goal) = 241 FTE = ~$49M",
+    targetMetric: "501,000 hours saved",
+    owner: "Drew Kull",
+    linearInitiative: "Working AI First",
+  },
+  enterprise: {
+    goal: "70% Braze win rate",
+    targetMetric: "70% Braze win rate",
+    owner: "Drew Kull / Jenna Eldredge",
+    linearInitiative: "Enterprise initiative",
+    keyProduct: "KDS (Klaviyo Demo Studio)",
+  },
+  growth: {
+    goal: "Increase SQLs/MQLs by 22%",
+    targetMetric: "SQLs/MQLs +22%",
+    owner: "Drew Kull / Richard Ng",
+    linearInitiative: "Growth initiative",
+    keyWork:
+      "CMS migration, content pipeline, experimentation platform, visitor intelligence",
+  },
+};
 
 export const ORG_CONFIGS: OrgConfig[] = [
   {
@@ -7,6 +64,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
     teamNames: ["Amplify Sales"],
     goalName: "Increase Seller PPR by 30%",
     pmOwner: "Jay Chiruvolu",
+    initiatives: ["waif", "enterprise"],
   },
   {
     slug: "demos",
@@ -14,6 +72,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
     teamNames: ["Amplify Demos"],
     goalName: "Scale demo delivery & self-service",
     pmOwner: "Jenna Eldredge",
+    initiatives: ["enterprise", "waif"],
   },
   {
     slug: "support",
@@ -21,6 +80,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
     teamNames: ["Amplify Support"],
     goalName: "Achieve 70% AI deflection rate in customer support",
     pmOwner: "Jeremy Blanchard",
+    initiatives: ["waif"],
   },
   {
     slug: "cs",
@@ -28,6 +88,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
     teamNames: ["Amplify Success & Services"],
     goalName: "Increase CSM time with customers by 30%",
     pmOwner: "Tyler Beck",
+    initiatives: ["waif"],
   },
   {
     slug: "rnd",
@@ -35,6 +96,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
     teamNames: ["Amplify R&D"],
     goalName: "Reduce PM + Design admin toil by 80%",
     pmOwner: "Christina Valente",
+    initiatives: ["waif"],
   },
   {
     slug: "marketing",
@@ -42,6 +104,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
     teamNames: ["Amplify Marketing", "Amplify Content Platform"],
     goalName: "Achieve <10% dev-dependent content changes",
     pmOwner: "Richard Ng",
+    initiatives: ["waif", "growth"],
   },
 ];
 

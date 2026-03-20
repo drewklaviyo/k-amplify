@@ -2,12 +2,22 @@ export type OrgSlug = "sales" | "demos" | "support" | "cs" | "rnd" | "marketing"
 
 export type HealthStatus = "onTrack" | "atRisk" | "offTrack" | "none";
 
+export type InitiativeSlug = "waif" | "enterprise" | "growth";
+
+export interface InitiativeTag {
+  slug: InitiativeSlug;
+  name: string;
+  color: string;
+  colorVar: string;
+}
+
 export interface OrgConfig {
   slug: OrgSlug;
   label: string;
   teamNames: string[];
   goalName: string;
   pmOwner: string;
+  initiatives: InitiativeSlug[];
 }
 
 export interface ProjectStatus {

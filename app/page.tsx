@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { usePageTitle } from "@/lib/use-page-title";
-import { GoalSummary, ActivityItem, OrgSlug } from "@/lib/types";
+import { GoalSummary, ActivityItem, OrgSlug, InitiativeSlug } from "@/lib/types";
 import { OrgCard } from "@/components/org-card";
 import { GridSkeleton } from "@/components/skeleton";
-import { ORG_BY_SLUG } from "@/lib/config";
+import { ORG_BY_SLUG, INITIATIVE_LIST, ORG_CONFIGS } from "@/lib/config";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -13,6 +13,7 @@ export default function HomePage() {
   const [demoCounts, setDemoCounts] = useState<Record<OrgSlug, number> | null>(null);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [initiativeFilter, setInitiativeFilter] = useState<InitiativeSlug | "all">("all");
   usePageTitle("Home");
 
   useEffect(() => {
@@ -32,6 +33,14 @@ export default function HomePage() {
   const onTrackCount = goals.filter((g) => g.health === "onTrack").length;
   const atRiskCount = goals.filter((g) => g.health === "atRisk").length;
   const offTrackCount = goals.filter((g) => g.health === "offTrack").length;
+
+  // Filter goals by selected initiative
+  const filteredGoals = initiativeFilter === "all"
+    ? goals
+    : goals.filter((g) => {
+        const orgConfig = ORG_CONFIGS.find((c) => c.slug === g.orgSlug);
+        return orgConfig?.initiatives.includes(initiativeFilter);
+      });
 
   return (
     <div className="pt-10 animate-in">
@@ -88,8 +97,49 @@ export default function HomePage() {
             </div>
           )}
 
+          {/* Initiative filter tabs */}
+          <div className="flex gap-1 flex-wrap mb-6" role="tablist" aria-label="Filter by initiative">
+            <button
+              onClick={() => setInitiativeFilter("all")}
+              role="tab"
+              aria-selected={initiativeFilter === "all"}
+              className={`text-[0.78rem] font-medium px-3 py-1.5 rounded-lg transition-all border ${
+                initiativeFilter === "all"
+                  ? "text-accent-light bg-accent/12 border-accent/25 shadow-sm"
+                  : "text-text-secondary bg-surface border-border hover:text-text hover:bg-surface-2"
+              }`}
+            >
+              All
+            </button>
+            {INITIATIVE_LIST.map((init) => (
+              <button
+                key={init.slug}
+                onClick={() => setInitiativeFilter(init.slug)}
+                role="tab"
+                aria-selected={initiativeFilter === init.slug}
+                className="text-[0.78rem] font-medium px-3 py-1.5 rounded-lg transition-all border"
+                style={
+                  initiativeFilter === init.slug
+                    ? {
+                        color: init.color,
+                        backgroundColor: `${init.color}1a`,
+                        borderColor: `${init.color}40`,
+                        boxShadow: `0 1px 2px ${init.color}15`,
+                      }
+                    : {
+                        color: "var(--color-text-secondary)",
+                        backgroundColor: "var(--color-surface)",
+                        borderColor: "var(--color-border)",
+                      }
+                }
+              >
+                {init.name}
+              </button>
+            ))}
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-in">
-            {goals.map((goal) => (
+            {filteredGoals.map((goal) => (
               <OrgCard
                 key={goal.id}
                 goal={goal}

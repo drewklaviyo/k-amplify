@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { HealthBadge } from "./health-badge";
 import { GoalSummary } from "@/lib/types";
-import { ORG_BY_SLUG } from "@/lib/config";
+import { ORG_BY_SLUG, INITIATIVES } from "@/lib/config";
 
 const ORG_ACCENT: Record<string, string> = {
   sales: "#6c5ce7",
@@ -62,7 +62,27 @@ export function OrgCard({ goal, demoCount }: OrgCardProps) {
       />
 
       <div className="flex items-center justify-between mb-2">
-        <h3 className="font-semibold text-sm group-hover:text-accent-light transition-colors">{config.label}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="font-semibold text-sm group-hover:text-accent-light transition-colors">{config.label}</h3>
+          <div className="flex gap-1">
+            {config.initiatives.map((slug) => {
+              const init = INITIATIVES[slug];
+              return (
+                <span
+                  key={slug}
+                  className="text-[0.58rem] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded-md border leading-none"
+                  style={{
+                    color: init.color,
+                    backgroundColor: `${init.color}14`,
+                    borderColor: `${init.color}33`,
+                  }}
+                >
+                  {slug === "waif" ? "WAIF" : init.name}
+                </span>
+              );
+            })}
+          </div>
+        </div>
         <HealthBadge status={goal.health} />
       </div>
       <p className="text-text-secondary text-xs mb-1">{config.pmOwner}</p>
