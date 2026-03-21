@@ -147,6 +147,16 @@ body {
 }
 
 
+/* Goat bobbing animation for mountain viz */
+@keyframes goatBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.animate-goat-bob {
+  animation: goatBob 2s ease-in-out infinite;
+}
+
 /* Activity feed pulse */
 @keyframes feedPulse {
   0% { transform: scale(1); opacity: 1; }

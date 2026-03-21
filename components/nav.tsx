@@ -33,10 +33,10 @@ export function Nav() {
           <Link
             href="/"
             className="font-bold text-[0.92rem] tracking-tight flex items-center gap-2.5 whitespace-nowrap hover:opacity-80 transition-opacity"
-            aria-label="K Amplify home"
+            aria-label="Base K:Amplify home"
           >
             <img src="/icon.svg" alt="" className="w-6 h-6" aria-hidden="true" />
-            <span>Amplify</span>
+            <span>Base K:Amplify</span>
           </Link>
           <div className="flex gap-0.5 overflow-x-auto" role="tablist" aria-label="Page navigation">
             {links.map((link) => {

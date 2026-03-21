@@ -6,6 +6,8 @@ import { GoalSummary, ActivityItem, OrgSlug, InitiativeSlug } from "@/lib/types"
 import { OrgCard } from "@/components/org-card";
 import { GridSkeleton } from "@/components/skeleton";
 import { ORG_BY_SLUG, INITIATIVE_LIST, ORG_CONFIGS } from "@/lib/config";
+import { MountainViz } from "@/components/mountain-viz";
+import { GoatWinners } from "@/components/goat-winners";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -46,10 +48,10 @@ export default function HomePage() {
     <div className="pt-10 animate-in">
       <div className="mb-8">
         <h1 className="text-[2.2rem] font-extrabold tracking-tight leading-tight mb-2 text-gradient">
-          K Amplify
+          Base K:Amplify
         </h1>
         <p className="text-text-secondary text-[0.92rem] max-w-lg">
-          What Amplify is building across every partner org — live from Linear.
+          Base Camp for Amplify&apos;s climb to 501K hours saved
         </p>
         {!loading && goals.length > 0 && (
           <p className="text-xs text-text-secondary mt-3 flex items-center gap-2">
@@ -96,6 +98,12 @@ export default function HomePage() {
               )}
             </div>
           )}
+
+          {/* Mountain progress viz */}
+          <MountainViz />
+
+          {/* GOAT winners callout */}
+          <GoatWinners />
 
           {/* Initiative filter tabs */}
           <div className="flex gap-1 flex-wrap mb-6" role="tablist" aria-label="Filter by initiative">

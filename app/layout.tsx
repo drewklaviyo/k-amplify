@@ -5,8 +5,8 @@ import { MainContainer } from "@/components/main-container";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "K Amplify",
-  description: "Amplify partner portal and operating hub",
+  title: "Base K:Amplify",
+  description: "Base Camp for Amplify's climb to 501K hours saved",
 };
 
 export default function RootLayout({
