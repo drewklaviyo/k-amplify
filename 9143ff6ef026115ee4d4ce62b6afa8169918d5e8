@@ -1,0 +1,81 @@
+app/api/votes/route.ts
+  0c541c0586663312 1-89
+app/api/people/sync/route.ts
+  0c541c0586663312 1-101
+lib/supabase-types.ts
+  0c541c0586663312 1-101
+components/nav.tsx
+  0c541c0586663312 36,39
+app/demos/page.tsx
+  0c541c0586663312 3-5,7-10,13,16,18-19,21,23-38,40-70,72-132,134-147,149-207,211-221,223,226-246,249-250,252-318,320-344,347-348,350-352
+middleware.ts
+  0c541c0586663312 1-26
+app/api/votes/status/route.ts
+  0c541c0586663312 1-42
+app/api/progress/route.ts
+  0c541c0586663312 1-95
+app/page.tsx
+  0c541c0586663312 9-10,51,54,102-107
+app/api/people/route.ts
+  0c541c0586663312 1-31
+app/api/awards/route.ts
+  0c541c0586663312 1-85
+app/api/demos/route.ts
+  0c541c0586663312 4,6,12-57
+supabase/schema.sql
+  0c541c0586663312 1-13,15-83,85,88-90,92
+app/api/config/route.ts
+  0c541c0586663312 1-76
+components/mountain-viz.tsx
+  0c541c0586663312 1-160
+components/vote-buttons.tsx
+  0c541c0586663312 1-94
+app/globals.css
+  0c541c0586663312 150-159
+components/goat-winners.tsx
+  0c541c0586663312 1-124
+vercel.json
+  0c541c0586663312 2-16
+app/layout.tsx
+  0c541c0586663312 8-9
+lib/auth.ts
+  0c541c0586663312 1-46
+app/admin/page.tsx
+  0c541c0586663312 1-474
+app/api/demos/sync/route.ts
+  0c541c0586663312 1-241
+components/voting-status.tsx
+  0c541c0586663312 1-79
+components/demo-submission-card.tsx
+  0c541c0586663312 1-122
+lib/supabase.ts
+  0c541c0586663312 1-19
+app/api/voting-period/close/route.ts
+  0c541c0586663312 1-38
+app/api/voting-period/route.ts
+  0c541c0586663312 1-37
+components/how-voting-works.tsx
+  0c541c0586663312 1-136
+components/summit-board.tsx
+  0c541c0586663312 1-157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "9143ff6ef026115ee4d4ce62b6afa8169918d5e8",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 2894,
+      "total_deletions": 67,
+      "accepted_lines": 2873,
+      "overriden_lines": 14
+    }
+  }
+}
