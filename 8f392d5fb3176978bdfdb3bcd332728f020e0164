@@ -1,0 +1,23 @@
+components/mountain-viz.tsx
+  0c541c0586663312 180-192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "8f392d5fb3176978bdfdb3bcd332728f020e0164",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 13,
+      "total_deletions": 11,
+      "accepted_lines": 13,
+      "overriden_lines": 0
+    }
+  }
+}
