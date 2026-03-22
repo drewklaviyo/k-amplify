@@ -5,7 +5,7 @@ import { usePageTitle } from "@/lib/use-page-title";
 import { GoalSummary, ActivityItem, OrgSlug } from "@/lib/types";
 import { OrgCard } from "@/components/org-card";
 import { GridSkeleton } from "@/components/skeleton";
-import { INITIATIVE_LIST, INITIATIVE_DETAILS, ORG_CONFIGS } from "@/lib/config";
+import { INITIATIVE_LIST, INITIATIVE_DETAILS, ORG_CONFIGS, ORG_BY_SLUG } from "@/lib/config";
 import { MountainViz } from "@/components/mountain-viz";
 import { GoatWinners } from "@/components/goat-winners";
 import Link from "next/link";
@@ -96,40 +96,63 @@ export default function HomePage() {
           {/* GOAT winners callout */}
           <GoatWinners />
 
-          {/* Initiative cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-8">
-            {INITIATIVE_LIST.map((init) => {
-              const details = INITIATIVE_DETAILS[init.slug];
-              const orgCount = ORG_CONFIGS.filter((c) => c.initiatives.includes(init.slug)).length;
-              return (
-                <Link
-                  key={init.slug}
-                  href="/initiatives"
-                  className="bg-surface border border-border rounded-xl overflow-hidden hover:border-border/60 transition-all group relative"
-                >
-                  <div className="h-1" style={{ background: `linear-gradient(90deg, ${init.color}, ${init.color}88)` }} />
-                  <div className="absolute top-0 left-0 right-0 h-16 opacity-[0.03] pointer-events-none" style={{ background: `linear-gradient(180deg, ${init.color}, transparent)` }} />
-                  <div className="relative p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: init.color }} />
-                      <span className="text-sm font-bold" style={{ color: init.color }}>{init.name}</span>
-                      <span className="text-[0.65rem] text-text-secondary ml-auto">{orgCount} orgs</span>
+          {/* ── INITIATIVES ── */}
+          <div className="mb-10">
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">Initiatives</h2>
+              <div className="flex-1 h-px bg-border" />
+              <Link href="/initiatives" className="text-xs text-text-secondary hover:text-accent-light transition-colors">
+                View details &rarr;
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+              {INITIATIVE_LIST.map((init) => {
+                const details = INITIATIVE_DETAILS[init.slug];
+                const orgs = ORG_CONFIGS.filter((c) => c.initiatives.includes(init.slug));
+                return (
+                  <Link
+                    key={init.slug}
+                    href="/initiatives"
+                    className="bg-surface border border-border rounded-xl overflow-hidden hover:border-border/60 transition-all group relative"
+                  >
+                    <div className="h-1" style={{ background: `linear-gradient(90deg, ${init.color}, ${init.color}88)` }} />
+                    <div className="absolute top-0 left-0 right-0 h-16 opacity-[0.03] pointer-events-none" style={{ background: `linear-gradient(180deg, ${init.color}, transparent)` }} />
+                    <div className="relative p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: init.color }} />
+                        <span className="text-sm font-bold" style={{ color: init.color }}>{init.name}</span>
+                      </div>
+                      <p className="text-[0.78rem] text-text-secondary mb-3">{details.goal}</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span
+                          className="inline-flex text-[0.7rem] font-semibold px-2 py-0.5 rounded-md border"
+                          style={{ color: init.color, backgroundColor: `${init.color}14`, borderColor: `${init.color}25` }}
+                        >
+                          {details.targetMetric}
+                        </span>
+                        <div className="flex gap-1 ml-auto">
+                          {orgs.map((org) => (
+                            <span key={org.slug} className="text-[0.62rem] text-text-secondary bg-surface-2 px-1.5 py-0.5 rounded border border-border">
+                              {org.label}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-[0.78rem] text-text-secondary mb-2 line-clamp-1">{details.goal}</p>
-                    <span
-                      className="inline-flex text-[0.7rem] font-semibold px-2 py-0.5 rounded-md border"
-                      style={{ color: init.color, backgroundColor: `${init.color}14`, borderColor: `${init.color}25` }}
-                    >
-                      {details.targetMetric}
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Team cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-in">
+          {/* ── TEAMS ── */}
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">Teams</h2>
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-xs text-text-secondary">{goals.length} orgs</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-in">
             {goals.map((goal) => (
               <OrgCard
                 key={goal.id}
@@ -137,6 +160,7 @@ export default function HomePage() {
                 demoCount={demoCounts?.[goal.orgSlug] ?? 0}
               />
             ))}
+            </div>
           </div>
 
           {/* Activity feed */}
