@@ -5,32 +5,28 @@ import { extractLoomUrls } from "@/lib/loom";
 
 export const dynamic = "force-dynamic";
 
-// Compute the current week's voting period boundaries (Mon 00:00 ET - Fri 09:00 ET)
+// Compute the current week's voting period boundaries
+// Week starts Monday 00:00 UTC, closes Friday 13:00 UTC (9:00 AM ET)
 function getCurrentWeekPeriod() {
   const now = new Date();
-  // Get current Monday in ET
-  const et = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
-  const day = et.getDay();
-  const monday = new Date(et);
-  monday.setDate(et.getDate() - ((day + 6) % 7));
-  monday.setHours(0, 0, 0, 0);
+  const day = now.getUTCDay(); // 0=Sun, 1=Mon, ..., 6=Sat
 
+  // Find this week's Monday (go back to Monday)
+  const monday = new Date(now);
+  const daysBack = day === 0 ? 6 : day - 1; // Sunday → go back 6, Monday → 0, Tue → 1, etc.
+  monday.setUTCDate(now.getUTCDate() - daysBack);
+  monday.setUTCHours(0, 0, 0, 0);
+
+  // Friday 13:00 UTC = 9:00 AM ET
   const friday = new Date(monday);
-  friday.setDate(monday.getDate() + 4);
-  friday.setHours(9, 0, 0, 0);
+  friday.setUTCDate(monday.getUTCDate() + 4);
+  friday.setUTCHours(13, 0, 0, 0);
 
-  // Format week label
-  const monStr = monday.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  const friStr = friday.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  const weekLabel = `${monStr}-${friday.getDate()}, ${friday.getFullYear()}`;
-
-  // Convert back to UTC for storage
-  // Use ET offset (approximate — handles DST via the locale trick)
-  const opensAt = new Date(monday.toLocaleString("en-US", { timeZone: "America/New_York" }));
-  const closesAt = new Date(friday.toLocaleString("en-US", { timeZone: "America/New_York" }));
+  const monStr = monday.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  const friStr = friday.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 
   return {
-    weekLabel: `${monStr}-${friday.getDate()}, ${friday.getFullYear()}`,
+    weekLabel: `${monStr} - ${friStr}`,
     opensAt: monday.toISOString(),
     closesAt: friday.toISOString(),
   };
@@ -155,16 +151,22 @@ export async function POST(request: NextRequest) {
               day: "numeric",
             });
 
+            // Only assign to current voting period if posted this week
+            const postedAt = new Date(update.createdAt);
+            const periodStart = new Date(period.opensAt);
+            const periodEnd = new Date(period.closesAt);
+            const isThisWeek = postedAt >= periodStart && postedAt <= periodEnd;
+
             const { error } = await supabase.from("submissions").upsert(
               {
                 loom_url: url,
                 title: `${project.name} — ${dateFormatted}`,
-                submitter_name: project.lead?.name ?? "Unknown",
+                submitter_name: update.user?.name ?? project.lead?.name ?? "Unknown",
                 org_slug: orgSlug,
                 source_type: "project_update",
                 source_id: update.id,
                 source_project_name: project.name,
-                voting_period_id: votingPeriodId,
+                voting_period_id: isThisWeek ? votingPeriodId : null,
                 posted_at: update.createdAt,
               },
               { onConflict: "loom_url,source_id", ignoreDuplicates: true },
@@ -198,6 +200,12 @@ export async function POST(request: NextRequest) {
                 day: "numeric",
               });
 
+              // Only assign to current voting period if posted this week
+              const commentPostedAt = new Date(comment.createdAt);
+              const periodStart = new Date(period.opensAt);
+              const periodEnd = new Date(period.closesAt);
+              const isThisWeek = commentPostedAt >= periodStart && commentPostedAt <= periodEnd;
+
               const { error } = await supabase.from("submissions").upsert(
                 {
                   loom_url: url,
@@ -208,7 +216,7 @@ export async function POST(request: NextRequest) {
                   source_type: "issue_comment",
                   source_id: comment.id,
                   source_project_name: issue.title,
-                  voting_period_id: votingPeriodId,
+                  voting_period_id: isThisWeek ? votingPeriodId : null,
                   posted_at: comment.createdAt,
                 },
                 { onConflict: "loom_url,source_id", ignoreDuplicates: true },

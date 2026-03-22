@@ -84,7 +84,7 @@ const TEAM_PROJECTS_QUERY = `
             nodes { id name targetDate sortOrder }
           }
           projectUpdates(first: 20) {
-            nodes { id body health createdAt }
+            nodes { id body health createdAt user { id name } }
           }
         }
         pageInfo { hasNextPage endCursor }
@@ -112,7 +112,7 @@ export interface RawProject {
   status: { name: string; color: string } | null;
   lead: { name: string } | null;
   milestones: { id: string; name: string; targetDate: string | null; sortOrder: number }[];
-  updates: { id: string; body: string; health: string | null; createdAt: string }[];
+  updates: { id: string; body: string; health: string | null; createdAt: string; user?: { id: string; name: string } | null }[];
 }
 
 export interface AmplifyData {
@@ -152,7 +152,7 @@ interface TeamProjectsResponse {
         status: { name: string; color: string } | null;
         lead: { name: string } | null;
         projectMilestones: { nodes: { id: string; name: string; targetDate: string | null; sortOrder: number }[] };
-        projectUpdates: { nodes: { id: string; body: string; health: string | null; createdAt: string }[] };
+        projectUpdates: { nodes: { id: string; body: string; health: string | null; createdAt: string; user?: { id: string; name: string } | null }[] };
       }[];
       pageInfo: { hasNextPage: boolean; endCursor: string | null };
     };
