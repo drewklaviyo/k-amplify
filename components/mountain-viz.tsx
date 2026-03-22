@@ -1,12 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface ProgressData {
   currentHours: number;
   target: number;
   percentage: number;
 }
+
+const GOAT_MESSAGES = [
+  "Baaaa! 🐐 Keep climbing!",
+  "This goat doesn't quit!",
+  "501K or bust! 🏔️",
+  "Every hour saved is a step up!",
+  "The peak is calling! 🗻",
+  "Mountain goats don't look down!",
+  "Who's the GOAT? We are! 🐐👑",
+  "One automation at a time...",
+  "Base Camp → Summit! Let's go!",
+  "Agile. Relentless. GOAT. 🐐",
+];
 
 const CAMPS = [
   { label: "100K", hours: 100000 },
@@ -18,6 +31,9 @@ const CAMPS = [
 
 export function MountainViz() {
   const [data, setData] = useState<ProgressData | null>(null);
+  const [goatMessage, setGoatMessage] = useState<string | null>(null);
+  const [goatJumping, setGoatJumping] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     fetch("/api/progress")
@@ -26,17 +42,30 @@ export function MountainViz() {
       .catch(() => {});
   }, []);
 
+  const handleGoatClick = useCallback(() => {
+    // Random message
+    const msg = GOAT_MESSAGES[Math.floor(Math.random() * GOAT_MESSAGES.length)];
+    setGoatMessage(msg);
+    setGoatJumping(true);
+    setShowConfetti(true);
+
+    // Reset after animation
+    setTimeout(() => setGoatJumping(false), 600);
+    setTimeout(() => setShowConfetti(false), 1500);
+    setTimeout(() => setGoatMessage(null), 2500);
+  }, []);
+
   if (!data) return null;
 
   const pct = Math.min(data.percentage, 100);
   const currentK = Math.round(data.currentHours / 1000);
 
   // Mountain path: steeper climb from bottom-left to top-right
-  // Path goes from (0,280) at base to (750,25) at peak
-  const getY = (fraction: number) => 280 - fraction * 255; // steeper: 280 down to 25
+  const getY = (fraction: number) => 280 - fraction * 255;
   const getX = (fraction: number) => 40 + fraction * 720;
 
-  const goatFraction = pct / 100;
+  // Ensure goat starts at base (minimum 2% so it's visible on the slope, not at 0,0)
+  const goatFraction = Math.max(pct / 100, 0.02);
   const goatX = getX(goatFraction);
   const goatY = getY(goatFraction);
 
@@ -177,13 +206,69 @@ export function MountainViz() {
             <path d="M0,0 L12,4 L0,8 Z" fill="var(--color-accent)" opacity="0.8" />
           </g>
 
-          {/* GOAT — bigger, walking ON TOP of the mountain ridge, facing right */}
-          <g transform={`translate(${goatX}, ${goatY - 18}) scale(-1, 1)`} style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))" }}>
+          {/* Confetti particles when goat is clicked */}
+          {showConfetti && (
+            <g>
+              {[...Array(8)].map((_, i) => (
+                <circle
+                  key={i}
+                  cx={goatX + (Math.random() - 0.5) * 60}
+                  cy={goatY - 30 - Math.random() * 40}
+                  r={2 + Math.random() * 3}
+                  fill={["var(--color-accent)", "var(--color-accent-light)", "var(--color-green)", "#F1C40F", "#E74C3C"][i % 5]}
+                  opacity="0.8"
+                >
+                  <animate attributeName="cy" from={goatY - 20} to={goatY - 80 - Math.random() * 40} dur="1s" fill="freeze" />
+                  <animate attributeName="opacity" from="0.9" to="0" dur="1.2s" fill="freeze" />
+                  <animate attributeName="cx" from={goatX} to={goatX + (Math.random() - 0.5) * 80} dur="1s" fill="freeze" />
+                </circle>
+              ))}
+            </g>
+          )}
+
+          {/* Speech bubble when goat is clicked */}
+          {goatMessage && (
+            <g>
+              <rect
+                x={goatX - 75}
+                y={goatY - 65}
+                width="150"
+                height="28"
+                rx="8"
+                fill="var(--color-surface)"
+                stroke="var(--color-border)"
+                strokeWidth="1"
+                opacity="0.95"
+              />
+              <text
+                x={goatX}
+                y={goatY - 47}
+                textAnchor="middle"
+                fontSize="10"
+                fill="var(--color-text)"
+                fontFamily="Inter, sans-serif"
+                fontWeight="600"
+              >
+                {goatMessage}
+              </text>
+            </g>
+          )}
+
+          {/* GOAT — clickable, walking ON TOP of the mountain ridge, facing right */}
+          <g
+            transform={`translate(${goatX}, ${goatY - 18 + (goatJumping ? -12 : 0)}) scale(-1, 1)`}
+            style={{
+              filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))",
+              cursor: "pointer",
+              transition: "transform 0.15s ease-out",
+            }}
+            onClick={handleGoatClick}
+          >
             <text
               x="0"
               y="0"
               textAnchor="middle"
-              fontSize="32"
+              fontSize="36"
               className="animate-goat-bob"
             >
               🐐
