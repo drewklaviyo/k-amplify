@@ -5,10 +5,9 @@ import { usePathname } from "next/navigation";
 import { useLayout } from "./layout-context";
 
 const links = [
-  { href: "/initiatives", label: "Initiatives" },
   { href: "/scoreboard", label: "Scoreboard" },
   { href: "/roadmap", label: "Roadmap" },
-  { href: "/demos", label: "Demos" },
+  { href: "/demos", label: "🐐 Demos" },
   { href: "/shipped", label: "Shipped" },
   { href: "/digests", label: "Digests" },
   { href: "/intake", label: "Intake" },
