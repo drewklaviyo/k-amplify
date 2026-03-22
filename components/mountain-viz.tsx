@@ -177,17 +177,19 @@ export function MountainViz() {
             <path d="M0,0 L12,4 L0,8 Z" fill="var(--color-accent)" opacity="0.8" />
           </g>
 
-          {/* GOAT — bigger, walking ON TOP of the mountain ridge */}
-          <text
-            x={goatX}
-            y={goatY - 18}
-            textAnchor="middle"
-            fontSize="32"
-            className="animate-goat-bob"
-            style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))" }}
-          >
-            🐐
-          </text>
+          {/* GOAT — bigger, walking ON TOP of the mountain ridge, facing right */}
+          <g transform={`translate(${goatX}, ${goatY - 18})`}>
+            <text
+              x="0"
+              y="0"
+              textAnchor="middle"
+              fontSize="32"
+              className="animate-goat-bob"
+              style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))", transform: "scaleX(-1)", transformOrigin: "0 0" }}
+            >
+              🐐
+            </text>
+          </g>
         </svg>
       </div>
 
