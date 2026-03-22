@@ -31,85 +31,137 @@ export function MountainViz() {
   const pct = Math.min(data.percentage, 100);
   const currentK = Math.round(data.currentHours / 1000);
 
-  // Goat position along the mountain path (0-100%)
-  const goatX = 80 + (pct / 100) * 620; // from x=80 to x=700
+  // Mountain path: steeper climb from bottom-left to top-right
+  // Path goes from (0,280) at base to (750,25) at peak
+  const getY = (fraction: number) => 280 - fraction * 255; // steeper: 280 down to 25
+  const getX = (fraction: number) => 40 + fraction * 720;
+
+  const goatFraction = pct / 100;
+  const goatX = getX(goatFraction);
+  const goatY = getY(goatFraction);
 
   return (
     <div className="rounded-xl border border-border bg-surface overflow-hidden mb-6">
       <div className="p-5 pb-3">
-        <svg viewBox="0 0 800 200" className="w-full h-auto" aria-label={`Mountain progress: ${currentK}K of 501K hours`}>
-          {/* Mountain gradient fill */}
+        <svg viewBox="0 0 800 320" className="w-full h-auto" aria-label={`Mountain progress: ${currentK}K of 501K hours`}>
           <defs>
-            <linearGradient id="mountainGrad" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stopColor="var(--color-surface-2)" />
-              <stop offset="100%" stopColor="#2a1f0f" />
+            {/* Mountain body gradient */}
+            <linearGradient id="mountainGrad" x1="0" y1="1" x2="0.3" y2="0">
+              <stop offset="0%" stopColor="#1a1510" />
+              <stop offset="40%" stopColor="#2a1f0f" />
+              <stop offset="70%" stopColor="#3d2e1a" />
+              <stop offset="100%" stopColor="#4a3828" />
             </linearGradient>
+            {/* Progress fill */}
             <linearGradient id="progressGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="var(--color-accent-light)" stopOpacity="0.6" />
+              <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.25" />
+              <stop offset="100%" stopColor="var(--color-accent-light)" stopOpacity="0.5" />
             </linearGradient>
+            {/* Snow/ice at peak */}
             <linearGradient id="snowGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.15" />
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.25" />
               <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
             </linearGradient>
+            {/* Rocky texture overlay */}
+            <pattern id="rockTexture" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="3" cy="7" r="1" fill="#ffffff" opacity="0.03" />
+              <circle cx="12" cy="3" r="0.8" fill="#ffffff" opacity="0.04" />
+              <circle cx="8" cy="15" r="1.2" fill="#ffffff" opacity="0.02" />
+              <circle cx="17" cy="11" r="0.6" fill="#ffffff" opacity="0.05" />
+              <circle cx="6" cy="18" r="0.7" fill="#ffffff" opacity="0.03" />
+              <circle cx="15" cy="17" r="0.9" fill="#ffffff" opacity="0.02" />
+            </pattern>
+            {/* Subtle ridge lines */}
+            <pattern id="ridgeLines" width="60" height="40" patternUnits="userSpaceOnUse" patternTransform="rotate(-25)">
+              <line x1="0" y1="20" x2="60" y2="20" stroke="#ffffff" strokeWidth="0.5" opacity="0.04" />
+              <line x1="0" y1="35" x2="60" y2="35" stroke="#ffffff" strokeWidth="0.3" opacity="0.03" />
+            </pattern>
           </defs>
 
-          {/* Mountain silhouette */}
+          {/* Background mountain range (far, subtle) */}
           <path
-            d="M0,180 L60,160 L120,140 L200,110 L300,85 L400,60 L500,40 L600,25 L700,15 L750,12 L800,15 L800,200 L0,200 Z"
+            d="M0,300 L100,200 L180,220 L280,150 L350,170 L450,100 L520,120 L620,60 L700,40 L760,30 L800,35 L800,320 L0,320 Z"
+            fill="#151015"
+            opacity="0.5"
+          />
+
+          {/* Main mountain silhouette — steep climb */}
+          <path
+            d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,320 L0,320 Z"
             fill="url(#mountainGrad)"
             stroke="var(--color-border)"
-            strokeWidth="1"
+            strokeWidth="0.5"
           />
+
+          {/* Rock texture overlay */}
+          <path
+            d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,320 L0,320 Z"
+            fill="url(#rockTexture)"
+          />
+
+          {/* Ridge line texture */}
+          <clipPath id="mountainClipRidge">
+            <path d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,320 L0,320 Z" />
+          </clipPath>
+          <rect x="0" y="0" width="800" height="320" fill="url(#ridgeLines)" clipPath="url(#mountainClipRidge)" />
 
           {/* Snow cap at peak */}
           <path
-            d="M680,20 L700,15 L750,12 L800,15 L790,18 L760,16 L730,19 Z"
+            d="M700,35 L720,30 L750,25 L780,28 L800,32 L795,34 L770,30 L745,28 L725,33 Z"
             fill="url(#snowGrad)"
           />
+          {/* Extra snow streaks */}
+          <path d="M730,32 L745,28 L760,30 L750,33 Z" fill="#ffffff" opacity="0.1" />
+          <path d="M755,27 L770,30 L780,29 L768,26 Z" fill="#ffffff" opacity="0.08" />
 
-          {/* Progress fill */}
+          {/* Scattered rocks/boulders */}
+          <circle cx="120" cy="248" r="3" fill="#3d3025" opacity="0.6" />
+          <circle cx="250" cy="192" r="2.5" fill="#3d3025" opacity="0.5" />
+          <circle cx="380" cy="145" r="3.5" fill="#3d3025" opacity="0.5" />
+          <circle cx="510" cy="98" r="2" fill="#4a3828" opacity="0.6" />
+          <circle cx="640" cy="52" r="2.5" fill="#4a3828" opacity="0.5" />
+          <ellipse cx="300" cy="170" rx="5" ry="3" fill="#2a2018" opacity="0.4" />
+          <ellipse cx="550" cy="85" rx="4" ry="2.5" fill="#2a2018" opacity="0.4" />
+
+          {/* Progress fill clipped to mountain */}
           <clipPath id="mountainClip">
-            <path d="M0,180 L60,160 L120,140 L200,110 L300,85 L400,60 L500,40 L600,25 L700,15 L750,12 L800,15 L800,200 L0,200 Z" />
+            <path d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,320 L0,320 Z" />
           </clipPath>
           <rect
             x="0"
             y="0"
             width={goatX}
-            height="200"
+            height="320"
             fill="url(#progressGrad)"
             clipPath="url(#mountainClip)"
           />
 
-          {/* Camp markers */}
+          {/* Camp markers along the ridge */}
           {CAMPS.map((camp, i) => {
-            const cx = 80 + (camp.hours / 501000) * 620;
-            // y follows the mountain path
-            const cy = 180 - (camp.hours / 501000) * 168;
+            const fraction = camp.hours / 501000;
+            const cx = getX(fraction);
+            const cy = getY(fraction);
             const reached = data.currentHours >= camp.hours;
             return (
               <g key={camp.label}>
-                {/* Marker line */}
                 <line
-                  x1={cx} y1={cy} x2={cx} y2={cy + 12}
+                  x1={cx} y1={cy} x2={cx} y2={cy + 14}
                   stroke={reached ? "var(--color-accent-light)" : "var(--color-border)"}
                   strokeWidth="1.5"
                   strokeDasharray={reached ? "none" : "3,2"}
                 />
-                {/* Camp dot */}
                 <circle
                   cx={cx} cy={cy}
-                  r={reached ? 4 : 3}
+                  r={reached ? 5 : 4}
                   fill={reached ? "var(--color-accent-light)" : "var(--color-surface-2)"}
                   stroke={reached ? "var(--color-accent)" : "var(--color-border)"}
                   strokeWidth="1.5"
                 />
-                {/* Label */}
                 <text
-                  x={cx} y={cy - 8}
+                  x={cx} y={cy - 12}
                   textAnchor="middle"
                   fill={reached ? "var(--color-accent-light)" : "var(--color-text-secondary)"}
-                  fontSize="10"
+                  fontSize="11"
                   fontWeight={i === CAMPS.length - 1 ? "700" : "500"}
                   fontFamily="Inter, sans-serif"
                 >
@@ -119,13 +171,20 @@ export function MountainViz() {
             );
           })}
 
-          {/* Goat icon at current position */}
+          {/* Flag at peak */}
+          <g transform="translate(750, 10)">
+            <line x1="0" y1="0" x2="0" y2="15" stroke="var(--color-accent-light)" strokeWidth="1.5" />
+            <path d="M0,0 L12,4 L0,8 Z" fill="var(--color-accent)" opacity="0.8" />
+          </g>
+
+          {/* GOAT — bigger, walking ON TOP of the mountain ridge */}
           <text
             x={goatX}
-            y={180 - (pct / 100) * 168 - 2}
+            y={goatY - 18}
             textAnchor="middle"
-            fontSize="18"
+            fontSize="32"
             className="animate-goat-bob"
+            style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))" }}
           >
             🐐
           </text>
