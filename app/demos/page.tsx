@@ -82,9 +82,12 @@ export default function DemosPage() {
   // Fetch this week's submissions from Supabase via the existing demos API
   // and also from Supabase directly for vote counts
   const fetchThisWeek = useCallback(async () => {
-    if (!currentPeriod) return;
     setLoading(true);
     try {
+      if (!currentPeriod) {
+        setSubmissions([]);
+        return;
+      }
       const res = await fetch(`/api/demos?supabase=1&periodId=${currentPeriod.id}`);
       const data = await res.json();
       setSubmissions(data.submissions ?? []);
@@ -96,7 +99,7 @@ export default function DemosPage() {
   }, [currentPeriod]);
 
   useEffect(() => {
-    if (tab === "this-week" && currentPeriod) {
+    if (tab === "this-week") {
       fetchThisWeek();
     }
   }, [tab, currentPeriod, fetchThisWeek]);
