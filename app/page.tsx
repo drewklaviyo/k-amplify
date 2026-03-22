@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { usePageTitle } from "@/lib/use-page-title";
-import { GoalSummary, ActivityItem, OrgSlug, InitiativeSlug } from "@/lib/types";
+import { GoalSummary, ActivityItem, OrgSlug } from "@/lib/types";
 import { OrgCard } from "@/components/org-card";
 import { GridSkeleton } from "@/components/skeleton";
-import { ORG_BY_SLUG, INITIATIVE_LIST, ORG_CONFIGS } from "@/lib/config";
+import { INITIATIVE_LIST, INITIATIVE_DETAILS, ORG_CONFIGS } from "@/lib/config";
 import { MountainViz } from "@/components/mountain-viz";
 import { GoatWinners } from "@/components/goat-winners";
 import Link from "next/link";
@@ -15,7 +15,6 @@ export default function HomePage() {
   const [demoCounts, setDemoCounts] = useState<Record<OrgSlug, number> | null>(null);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [initiativeFilter, setInitiativeFilter] = useState<InitiativeSlug | "all">("all");
   usePageTitle("Home");
 
   useEffect(() => {
@@ -35,14 +34,6 @@ export default function HomePage() {
   const onTrackCount = goals.filter((g) => g.health === "onTrack").length;
   const atRiskCount = goals.filter((g) => g.health === "atRisk").length;
   const offTrackCount = goals.filter((g) => g.health === "offTrack").length;
-
-  // Filter goals by selected initiative
-  const filteredGoals = initiativeFilter === "all"
-    ? goals
-    : goals.filter((g) => {
-        const orgConfig = ORG_CONFIGS.find((c) => c.slug === g.orgSlug);
-        return orgConfig?.initiatives.includes(initiativeFilter);
-      });
 
   return (
     <div className="pt-10 animate-in">
@@ -105,49 +96,41 @@ export default function HomePage() {
           {/* GOAT winners callout */}
           <GoatWinners />
 
-          {/* Initiative filter tabs */}
-          <div className="flex gap-1 flex-wrap mb-6" role="tablist" aria-label="Filter by initiative">
-            <button
-              onClick={() => setInitiativeFilter("all")}
-              role="tab"
-              aria-selected={initiativeFilter === "all"}
-              className={`text-[0.78rem] font-medium px-3 py-1.5 rounded-lg transition-all border ${
-                initiativeFilter === "all"
-                  ? "text-accent-light bg-accent/12 border-accent/25 shadow-sm"
-                  : "text-text-secondary bg-surface border-border hover:text-text hover:bg-surface-2"
-              }`}
-            >
-              All
-            </button>
-            {INITIATIVE_LIST.map((init) => (
-              <button
-                key={init.slug}
-                onClick={() => setInitiativeFilter(init.slug)}
-                role="tab"
-                aria-selected={initiativeFilter === init.slug}
-                className="text-[0.78rem] font-medium px-3 py-1.5 rounded-lg transition-all border"
-                style={
-                  initiativeFilter === init.slug
-                    ? {
-                        color: init.color,
-                        backgroundColor: `${init.color}1a`,
-                        borderColor: `${init.color}40`,
-                        boxShadow: `0 1px 2px ${init.color}15`,
-                      }
-                    : {
-                        color: "var(--color-text-secondary)",
-                        backgroundColor: "var(--color-surface)",
-                        borderColor: "var(--color-border)",
-                      }
-                }
-              >
-                {init.name}
-              </button>
-            ))}
+          {/* Initiative cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-8">
+            {INITIATIVE_LIST.map((init) => {
+              const details = INITIATIVE_DETAILS[init.slug];
+              const orgCount = ORG_CONFIGS.filter((c) => c.initiatives.includes(init.slug)).length;
+              return (
+                <Link
+                  key={init.slug}
+                  href="/initiatives"
+                  className="bg-surface border border-border rounded-xl overflow-hidden hover:border-border/60 transition-all group relative"
+                >
+                  <div className="h-1" style={{ background: `linear-gradient(90deg, ${init.color}, ${init.color}88)` }} />
+                  <div className="absolute top-0 left-0 right-0 h-16 opacity-[0.03] pointer-events-none" style={{ background: `linear-gradient(180deg, ${init.color}, transparent)` }} />
+                  <div className="relative p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: init.color }} />
+                      <span className="text-sm font-bold" style={{ color: init.color }}>{init.name}</span>
+                      <span className="text-[0.65rem] text-text-secondary ml-auto">{orgCount} orgs</span>
+                    </div>
+                    <p className="text-[0.78rem] text-text-secondary mb-2 line-clamp-1">{details.goal}</p>
+                    <span
+                      className="inline-flex text-[0.7rem] font-semibold px-2 py-0.5 rounded-md border"
+                      style={{ color: init.color, backgroundColor: `${init.color}14`, borderColor: `${init.color}25` }}
+                    >
+                      {details.targetMetric}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
+          {/* Team cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 stagger-in">
-            {filteredGoals.map((goal) => (
+            {goals.map((goal) => (
               <OrgCard
                 key={goal.id}
                 goal={goal}
