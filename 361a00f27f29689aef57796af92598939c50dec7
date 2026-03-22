@@ -1,0 +1,23 @@
+app/page.tsx
+  0c541c0586663312 5,8,99-128,131,133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "361a00f27f29689aef57796af92598939c50dec7",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 34,
+      "total_deletions": 51,
+      "accepted_lines": 34,
+      "overriden_lines": 0
+    }
+  }
+}
