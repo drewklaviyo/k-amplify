@@ -178,14 +178,13 @@ export function MountainViz() {
           </g>
 
           {/* GOAT — bigger, walking ON TOP of the mountain ridge, facing right */}
-          <g transform={`translate(${goatX}, ${goatY - 18})`}>
+          <g transform={`translate(${goatX}, ${goatY - 18}) scale(-1, 1)`} style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))" }}>
             <text
               x="0"
               y="0"
               textAnchor="middle"
               fontSize="32"
               className="animate-goat-bob"
-              style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))", transform: "scaleX(-1)", transformOrigin: "0 0" }}
             >
               🐐
             </text>
