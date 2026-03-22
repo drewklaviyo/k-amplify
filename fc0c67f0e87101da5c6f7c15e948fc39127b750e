@@ -1,0 +1,23 @@
+components/nav.tsx
+  0c541c0586663312 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "fc0c67f0e87101da5c6f7c15e948fc39127b750e",
+  "prompts": {
+    "0c541c0586663312": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9b9d8506-1877-4a1c-a89d-48c57405553c",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 2,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}
