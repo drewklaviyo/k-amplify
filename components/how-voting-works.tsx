@@ -56,14 +56,14 @@ export function HowVotingWorks({ onClose }: HowVotingWorksProps) {
                 <span className="text-2xl">🔨</span>
                 <div>
                   <p className="text-sm font-semibold text-accent-light">GOAT Builder</p>
-                  <p className="text-xs text-text-secondary mt-0.5">Best thing shipped this week. Winner gets a $15 Visa gift card + 3D printed goat wearing a hard hat.</p>
+                  <p className="text-xs text-text-secondary mt-0.5">Best thing shipped this week. Winner gets a $15 Visa gift card + 3D printed goat with a wrench.</p>
                 </div>
               </div>
               <div className="flex gap-3 bg-bg rounded-xl p-4 border border-border">
-                <span className="text-2xl">📚</span>
+                <span className="text-2xl">💡</span>
                 <div>
                   <p className="text-sm font-semibold text-blue">GOAT Learner</p>
-                  <p className="text-xs text-text-secondary mt-0.5">Best learning shared this week. Winner gets a $15 Visa gift card + 3D printed goat wearing glasses.</p>
+                  <p className="text-xs text-text-secondary mt-0.5">Best learning shared this week. Winner gets a $15 Visa gift card + 3D printed goat with a light bulb.</p>
                 </div>
               </div>
             </div>

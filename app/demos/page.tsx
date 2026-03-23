@@ -216,10 +216,10 @@ export default function DemosPage() {
         <h1 className="text-xl font-bold tracking-tight">Demos</h1>
         <button
           onClick={() => setShowHelp(true)}
-          className="w-7 h-7 rounded-full border border-border bg-surface-2 text-text-secondary hover:text-text hover:border-accent/30 transition-all text-xs font-bold flex items-center justify-center"
-          aria-label="How does this work?"
+          className="h-7 px-2 rounded-full border border-border bg-surface-2 text-text-secondary hover:text-text hover:border-accent/30 transition-all text-xs font-bold flex items-center justify-center gap-1"
+          aria-label="How do GOAT awards work?"
         >
-          ?
+          🐐 ?
         </button>
       </div>
       <p className="text-text-secondary text-sm mb-6">
