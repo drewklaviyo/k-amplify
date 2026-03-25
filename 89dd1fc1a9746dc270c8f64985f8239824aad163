@@ -1,0 +1,33 @@
+app/api/progress/route.ts
+  6936130eadf6a10e 20-22,27-32,43-49
+app/scoreboard/page.tsx
+  6936130eadf6a10e 254-256,279-280,319-320,360-361,394
+app/api/scoreboard/route.ts
+  6936130eadf6a10e 228-229,231-234,237-238
+components/mountain-viz.tsx
+  6936130eadf6a10e 60-61
+app/admin/page.tsx
+  6936130eadf6a10e 18-20,120-142,294,305,309,311,316-327,329-340,344-379
+app/api/hours-saved/route.ts
+  6936130eadf6a10e 5,87-137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "89dd1fc1a9746dc270c8f64985f8239824aad163",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 180,
+      "total_deletions": 41,
+      "accepted_lines": 180,
+      "overriden_lines": 0
+    }
+  }
+}
