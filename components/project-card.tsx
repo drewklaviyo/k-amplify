@@ -4,6 +4,7 @@ import { useState } from "react";
 import { HealthBadge } from "./health-badge";
 import { ProjectSummary } from "@/lib/types";
 import { ORG_BY_SLUG } from "@/lib/config";
+import { MarkdownContent } from "./markdown-content";
 
 export function ProjectCard({ project }: { project: ProjectSummary }) {
   const [expanded, setExpanded] = useState(false);
@@ -39,14 +40,12 @@ export function ProjectCard({ project }: { project: ProjectSummary }) {
         </div>
       )}
 
-      <div className="text-text-secondary text-[0.78rem] mb-3">
-        <p className={!expanded && isLong ? "line-clamp-2" : ""}>
-          {updateText}
-        </p>
+      <div className={`text-[0.78rem] mb-3 ${!expanded && isLong ? "line-clamp-3" : ""}`}>
+        <MarkdownContent>{updateText}</MarkdownContent>
         {isLong && (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="text-accent-light text-xs mt-1 hover:underline"
+            className="text-accent-light text-xs mt-1 hover:underline font-medium"
           >
             {expanded ? "Show less" : "Show more"}
           </button>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import type { ProjectSummary } from "@/lib/types";
+import { MarkdownContent } from "./markdown-content";
 
 interface ProjectDetailPanelProps {
   project: ProjectSummary;
@@ -345,14 +346,12 @@ export function ProjectDetailPanel({
                   )}
                 </p>
               )}
-              <div className="bg-bg rounded-xl p-3 border border-border">
-                <p className="text-sm text-text-secondary leading-relaxed whitespace-pre-line">
-                  {displayUpdate}
-                </p>
+              <div className="bg-bg rounded-xl p-4 border border-border">
+                <MarkdownContent>{displayUpdate}</MarkdownContent>
                 {isLongUpdate && (
                   <button
                     onClick={() => setShowFullUpdate(!showFullUpdate)}
-                    className="text-xs text-accent-light hover:text-accent mt-2 transition-colors"
+                    className="text-xs text-accent-light hover:text-accent mt-3 transition-colors font-medium"
                   >
                     {showFullUpdate ? "Show less" : "Show more"}
                   </button>
