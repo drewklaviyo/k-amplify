@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLayout } from "./layout-context";
+import { SearchOverlay } from "./search-overlay";
 
 const links = [
   { href: "/scoreboard", label: "Scoreboard" },
@@ -37,7 +38,7 @@ export function Nav() {
             <img src="/icon.svg" alt="" className="w-6 h-6" aria-hidden="true" />
             <span>Base K:Amplify</span>
           </Link>
-          <div className="flex gap-0.5 overflow-x-auto" role="tablist" aria-label="Page navigation">
+          <div className="flex gap-0.5 overflow-x-auto flex-1" role="tablist" aria-label="Page navigation">
             {links.map((link) => {
               const isActive =
                 link.href === "/"
@@ -60,6 +61,7 @@ export function Nav() {
               );
             })}
           </div>
+          <SearchOverlay />
         </div>
       </nav>
     </>
