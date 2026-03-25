@@ -1,0 +1,27 @@
+components/markdown-content.tsx
+  6936130eadf6a10e 1-51
+components/project-detail-panel.tsx
+  6936130eadf6a10e 5,349-350,354
+components/project-card.tsx
+  6936130eadf6a10e 7,43-44,48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "c4a1edb338995e58958ccb8dc2a8d7494a0d063e",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 59,
+      "total_deletions": 10,
+      "accepted_lines": 59,
+      "overriden_lines": 0
+    }
+  }
+}
