@@ -1,0 +1,35 @@
+lib/supabase-types.ts
+  6936130eadf6a10e 70-79
+app/api/hours-saved/route.ts
+  6936130eadf6a10e 1-86
+supabase/schema.sql
+  6936130eadf6a10e 93-104,113,123
+app/admin/page.tsx
+  6936130eadf6a10e 4-5,17-25,97-107,132-154,310-407
+app/scoreboard/page.tsx
+  6936130eadf6a10e 31,64,368-369,402
+components/mountain-viz.tsx
+  6936130eadf6a10e 190,193-194
+app/api/scoreboard/route.ts
+  6936130eadf6a10e 5,160-167,182,192,195,229-236,239,242
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "afdb846a2d0b41f39013cbce9e1fd02d6a2cd768",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 285,
+      "total_deletions": 11,
+      "accepted_lines": 284,
+      "overriden_lines": 0
+    }
+  }
+}
