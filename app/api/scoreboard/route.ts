@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { fetchAmplifyData } from "@/lib/linear";
 import { ORG_CONFIGS } from "@/lib/config";
 import { extractLoomUrls } from "@/lib/loom";
+import { createServerSupabase } from "@/lib/supabase";
 import type { HealthStatus, OrgSlug } from "@/lib/types";
 import scoreboardData from "@/lib/scoreboard-data.json";
 
@@ -156,6 +157,14 @@ export async function GET() {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 
+    // Fetch real hours saved from Supabase
+    const supabase = createServerSupabase();
+    const { data: hoursRows } = await supabase.from("hours_saved").select("org_slug, hours");
+    const hoursByOrg: Record<string, number> = {};
+    for (const row of hoursRows ?? []) {
+      hoursByOrg[row.org_slug] = (hoursByOrg[row.org_slug] ?? 0) + row.hours;
+    }
+
     const orgs = ORG_CONFIGS.map((config) => {
       const linear = orgData[config.slug] ?? {
         health: "none" as HealthStatus,
@@ -170,6 +179,8 @@ export async function GET() {
           >
         )[config.slug] ?? null;
 
+      const realHours = hoursByOrg[config.slug];
+
       return {
         slug: config.slug,
         label: config.label,
@@ -178,9 +189,10 @@ export async function GET() {
         health: linear.health,
         activeProjects: linear.activeProjects,
         shippedProjects: linear.shippedProjects,
-        hoursSaved: snowflake?.hoursSaved ?? 0,
+        hoursSaved: realHours ?? snowflake?.hoursSaved ?? 0,
         hoursTarget: snowflake?.hoursTarget ?? 0,
         costPerHour: (snowflake as Record<string, unknown>)?.costPerHour as number ?? 87,
+        hasRealHours: realHours != null,
         keyMetricLabel: snowflake?.keyMetricLabel ?? "",
         keyMetricValue: snowflake?.keyMetricValue ?? "",
         keyMetricTarget: snowflake?.keyMetricTarget ?? "",
@@ -214,11 +226,20 @@ export async function GET() {
       return sum + (o.hoursTarget * o.costPerHour);
     }, 0) / 1_000_000;
 
+    // Override top-line hours if we have real data
+    const hasAnyRealHours = orgs.some((o) => o.hasRealHours);
+    const realHoursTotal = Object.values(hoursByOrg).reduce((s, h) => s + h, 0);
+    const topLine = {
+      ...scoreboardData.topLine,
+      ...(hasAnyRealHours ? { hoursSavedYTD: realHoursTotal } : {}),
+    };
+
     return NextResponse.json({
       lastUpdated: scoreboardData.lastUpdated,
-      topLine: scoreboardData.topLine,
+      topLine,
       weightedValueM,
       weightedTargetM,
+      hasRealHours: hasAnyRealHours,
       orgs,
       risks: risks.slice(0, 5),
       hygiene,

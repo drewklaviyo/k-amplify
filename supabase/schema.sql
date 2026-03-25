@@ -90,6 +90,18 @@ insert into config (key, value) values
   ('admin_emails', '["drew.kull@klaviyo.com"]'),
   ('last_demo_sync', '"2026-01-01T00:00:00Z"');
 
+-- Per-team hours saved (manual entry from admin)
+create table hours_saved (
+  id uuid primary key default gen_random_uuid(),
+  org_slug text not null,
+  week_label text not null,
+  hours integer not null,
+  note text,
+  updated_by text not null,
+  created_at timestamptz default now(),
+  unique(org_slug, week_label)
+);
+
 -- Enable RLS
 alter table people enable row level security;
 alter table voting_periods enable row level security;
@@ -98,6 +110,7 @@ alter table votes enable row level security;
 alter table awards enable row level security;
 alter table progress enable row level security;
 alter table config enable row level security;
+alter table hours_saved enable row level security;
 
 -- RLS policies: public read access for all
 create policy "Public read" on people for select using (true);
@@ -107,3 +120,4 @@ create policy "Public read" on votes for select using (true);
 create policy "Public read" on awards for select using (true);
 create policy "Public read" on progress for select using (true);
 create policy "Public read" on config for select using (true);
+create policy "Public read" on hours_saved for select using (true);

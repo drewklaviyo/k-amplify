@@ -67,6 +67,16 @@ export interface Progress {
   created_at: string;
 }
 
+export interface HoursSaved {
+  id: string;
+  org_slug: string;
+  week_label: string;
+  hours: number;
+  note: string | null;
+  updated_by: string;
+  created_at: string;
+}
+
 export interface ConfigRow {
   key: string;
   value: unknown;

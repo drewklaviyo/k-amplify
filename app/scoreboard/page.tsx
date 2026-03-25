@@ -28,6 +28,7 @@ interface OrgScore {
   shippedProjects: number;
   hoursSaved: number;
   hoursTarget: number;
+  hasRealHours?: boolean;
   keyMetricLabel: string;
   keyMetricValue: string;
   keyMetricTarget: string;
@@ -60,6 +61,7 @@ interface ScoreboardData {
   topLine: TopLine;
   weightedValueM?: number;
   weightedTargetM?: number;
+  hasRealHours?: boolean;
   orgs: OrgScore[];
   risks: RiskItem[];
   hygiene?: HygieneStats[];
@@ -363,8 +365,8 @@ export default function ScoreboardPage() {
               <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
                 Health
               </th>
-              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary opacity-40">
-                Hours Saved *
+              <th className={`text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary ${data.hasRealHours ? "" : "opacity-40"}`}>
+                Hours Saved {data.hasRealHours ? "" : "*"}
               </th>
               <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary opacity-40">
                 Key Metric *
@@ -397,7 +399,7 @@ export default function ScoreboardPage() {
                 <td className="px-4 py-3">
                   <HealthBadge status={org.health} />
                 </td>
-                <td className="px-4 py-3 opacity-40">
+                <td className={`px-4 py-3 ${org.hasRealHours ? "" : "opacity-40"}`}>
                   <div className="font-medium tabular-nums">
                     {(org.hoursSaved / 1000).toFixed(0)}K{" "}
                     <span className="text-text-secondary font-normal">

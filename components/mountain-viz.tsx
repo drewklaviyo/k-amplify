@@ -187,11 +187,11 @@ export function MountainViz() {
                   strokeWidth="1.5"
                 />
                 <text
-                  x={cx} y={cy - 12}
+                  x={cx} y={cy - 10 - i * 2}
                   textAnchor="middle"
                   fill={reached ? "var(--color-accent-light)" : "var(--color-text-secondary)"}
-                  fontSize="11"
-                  fontWeight={i === CAMPS.length - 1 ? "700" : "500"}
+                  fontSize={12 + i * 3}
+                  fontWeight={i >= 3 ? "800" : "600"}
                   fontFamily="Inter, sans-serif"
                 >
                   {camp.label}
