@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
 import type { HoursSaved } from "@/lib/supabase-types";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
@@ -81,6 +81,57 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ entry: data });
   } catch (error) {
     console.error("Error in hours-saved POST:", error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { id, hours, note } = body;
+
+    if (!id || hours == null) {
+      return NextResponse.json({ error: "id and hours required" }, { status: 400 });
+    }
+
+    const supabase = createServerSupabase();
+    const { error } = await supabase
+      .from("hours_saved")
+      .update({ hours: Number(hours), note: note ?? null })
+      .eq("id", id);
+
+    if (error) {
+      return NextResponse.json({ error: "Failed to update" }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Error in hours-saved PATCH:", error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { id } = await request.json();
+
+    if (!id) {
+      return NextResponse.json({ error: "id required" }, { status: 400 });
+    }
+
+    const supabase = createServerSupabase();
+    const { error } = await supabase
+      .from("hours_saved")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Error in hours-saved DELETE:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

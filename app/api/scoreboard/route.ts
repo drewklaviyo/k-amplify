@@ -192,7 +192,6 @@ export async function GET() {
         hoursSaved: realHours ?? snowflake?.hoursSaved ?? 0,
         hoursTarget: snowflake?.hoursTarget ?? 0,
         costPerHour: (snowflake as Record<string, unknown>)?.costPerHour as number ?? 87,
-        hasRealHours: realHours != null,
         keyMetricLabel: snowflake?.keyMetricLabel ?? "",
         keyMetricValue: snowflake?.keyMetricValue ?? "",
         keyMetricTarget: snowflake?.keyMetricTarget ?? "",
@@ -226,12 +225,17 @@ export async function GET() {
       return sum + (o.hoursTarget * o.costPerHour);
     }, 0) / 1_000_000;
 
-    // Override top-line hours if we have real data
-    const hasAnyRealHours = orgs.some((o) => o.hasRealHours);
+    // Hours Saved YTD and HC Avoided always from real data (hours_saved table)
+    // ARR/HC and Agent Autonomy remain sample data
     const realHoursTotal = Object.values(hoursByOrg).reduce((s, h) => s + h, 0);
+    const hoursTarget = scoreboardData.topLine.hoursSavedTarget;
+    const hcAvoidedFromHours = Math.round(realHoursTotal / 2080); // FTE = 2080 hrs/yr
+    const hcAvoidedTarget = scoreboardData.topLine.hcAvoidedTarget;
+
     const topLine = {
       ...scoreboardData.topLine,
-      ...(hasAnyRealHours ? { hoursSavedYTD: realHoursTotal } : {}),
+      hoursSavedYTD: realHoursTotal,
+      hcAvoided: hcAvoidedFromHours,
     };
 
     return NextResponse.json({
@@ -239,7 +243,6 @@ export async function GET() {
       topLine,
       weightedValueM,
       weightedTargetM,
-      hasRealHours: hasAnyRealHours,
       orgs,
       risks: risks.slice(0, 5),
       hygiene,

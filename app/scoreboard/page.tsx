@@ -28,7 +28,6 @@ interface OrgScore {
   shippedProjects: number;
   hoursSaved: number;
   hoursTarget: number;
-  hasRealHours?: boolean;
   keyMetricLabel: string;
   keyMetricValue: string;
   keyMetricTarget: string;
@@ -61,7 +60,6 @@ interface ScoreboardData {
   topLine: TopLine;
   weightedValueM?: number;
   weightedTargetM?: number;
-  hasRealHours?: boolean;
   orgs: OrgScore[];
   risks: RiskItem[];
   hygiene?: HygieneStats[];
@@ -253,15 +251,9 @@ export default function ScoreboardPage() {
         </div>
       </div>
 
-      {/* Top-line metrics with donut charts — SAMPLE DATA until Snowflake connected */}
-      <div id="top-line" className="relative" style={{ scrollMarginTop: 70 }}>
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-[0.6rem] font-semibold uppercase tracking-wider text-orange bg-orange/10 border border-dashed border-orange/30 px-2 py-0.5 rounded-md">
-            Sample Data — Snowflake not connected
-          </span>
-        </div>
-      </div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10 stagger-in opacity-50">
+      {/* Top-line metrics with donut charts */}
+      <div id="top-line" className="relative" style={{ scrollMarginTop: 70 }} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10 stagger-in">
         {/* Hours Saved */}
         <div className="bg-surface border border-border rounded-xl p-5 hover:border-border/80 transition-colors">
           <div className="flex items-start justify-between mb-3">
@@ -284,8 +276,8 @@ export default function ScoreboardPage() {
           </div>
         </div>
 
-        {/* ARR/HC */}
-        <div className="bg-surface border border-border rounded-xl p-5 hover:border-border/80 transition-colors">
+        {/* ARR/HC — sample data */}
+        <div className="bg-surface border border-border rounded-xl p-5 hover:border-border/80 transition-colors opacity-50">
           <div className="flex items-start justify-between mb-3">
             <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide">
               ARR / HC
@@ -324,8 +316,8 @@ export default function ScoreboardPage() {
           </div>
         </div>
 
-        {/* Agent Autonomy - North Star */}
-        <div className="bg-surface border border-accent/20 rounded-xl p-5 relative overflow-hidden glow-card">
+        {/* Agent Autonomy - North Star — sample data */}
+        <div className="bg-surface border border-accent/20 rounded-xl p-5 relative overflow-hidden glow-card opacity-50">
           <div className="absolute inset-0 bg-gradient-to-br from-accent/8 to-transparent pointer-events-none" />
           <div className="relative">
             <div className="flex items-start justify-between mb-3">
@@ -365,8 +357,8 @@ export default function ScoreboardPage() {
               <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
                 Health
               </th>
-              <th className={`text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary ${data.hasRealHours ? "" : "opacity-40"}`}>
-                Hours Saved {data.hasRealHours ? "" : "*"}
+              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
+                Hours Saved
               </th>
               <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary opacity-40">
                 Key Metric *
@@ -399,7 +391,7 @@ export default function ScoreboardPage() {
                 <td className="px-4 py-3">
                   <HealthBadge status={org.health} />
                 </td>
-                <td className={`px-4 py-3 ${org.hasRealHours ? "" : "opacity-40"}`}>
+                <td className="px-4 py-3">
                   <div className="font-medium tabular-nums">
                     {(org.hoursSaved / 1000).toFixed(0)}K{" "}
                     <span className="text-text-secondary font-normal">

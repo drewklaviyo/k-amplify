@@ -57,8 +57,8 @@ export function MountainViz() {
 
   if (!data) return null;
 
-  const pct = Math.min(data.percentage, 100);
-  const currentK = Math.round(data.currentHours / 1000);
+  const pct = Math.min(data.percentage || 0, 100);
+  const currentK = Math.round((data.currentHours || 0) / 1000);
 
   // Mountain path: steeper climb from bottom-left to top-right
   const getY = (fraction: number) => 280 - fraction * 255;

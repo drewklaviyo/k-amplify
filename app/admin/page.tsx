@@ -15,6 +15,9 @@ export default function AdminPage() {
   const [hoursAmount, setHoursAmount] = useState("");
   const [hoursNote, setHoursNote] = useState("");
   const [hoursLoading, setHoursLoading] = useState(false);
+  const [editingHoursId, setEditingHoursId] = useState<string | null>(null);
+  const [editHoursValue, setEditHoursValue] = useState("");
+  const [editNoteValue, setEditNoteValue] = useState("");
 
   // Voting management state
   const [currentPeriod, setCurrentPeriod] = useState<VotingPeriod | null>(null);
@@ -112,6 +115,29 @@ export default function AdminPage() {
       fetchHoursSaved();
     } catch {}
     setHoursLoading(false);
+  };
+
+  const handleEditHours = async (id: string) => {
+    try {
+      await fetch("/api/hours-saved", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, hours: Number(editHoursValue), note: editNoteValue || null }),
+      });
+      setEditingHoursId(null);
+      fetchHoursSaved();
+    } catch {}
+  };
+
+  const handleDeleteHours = async (id: string) => {
+    try {
+      await fetch("/api/hours-saved", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      fetchHoursSaved();
+    } catch {}
   };
 
   const handleConfirmWinners = async () => {
@@ -265,7 +291,7 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* Recent entries */}
+        {/* All entries */}
         {hoursEntries.length > 0 && (
           <div className="rounded-xl border border-border bg-surface overflow-hidden">
             <table className="w-full text-sm">
@@ -276,19 +302,81 @@ export default function AdminPage() {
                   <th className="text-right p-3 font-semibold">Hours</th>
                   <th className="text-left p-3 font-semibold">Note</th>
                   <th className="text-left p-3 font-semibold">Date</th>
+                  <th className="text-right p-3 font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {hoursEntries.slice(0, 30).map((entry) => {
+                {hoursEntries.map((entry) => {
                   const orgLabel = ORG_CONFIGS.find((c) => c.slug === entry.org_slug)?.label ?? entry.org_slug;
+                  const isEditing = editingHoursId === entry.id;
                   return (
                     <tr key={entry.id} className="border-b border-border/50 hover:bg-surface-2/50">
                       <td className="p-3 text-text font-medium">{orgLabel}</td>
                       <td className="p-3 text-text">{entry.week_label}</td>
-                      <td className="p-3 text-right tabular-nums text-accent-light font-medium">{entry.hours.toLocaleString()}</td>
-                      <td className="p-3 text-text-secondary text-xs">{entry.note ?? "—"}</td>
+                      <td className="p-3 text-right tabular-nums">
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            value={editHoursValue}
+                            onChange={(e) => setEditHoursValue(e.target.value)}
+                            className="bg-bg border border-accent/50 rounded-md px-2 py-1 text-sm text-text w-24 text-right focus:outline-none"
+                          />
+                        ) : (
+                          <span className="text-accent-light font-medium">{entry.hours.toLocaleString()}</span>
+                        )}
+                      </td>
+                      <td className="p-3 text-text-secondary text-xs">
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editNoteValue}
+                            onChange={(e) => setEditNoteValue(e.target.value)}
+                            placeholder="Note"
+                            className="bg-bg border border-border rounded-md px-2 py-1 text-sm text-text w-full focus:outline-none focus:border-accent/50"
+                          />
+                        ) : (
+                          entry.note ?? "—"
+                        )}
+                      </td>
                       <td className="p-3 text-text-secondary text-xs">
                         {new Date(entry.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </td>
+                      <td className="p-3 text-right">
+                        {isEditing ? (
+                          <div className="flex gap-1 justify-end">
+                            <button
+                              onClick={() => handleEditHours(entry.id)}
+                              className="px-2 py-1 bg-green/15 text-green text-xs rounded-md border border-green/20 hover:bg-green/25"
+                            >
+                              Save
+                            </button>
+                            <button
+                              onClick={() => setEditingHoursId(null)}
+                              className="px-2 py-1 bg-surface-2 text-text-secondary text-xs rounded-md border border-border hover:text-text"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex gap-1 justify-end">
+                            <button
+                              onClick={() => {
+                                setEditingHoursId(entry.id);
+                                setEditHoursValue(String(entry.hours));
+                                setEditNoteValue(entry.note ?? "");
+                              }}
+                              className="px-2 py-1 bg-surface-2 text-text-secondary text-xs rounded-md border border-border hover:text-text"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteHours(entry.id)}
+                              className="px-2 py-1 bg-red/10 text-red text-xs rounded-md border border-red/20 hover:bg-red/20"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   );
