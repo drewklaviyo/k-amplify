@@ -1,0 +1,25 @@
+app/api/progress/route.ts
+  6936130eadf6a10e 1,10,19-22,24-34,40
+app/admin/page.tsx
+  6936130eadf6a10e 4,91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "f9dc184a2918fed844b26a5ec36e29ed425fdef4",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 21,
+      "total_deletions": 176,
+      "accepted_lines": 21,
+      "overriden_lines": 0
+    }
+  }
+}
