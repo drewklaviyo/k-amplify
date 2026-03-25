@@ -58,14 +58,42 @@ export function RoadmapTimeline({ goals }: { goals: GoalSummary[] }) {
   }, [allProjects]);
 
   const groups = useMemo((): OrgGroup[] => {
+    const now = new Date();
+    const today = now.toISOString().slice(0, 10);
+
+    function projectSortKey(p: ProjectSummary): number {
+      const started = p.progress > 0 || (p.startDate && p.startDate <= today);
+      const future = p.startDate && p.startDate > today;
+      // In progress / actively started → top
+      if (started) return 0;
+      // Has a start date but it's in the future → middle
+      if (future) return 1;
+      // Backlog / no progress / no start date → bottom
+      return 2;
+    }
+
     return goals
-      .map((g) => ({
-        orgSlug: g.orgSlug,
-        label: ORG_BY_SLUG[g.orgSlug].label,
-        pmOwner: ORG_BY_SLUG[g.orgSlug].pmOwner,
-        projects: g.projects.filter((p) => p.startDate || p.targetDate),
-        health: g.health,
-      }))
+      .map((g) => {
+        const dated = g.projects
+          .filter((p) => p.startDate || p.targetDate)
+          .sort((a, b) => {
+            const ka = projectSortKey(a);
+            const kb = projectSortKey(b);
+            if (ka !== kb) return ka - kb;
+            // Within same bucket, sort by start date (soonest first), then by progress desc
+            const da = a.startDate ?? "9999";
+            const db = b.startDate ?? "9999";
+            if (da !== db) return da.localeCompare(db);
+            return b.progress - a.progress;
+          });
+        return {
+          orgSlug: g.orgSlug,
+          label: ORG_BY_SLUG[g.orgSlug].label,
+          pmOwner: ORG_BY_SLUG[g.orgSlug].pmOwner,
+          projects: dated,
+          health: g.health,
+        };
+      })
       .filter((g) => g.projects.length > 0);
   }, [goals]);
 
