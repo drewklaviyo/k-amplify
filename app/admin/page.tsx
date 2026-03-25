@@ -1,18 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import type { VotingPeriod, SubmissionWithVotes, Progress, ConfigRow, Person, HoursSaved } from "@/lib/supabase-types";
+import type { VotingPeriod, SubmissionWithVotes, ConfigRow, Person, HoursSaved } from "@/lib/supabase-types";
 import { ORG_CONFIGS } from "@/lib/config";
 
 export default function AdminPage() {
   const [adminEmail, setAdminEmail] = useState("");
-
-  // Mountain progress state
-  const [progressEntries, setProgressEntries] = useState<Progress[]>([]);
-  const [weekLabel, setWeekLabel] = useState("");
-  const [estimatedHours, setEstimatedHours] = useState("");
-  const [progressNote, setProgressNote] = useState("");
-  const [progressLoading, setProgressLoading] = useState(false);
 
   // Hours saved state
   const [hoursEntries, setHoursEntries] = useState<HoursSaved[]>([]);
@@ -46,15 +39,6 @@ export default function AdminPage() {
       .find((c) => c.startsWith("bka_user_email="))
       ?.split("=")[1];
     if (email) setAdminEmail(decodeURIComponent(email));
-  }, []);
-
-  // Fetch progress data
-  const fetchProgress = useCallback(async () => {
-    try {
-      const res = await fetch("/api/progress");
-      const data = await res.json();
-      setProgressEntries(data.entries ?? []);
-    } catch {}
   }, []);
 
   // Fetch voting period and submissions
@@ -104,30 +88,8 @@ export default function AdminPage() {
     } catch {}
   }, []);
 
-  useEffect(() => { fetchProgress(); fetchVoting(); fetchConfig(); fetchHoursSaved(); }, [fetchProgress, fetchVoting, fetchConfig, fetchHoursSaved]);
+  useEffect(() => { fetchVoting(); fetchConfig(); fetchHoursSaved(); }, [fetchVoting, fetchConfig, fetchHoursSaved]);
   useEffect(() => { if (peopleSearch) fetchPeople(); }, [peopleSearch, fetchPeople]);
-
-  const handleAddProgress = async () => {
-    if (!weekLabel || !estimatedHours) return;
-    setProgressLoading(true);
-    try {
-      await fetch("/api/progress", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          adminEmail,
-          weekLabel,
-          estimatedHours: Number(estimatedHours),
-          note: progressNote || null,
-        }),
-      });
-      setWeekLabel("");
-      setEstimatedHours("");
-      setProgressNote("");
-      fetchProgress();
-    } catch {}
-    setProgressLoading(false);
-  };
 
   const handleAddHours = async () => {
     if (!hoursOrg || !hoursWeek || !hoursAmount) return;
@@ -238,74 +200,6 @@ export default function AdminPage() {
           Sync People Now
         </button>
       </div>
-
-      {/* Mountain Progress */}
-      <section className="mb-10">
-        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Mountain Progress</h2>
-
-        <div className="rounded-xl border border-border bg-surface p-4 mb-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-            <input
-              type="text"
-              placeholder="Week of (e.g., Mar 17)"
-              value={weekLabel}
-              onChange={(e) => setWeekLabel(e.target.value)}
-              className="bg-bg border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/50 focus:border-accent/50 focus:outline-none"
-            />
-            <input
-              type="number"
-              placeholder="Estimated hours this week"
-              value={estimatedHours}
-              onChange={(e) => setEstimatedHours(e.target.value)}
-              className="bg-bg border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/50 focus:border-accent/50 focus:outline-none"
-            />
-            <input
-              type="text"
-              placeholder="Note (optional)"
-              value={progressNote}
-              onChange={(e) => setProgressNote(e.target.value)}
-              className="bg-bg border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/50 focus:border-accent/50 focus:outline-none"
-            />
-          </div>
-          <button
-            onClick={handleAddProgress}
-            disabled={progressLoading || !weekLabel || !estimatedHours}
-            className="px-4 py-2 bg-accent/15 text-accent-light text-sm font-medium rounded-lg hover:bg-accent/25 border border-accent/20 transition-all disabled:opacity-50"
-          >
-            {progressLoading ? "Adding..." : "Add Progress Entry"}
-          </button>
-        </div>
-
-        {/* Progress ledger */}
-        {progressEntries.length > 0 && (
-          <div className="rounded-xl border border-border bg-surface overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-[10px] text-text-secondary uppercase tracking-wider border-b border-border">
-                  <th className="text-left p-3 font-semibold">Week</th>
-                  <th className="text-right p-3 font-semibold">Hours</th>
-                  <th className="text-right p-3 font-semibold">Cumulative</th>
-                  <th className="text-left p-3 font-semibold">Note</th>
-                  <th className="text-left p-3 font-semibold">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {progressEntries.map((entry) => (
-                  <tr key={entry.id} className="border-b border-border/50 hover:bg-surface-2/50">
-                    <td className="p-3 text-text">{entry.week_label}</td>
-                    <td className="p-3 text-right tabular-nums text-text">{entry.estimated_hours.toLocaleString()}</td>
-                    <td className="p-3 text-right tabular-nums font-medium text-accent-light">{entry.cumulative_hours.toLocaleString()}</td>
-                    <td className="p-3 text-text-secondary text-xs">{entry.note ?? "—"}</td>
-                    <td className="p-3 text-text-secondary text-xs">
-                      {new Date(entry.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
 
       {/* Hours Saved by Team */}
       <section className="mb-10">
