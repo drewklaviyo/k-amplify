@@ -34,9 +34,9 @@ function getCurrentWeekPeriod() {
 
 // GraphQL query for issue comments with Loom URLs
 const TEAM_ISSUE_COMMENTS_QUERY = `
-  query TeamIssueComments($teamId: String!, $after: String, $createdAfter: DateTime) {
+  query TeamIssueComments($teamId: String!, $after: String) {
     team(id: $teamId) {
-      issues(first: 50, after: $after, filter: { updatedAt: { gte: $createdAfter } }) {
+      issues(first: 50, after: $after) {
         nodes {
           id
           title
@@ -87,17 +87,6 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServerSupabase();
 
-    // Get last_synced_at from config
-    const { data: configRow } = await supabase
-      .from("config")
-      .select("value")
-      .eq("key", "last_synced_at")
-      .single();
-
-    const lastSyncedAt = configRow?.value
-      ? String(configRow.value).replace(/^"|"$/g, "")
-      : "2026-01-01T00:00:00Z";
-
     // Ensure a voting period exists for the current week
     const period = getCurrentWeekPeriod();
     const { data: existingPeriod } = await supabase
@@ -142,8 +131,6 @@ export async function POST(request: NextRequest) {
       for (const project of projects) {
         for (const update of project.updates) {
           if (!update.body) continue;
-          if (new Date(update.createdAt) < new Date(lastSyncedAt)) continue;
-
           const loomUrls = extractLoomUrls(update.body);
           for (const url of loomUrls) {
             const dateFormatted = new Date(update.createdAt).toLocaleDateString("en-US", {
@@ -183,7 +170,7 @@ export async function POST(request: NextRequest) {
       try {
         const commentsData = await linearGraphQL<IssueCommentsResponse>(
           TEAM_ISSUE_COMMENTS_QUERY,
-          { teamId: team.id, createdAfter: lastSyncedAt },
+          { teamId: team.id },
         );
 
         if (!commentsData.team) continue;
@@ -191,7 +178,6 @@ export async function POST(request: NextRequest) {
         for (const issue of commentsData.team.issues.nodes) {
           for (const comment of issue.comments.nodes) {
             if (!comment.body) continue;
-            if (new Date(comment.createdAt) < new Date(lastSyncedAt)) continue;
 
             const loomUrls = extractLoomUrls(comment.body);
             for (const url of loomUrls) {
@@ -230,11 +216,6 @@ export async function POST(request: NextRequest) {
         console.error(`Error scanning comments for team ${team.name}:`, err);
       }
     }
-
-    // Update last_synced_at
-    await supabase
-      .from("config")
-      .upsert({ key: "last_synced_at", value: JSON.stringify(new Date().toISOString()), updated_at: new Date().toISOString() });
 
     return NextResponse.json({
       ok: true,
