@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
                 voting_period_id: isThisWeek ? votingPeriodId : null,
                 posted_at: update.createdAt,
               },
-              { onConflict: "loom_url,source_id", ignoreDuplicates: true },
+              { onConflict: "loom_url,source_id" },
             );
 
             if (!error) syncedCount++;
@@ -205,7 +205,7 @@ export async function POST(request: NextRequest) {
                   voting_period_id: isThisWeek ? votingPeriodId : null,
                   posted_at: comment.createdAt,
                 },
-                { onConflict: "loom_url,source_id", ignoreDuplicates: true },
+                { onConflict: "loom_url,source_id" },
               );
 
               if (!error) syncedCount++;
