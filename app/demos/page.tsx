@@ -331,8 +331,67 @@ export default function DemosPage() {
                   : "Demos will appear once they've been synced."}
               </p>
             </div>
-          ) : (
+          ) : tab === "archive" ? (
+            // Archive: compact grid grouped by week
             <div className="animate-in">
+              {(() => {
+                // Group by week (Mon-Sun based on posted_at)
+                const weekGroups = new Map<string, SubmissionWithVotes[]>();
+                for (const sub of sortedSubmissions) {
+                  const d = new Date(sub.posted_at);
+                  const day = d.getUTCDay();
+                  const mon = new Date(d);
+                  mon.setUTCDate(d.getUTCDate() - (day === 0 ? 6 : day - 1));
+                  const label = mon.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+                  const key = `Week of ${label}`;
+                  if (!weekGroups.has(key)) weekGroups.set(key, []);
+                  weekGroups.get(key)!.push(sub);
+                }
+                return Array.from(weekGroups.entries()).map(([week, subs]) => (
+                  <div key={week} className="mb-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <h3 className="text-xs font-semibold text-text-secondary uppercase tracking-wider">{week}</h3>
+                      <div className="flex-1 h-px bg-border" />
+                      <span className="text-[10px] text-text-secondary">{subs.length} demo{subs.length !== 1 ? "s" : ""}</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {subs.map((sub) => (
+                        <a
+                          key={sub.id}
+                          href={sub.loom_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-surface border border-border rounded-xl p-3 hover:border-accent/30 hover:bg-surface-2/50 transition-all group block"
+                        >
+                          <div className="flex items-start gap-2.5">
+                            <span className="text-lg shrink-0 mt-0.5">🎬</span>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-text truncate group-hover:text-accent-light transition-colors">{sub.title}</p>
+                              <p className="text-xs text-text-secondary mt-0.5">{sub.submitter_name}</p>
+                              <div className="flex items-center gap-2 mt-1.5">
+                                <span className="text-[10px] text-text-secondary/60">
+                                  {new Date(sub.posted_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                                </span>
+                                {(sub.builder_votes > 0 || sub.learner_votes > 0) && (
+                                  <span className="text-[10px] text-accent-light/70">
+                                    {sub.builder_votes + sub.learner_votes} vote{sub.builder_votes + sub.learner_votes !== 1 ? "s" : ""}
+                                  </span>
+                                )}
+                                {(sub.is_builder_winner || sub.is_learner_winner) && (
+                                  <span className="text-[10px] font-semibold text-accent-light">🐐 Winner</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+          ) : (
+            <div className="animate-in grid grid-cols-1 lg:grid-cols-2 gap-4">
               {sortedSubmissions.map((sub) => (
                 <DemoSubmissionCard
                   key={sub.id}
