@@ -196,12 +196,24 @@ export default function AdminPage() {
     } catch {}
   };
 
+  const [syncStatus, setSyncStatus] = useState<string | null>(null);
+
   const handleTriggerSync = async (endpoint: string) => {
+    setSyncStatus("Syncing...");
     try {
-      await fetch(endpoint, { method: "POST" });
+      const res = await fetch(endpoint, { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        setSyncStatus(`Synced! ${data.synced ?? 0} new submissions found. Period: ${data.weekLabel ?? "—"}`);
+      } else {
+        setSyncStatus(`Error: ${data.error ?? res.statusText}`);
+      }
       if (endpoint.includes("demos")) fetchVoting();
       if (endpoint.includes("people")) fetchPeople();
-    } catch {}
+    } catch (err) {
+      setSyncStatus(`Failed: ${err instanceof Error ? err.message : "network error"}`);
+    }
+    setTimeout(() => setSyncStatus(null), 8000);
   };
 
   return (
@@ -212,7 +224,7 @@ export default function AdminPage() {
       </p>
 
       {/* Quick actions */}
-      <div className="flex gap-2 mb-8">
+      <div className="flex items-center gap-2 mb-8 flex-wrap">
         <button
           onClick={() => handleTriggerSync("/api/demos/sync")}
           className="px-3 py-1.5 bg-surface border border-border rounded-lg text-xs font-medium text-text-secondary hover:text-text hover:border-accent/30 transition-all"
@@ -225,6 +237,17 @@ export default function AdminPage() {
         >
           Sync People Now
         </button>
+        {syncStatus && (
+          <span className={`text-xs font-medium px-3 py-1.5 rounded-lg border ${
+            syncStatus.startsWith("Error") || syncStatus.startsWith("Failed")
+              ? "text-red bg-red/10 border-red/20"
+              : syncStatus === "Syncing..."
+                ? "text-text-secondary bg-surface border-border"
+                : "text-green bg-green/10 border-green/20"
+          }`}>
+            {syncStatus}
+          </span>
+        )}
       </div>
 
       {/* Hours Saved by Team */}
