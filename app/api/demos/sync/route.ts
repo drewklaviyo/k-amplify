@@ -178,6 +178,44 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Scan project links/resources for Loom URLs
+    for (const [orgSlug, projects] of allOrgProjects) {
+      for (const project of projects) {
+        for (const link of project.links ?? []) {
+          if (!link.url) continue;
+          const loomUrls = extractLoomUrls(link.url);
+          for (const url of loomUrls) {
+            const dateFormatted = new Date(link.createdAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+
+            const postedAt = new Date(link.createdAt);
+            const periodStart = new Date(period.opensAt);
+            const periodEnd = new Date(period.closesAt);
+            const isThisWeek = postedAt >= periodStart && postedAt <= periodEnd;
+
+            const { error } = await supabase.from("submissions").upsert(
+              {
+                loom_url: url,
+                title: link.label ? `${project.name} — ${link.label}` : `${project.name} — ${dateFormatted}`,
+                submitter_name: project.lead?.name ?? "Unknown",
+                org_slug: orgSlug,
+                source_type: "project_update",
+                source_id: link.id,
+                source_project_name: project.name,
+                voting_period_id: isThisWeek ? votingPeriodId : null,
+                posted_at: link.createdAt,
+              },
+              { onConflict: "loom_url,source_id", ignoreDuplicates: true },
+            );
+
+            if (!error) syncedCount++;
+          }
+        }
+      }
+    }
+
     // Scan issue comments for Loom URLs
     for (const team of data.teams) {
       try {
