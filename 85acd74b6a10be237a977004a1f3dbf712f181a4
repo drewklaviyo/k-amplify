@@ -1,0 +1,27 @@
+vercel.json
+  6936130eadf6a10e 6
+components/how-voting-works.tsx
+  6936130eadf6a10e 94
+app/api/demos/sync/route.ts
+  6936130eadf6a10e 20,23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.20",
+  "base_commit_sha": "85acd74b6a10be237a977004a1f3dbf712f181a4",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 4,
+      "accepted_lines": 4,
+      "overriden_lines": 0
+    }
+  }
+}
