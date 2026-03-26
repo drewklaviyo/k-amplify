@@ -360,11 +360,11 @@ export default function ScoreboardPage() {
               <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
                 Hours Saved
               </th>
-              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary opacity-40">
-                Key Metric *
+              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
+                Key Metric
               </th>
-              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary opacity-40">
-                Adoption *
+              <th className="text-left px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
+                Adoption
               </th>
               <th className="text-right px-4 py-2.5 font-semibold text-[0.7rem] uppercase tracking-wide text-text-secondary">
                 Projects
@@ -400,16 +400,16 @@ export default function ScoreboardPage() {
                   </div>
                   <ProgressBar value={org.hoursSaved} target={org.hoursTarget} />
                 </td>
-                <td className="px-4 py-3 opacity-40">
-                  <div className="font-medium">{org.keyMetricValue}</div>
-                  <div className="text-[0.7rem] text-text-secondary">
-                    {org.keyMetricLabel} (target: {org.keyMetricTarget})
+                <td className="px-4 py-3 text-text-secondary">
+                  <div className="font-medium">--</div>
+                  <div className="text-[0.7rem] text-text-secondary/60">
+                    {org.keyMetricLabel}
                   </div>
                 </td>
-                <td className="px-4 py-3 opacity-40">
-                  <div className="font-medium">{org.adoptionValue}</div>
-                  <div className="text-[0.7rem] text-text-secondary">
-                    {org.adoptionLabel} (target: {org.adoptionTarget})
+                <td className="px-4 py-3 text-text-secondary">
+                  <div className="font-medium">--</div>
+                  <div className="text-[0.7rem] text-text-secondary/60">
+                    {org.adoptionLabel}
                   </div>
                 </td>
                 <td className="px-4 py-3 text-right">
