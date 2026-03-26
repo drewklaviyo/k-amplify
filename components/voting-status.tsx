@@ -70,7 +70,7 @@ export function VotingStatus() {
     <div className="rounded-xl border border-green/30 bg-green/8 p-4 mb-6">
       <div className="flex items-center justify-between">
         <p className="text-sm font-medium text-green">
-          Voting open — closes Friday 9:00 AM ET
+          Voting open — closes Friday 4:00 PM ET
         </p>
         <span className="text-xs text-green/80 font-mono tabular-nums">{countdown}</span>
       </div>

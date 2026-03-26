@@ -17,10 +17,10 @@ function getCurrentWeekPeriod() {
   monday.setUTCDate(now.getUTCDate() - daysBack);
   monday.setUTCHours(0, 0, 0, 0);
 
-  // Friday 13:00 UTC = 9:00 AM ET
+  // Friday 20:00 UTC = 4:00 PM ET
   const friday = new Date(monday);
   friday.setUTCDate(monday.getUTCDate() + 4);
-  friday.setUTCHours(13, 0, 0, 0);
+  friday.setUTCHours(20, 0, 0, 0);
 
   const monStr = monday.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
   const friStr = friday.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });

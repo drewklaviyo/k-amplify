@@ -91,7 +91,7 @@ export function HowVotingWorks({ onClose }: HowVotingWorksProps) {
               </li>
               <li className="flex gap-2">
                 <span className="text-text-secondary/50">3.</span>
-                <span>Voting opens Monday, closes Friday 9:00 AM ET</span>
+                <span>Voting opens Monday, closes Friday 4:00 PM ET</span>
               </li>
               <li className="flex gap-2">
                 <span className="text-text-secondary/50">4.</span>
