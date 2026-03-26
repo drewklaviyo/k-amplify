@@ -227,8 +227,8 @@ export default function ScoreboardPage() {
             </div>
           </div>
           <div className="flex items-end gap-8 flex-wrap">
-            <div className="opacity-40">
-              <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1">Est. Value Delivered YTD <span className="text-orange normal-case">(sample)</span></div>
+            <div>
+              <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1">Est. Value Delivered YTD</div>
               <div className="text-4xl font-extrabold tracking-tight tabular-nums animate-count text-gradient">
                 ${estimatedValueM.toFixed(1)}M
               </div>

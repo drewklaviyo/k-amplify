@@ -230,27 +230,37 @@ export default function AdminPage() {
       {/* Hours Saved by Team */}
       <section className="mb-10">
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Hours Saved by Team</h2>
+        <p className="text-xs text-text-secondary mb-4">
+          Enter estimated hours per team per week. These totals drive the mountain climb, scoreboard Hours Saved YTD, $$$ Delivered YTD, and HC Avoided.
+        </p>
 
-        {/* Totals summary */}
-        {Object.keys(hoursTotals).length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {ORG_CONFIGS.map((org) => (
-              <div key={org.slug} className="bg-bg border border-border rounded-lg px-3 py-2 text-xs">
-                <span className="text-text-secondary font-medium">{org.label}</span>
-                <span className="ml-2 text-text font-bold tabular-nums">{((hoursTotals[org.slug] ?? 0) / 1000).toFixed(0)}K</span>
+        {/* Team totals grid — always shows all 6 teams */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+          {ORG_CONFIGS.map((org) => {
+            const total = hoursTotals[org.slug] ?? 0;
+            return (
+              <div key={org.slug} className="bg-surface border border-border rounded-xl p-4 text-center">
+                <p className="text-xs text-text-secondary font-medium mb-1">{org.label}</p>
+                <p className="text-lg font-bold text-text tabular-nums">{total > 0 ? `${(total / 1000).toFixed(0)}K` : "0"}</p>
+                <p className="text-[10px] text-text-secondary/60 mt-0.5">of {((org as { hoursTarget?: number }).hoursTarget ? `${(((org as { hoursTarget?: number }).hoursTarget ?? 0) / 1000).toFixed(0)}K target` : "—")}</p>
               </div>
-            ))}
-            <div className="bg-accent/10 border border-accent/20 rounded-lg px-3 py-2 text-xs">
-              <span className="text-accent-light font-medium">Total</span>
-              <span className="ml-2 text-accent-light font-bold tabular-nums">
-                {(Object.values(hoursTotals).reduce((s, h) => s + h, 0) / 1000).toFixed(0)}K
-              </span>
-            </div>
-          </div>
-        )}
+            );
+          })}
+        </div>
 
+        {/* Grand total */}
+        <div className="bg-accent/10 border border-accent/20 rounded-xl p-4 mb-6 flex items-center justify-between">
+          <span className="text-sm font-semibold text-accent-light">Total Hours Saved</span>
+          <span className="text-xl font-bold text-accent-light tabular-nums">
+            {(Object.values(hoursTotals).reduce((s, h) => s + h, 0) / 1000).toFixed(0)}K
+            <span className="text-sm font-normal text-accent-light/60 ml-1">/ 501K</span>
+          </span>
+        </div>
+
+        {/* Add new entry */}
         <div className="rounded-xl border border-border bg-surface p-4 mb-4">
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 mb-3">
+          <p className="text-xs font-semibold text-text mb-3">Add Weekly Hours</p>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-3">
             <select
               value={hoursOrg}
               onChange={(e) => setHoursOrg(e.target.value)}
@@ -262,14 +272,14 @@ export default function AdminPage() {
             </select>
             <input
               type="text"
-              placeholder="Week of (e.g., Mar 17)"
+              placeholder="Week of (e.g., Mar 24)"
               value={hoursWeek}
               onChange={(e) => setHoursWeek(e.target.value)}
               className="bg-bg border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/50 focus:border-accent/50 focus:outline-none"
             />
             <input
               type="number"
-              placeholder="Hours saved"
+              placeholder="Hours"
               value={hoursAmount}
               onChange={(e) => setHoursAmount(e.target.value)}
               className="bg-bg border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/50 focus:border-accent/50 focus:outline-none"
@@ -281,110 +291,115 @@ export default function AdminPage() {
               onChange={(e) => setHoursNote(e.target.value)}
               className="bg-bg border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/50 focus:border-accent/50 focus:outline-none"
             />
+            <button
+              onClick={handleAddHours}
+              disabled={hoursLoading || !hoursWeek || !hoursAmount}
+              className="px-4 py-2 bg-accent/15 text-accent-light text-sm font-medium rounded-lg hover:bg-accent/25 border border-accent/20 transition-all disabled:opacity-50"
+            >
+              {hoursLoading ? "Adding..." : "Add"}
+            </button>
           </div>
-          <button
-            onClick={handleAddHours}
-            disabled={hoursLoading || !hoursWeek || !hoursAmount}
-            className="px-4 py-2 bg-accent/15 text-accent-light text-sm font-medium rounded-lg hover:bg-accent/25 border border-accent/20 transition-all disabled:opacity-50"
-          >
-            {hoursLoading ? "Adding..." : "Add Hours Entry"}
-          </button>
         </div>
 
-        {/* All entries */}
-        {hoursEntries.length > 0 && (
-          <div className="rounded-xl border border-border bg-surface overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-[10px] text-text-secondary uppercase tracking-wider border-b border-border">
-                  <th className="text-left p-3 font-semibold">Team</th>
-                  <th className="text-left p-3 font-semibold">Week</th>
-                  <th className="text-right p-3 font-semibold">Hours</th>
-                  <th className="text-left p-3 font-semibold">Note</th>
-                  <th className="text-left p-3 font-semibold">Date</th>
-                  <th className="text-right p-3 font-semibold">Actions</th>
+        {/* Full ledger */}
+        <div className="rounded-xl border border-border bg-surface overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-[10px] text-text-secondary uppercase tracking-wider border-b border-border">
+                <th className="text-left p-3 font-semibold">Team</th>
+                <th className="text-left p-3 font-semibold">Week</th>
+                <th className="text-right p-3 font-semibold">Hours</th>
+                <th className="text-left p-3 font-semibold">Note</th>
+                <th className="text-left p-3 font-semibold">Added</th>
+                <th className="text-right p-3 font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {hoursEntries.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-6 text-center text-text-secondary text-xs">
+                    No entries yet. Add hours above to get started.
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {hoursEntries.map((entry) => {
-                  const orgLabel = ORG_CONFIGS.find((c) => c.slug === entry.org_slug)?.label ?? entry.org_slug;
-                  const isEditing = editingHoursId === entry.id;
-                  return (
-                    <tr key={entry.id} className="border-b border-border/50 hover:bg-surface-2/50">
-                      <td className="p-3 text-text font-medium">{orgLabel}</td>
-                      <td className="p-3 text-text">{entry.week_label}</td>
-                      <td className="p-3 text-right tabular-nums">
-                        {isEditing ? (
-                          <input
-                            type="number"
-                            value={editHoursValue}
-                            onChange={(e) => setEditHoursValue(e.target.value)}
-                            className="bg-bg border border-accent/50 rounded-md px-2 py-1 text-sm text-text w-24 text-right focus:outline-none"
-                          />
-                        ) : (
-                          <span className="text-accent-light font-medium">{entry.hours.toLocaleString()}</span>
-                        )}
-                      </td>
-                      <td className="p-3 text-text-secondary text-xs">
-                        {isEditing ? (
-                          <input
-                            type="text"
-                            value={editNoteValue}
-                            onChange={(e) => setEditNoteValue(e.target.value)}
-                            placeholder="Note"
-                            className="bg-bg border border-border rounded-md px-2 py-1 text-sm text-text w-full focus:outline-none focus:border-accent/50"
-                          />
-                        ) : (
-                          entry.note ?? "—"
-                        )}
-                      </td>
-                      <td className="p-3 text-text-secondary text-xs">
-                        {new Date(entry.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                      </td>
-                      <td className="p-3 text-right">
-                        {isEditing ? (
-                          <div className="flex gap-1 justify-end">
-                            <button
-                              onClick={() => handleEditHours(entry.id)}
-                              className="px-2 py-1 bg-green/15 text-green text-xs rounded-md border border-green/20 hover:bg-green/25"
-                            >
-                              Save
-                            </button>
-                            <button
-                              onClick={() => setEditingHoursId(null)}
-                              className="px-2 py-1 bg-surface-2 text-text-secondary text-xs rounded-md border border-border hover:text-text"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex gap-1 justify-end">
-                            <button
-                              onClick={() => {
-                                setEditingHoursId(entry.id);
-                                setEditHoursValue(String(entry.hours));
-                                setEditNoteValue(entry.note ?? "");
-                              }}
-                              className="px-2 py-1 bg-surface-2 text-text-secondary text-xs rounded-md border border-border hover:text-text"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDeleteHours(entry.id)}
-                              className="px-2 py-1 bg-red/10 text-red text-xs rounded-md border border-red/20 hover:bg-red/20"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+              )}
+              {hoursEntries.map((entry) => {
+                const orgLabel = ORG_CONFIGS.find((c) => c.slug === entry.org_slug)?.label ?? entry.org_slug;
+                const isEditing = editingHoursId === entry.id;
+                return (
+                  <tr key={entry.id} className="border-b border-border/50 hover:bg-surface-2/50">
+                    <td className="p-3 text-text font-medium">{orgLabel}</td>
+                    <td className="p-3 text-text">{entry.week_label}</td>
+                    <td className="p-3 text-right tabular-nums">
+                      {isEditing ? (
+                        <input
+                          type="number"
+                          value={editHoursValue}
+                          onChange={(e) => setEditHoursValue(e.target.value)}
+                          className="bg-bg border border-accent/50 rounded-md px-2 py-1 text-sm text-text w-24 text-right focus:outline-none"
+                        />
+                      ) : (
+                        <span className="text-accent-light font-medium">{entry.hours.toLocaleString()}</span>
+                      )}
+                    </td>
+                    <td className="p-3 text-text-secondary text-xs">
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={editNoteValue}
+                          onChange={(e) => setEditNoteValue(e.target.value)}
+                          placeholder="Note"
+                          className="bg-bg border border-border rounded-md px-2 py-1 text-sm text-text w-full focus:outline-none focus:border-accent/50"
+                        />
+                      ) : (
+                        entry.note ?? "—"
+                      )}
+                    </td>
+                    <td className="p-3 text-text-secondary text-xs">
+                      {new Date(entry.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </td>
+                    <td className="p-3 text-right">
+                      {isEditing ? (
+                        <div className="flex gap-1 justify-end">
+                          <button
+                            onClick={() => handleEditHours(entry.id)}
+                            className="px-2 py-1 bg-green/15 text-green text-xs rounded-md border border-green/20 hover:bg-green/25"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditingHoursId(null)}
+                            className="px-2 py-1 bg-surface-2 text-text-secondary text-xs rounded-md border border-border hover:text-text"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex gap-1 justify-end">
+                          <button
+                            onClick={() => {
+                              setEditingHoursId(entry.id);
+                              setEditHoursValue(String(entry.hours));
+                              setEditNoteValue(entry.note ?? "");
+                            }}
+                            className="px-2 py-1 bg-surface-2 text-text-secondary text-xs rounded-md border border-border hover:text-text"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteHours(entry.id)}
+                            className="px-2 py-1 bg-red/10 text-red text-xs rounded-md border border-red/20 hover:bg-red/20"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       {/* Voting Management */}

@@ -179,7 +179,9 @@ export async function GET() {
           >
         )[config.slug] ?? null;
 
-      const realHours = hoursByOrg[config.slug];
+      // Always use real hours (0 if no entries), never fall back to sample
+      const realHours = hoursByOrg[config.slug] ?? 0;
+      const costPerHour = (snowflake as Record<string, unknown>)?.costPerHour as number ?? 87;
 
       return {
         slug: config.slug,
@@ -189,9 +191,10 @@ export async function GET() {
         health: linear.health,
         activeProjects: linear.activeProjects,
         shippedProjects: linear.shippedProjects,
-        hoursSaved: realHours ?? snowflake?.hoursSaved ?? 0,
+        hoursSaved: realHours,
         hoursTarget: snowflake?.hoursTarget ?? 0,
-        costPerHour: (snowflake as Record<string, unknown>)?.costPerHour as number ?? 87,
+        costPerHour,
+        dollarsSaved: realHours * costPerHour,
         keyMetricLabel: snowflake?.keyMetricLabel ?? "",
         keyMetricValue: snowflake?.keyMetricValue ?? "",
         keyMetricTarget: snowflake?.keyMetricTarget ?? "",

@@ -7,6 +7,7 @@ const sections = [
   { id: "pipeline", label: "Pipeline" },
   { id: "daily", label: "Daily" },
   { id: "weekly", label: "Weekly" },
+  { id: "goat-awards", label: "GOAT Awards", highlight: true },
   { id: "monthly", label: "Monthly" },
   { id: "quarterly", label: "Quarterly" },
   { id: "rules", label: "Rules" },
