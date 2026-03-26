@@ -42,9 +42,7 @@ export default function HowWeWorkPage() {
       {/* Sub-nav rendered natively — always visible, sticky below K Amplify nav */}
       <div className="sticky top-[52px] z-40 bg-bg/90 backdrop-blur-xl border-b border-border/60 px-8">
         <div className="max-w-[900px] mx-auto flex items-center h-[44px] gap-1 overflow-x-auto">
-          <span className="text-[0.82rem] font-bold tracking-tight mr-4 whitespace-nowrap shrink-0">
-            Amplify <span className="text-[0.6rem] font-semibold px-1.5 py-0.5 rounded bg-accent text-white uppercase tracking-wider ml-1.5">Operating Rhythm</span>
-          </span>
+          <span className="text-[0.6rem] font-semibold px-1.5 py-0.5 rounded bg-accent text-white uppercase tracking-wider mr-3 shrink-0">Operating Rhythm</span>
           {sections.map((s) => (
             <button
               key={s.id}
