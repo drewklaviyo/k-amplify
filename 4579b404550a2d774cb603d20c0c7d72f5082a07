@@ -1,0 +1,31 @@
+app/scoreboard/page.tsx
+  6936130eadf6a10e 230-231
+app/admin/page.tsx
+  6936130eadf6a10e 233-235,237-245,247-258,260,262-263,275,282,294-300,304-322,324-402
+public/how-we-work.html
+  6936130eadf6a10e 549-576,1007,1019,1033,1048,1075,1101,1127
+app/api/scoreboard/route.ts
+  6936130eadf6a10e 182-184,194,196-197
+app/how-we-work/page.tsx
+  6936130eadf6a10e 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.19",
+  "base_commit_sha": "4579b404550a2d774cb603d20c0c7d72f5082a07",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 178,
+      "total_deletions": 131,
+      "accepted_lines": 178,
+      "overriden_lines": 0
+    }
+  }
+}
