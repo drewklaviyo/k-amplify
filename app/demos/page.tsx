@@ -285,7 +285,7 @@ export default function DemosPage() {
           )}
 
           {/* Voting status banner */}
-          {tab === "this-week" && <VotingStatus />}
+          {tab === "this-week" && <VotingStatus submissions={submissions} />}
 
           {/* Org filter */}
           <div className="mb-6">
