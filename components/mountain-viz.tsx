@@ -187,10 +187,10 @@ export function MountainViz() {
                   strokeWidth="1.5"
                 />
                 <text
-                  x={cx} y={cy - 10 - i * 2}
+                  x={cx} y={Math.max(cy - 10 - i * 2, 14)}
                   textAnchor="middle"
                   fill={reached ? "var(--color-accent-light)" : "var(--color-text-secondary)"}
-                  fontSize={12 + i * 3}
+                  fontSize={12 + i * 2}
                   fontWeight={i >= 3 ? "800" : "600"}
                   fontFamily="Inter, sans-serif"
                 >
