@@ -222,7 +222,7 @@ export default function ScoreboardPage() {
                 Linear: Live
               </span>
               <span className="text-[0.68rem] text-text-secondary bg-bg/50 px-2.5 py-1 rounded-lg border border-border">
-                Snowflake: {data.lastUpdated}
+                Hours: Manual entry
               </span>
             </div>
           </div>
@@ -555,13 +555,12 @@ export default function ScoreboardPage() {
             risk watch list, shipped counts
           </div>
           <div>
-            <strong className="text-text">Snowflake:</strong> Hours saved, ARR/HC, HC avoided,
-            agent autonomy, business metrics, adoption
+            <strong className="text-text">Manual (admin):</strong> Hours saved per team,
+            $$$ delivered, HC avoided
           </div>
         </div>
         <p className="mt-3 text-[0.72rem] text-text-secondary/60">
-          Snowflake metrics update from <code className="text-[0.72rem] bg-surface px-1.5 py-0.5 rounded-md border border-border">lib/scoreboard-data.json</code> until
-          the Snowflake API integration is connected.
+          Hours are entered weekly per team in the admin panel. Key Metric and Adoption columns will be connected in a future update.
         </p>
       </div>
     </div>
