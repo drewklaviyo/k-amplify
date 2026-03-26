@@ -30,6 +30,7 @@ export const INITIATIVE_DETAILS: Record<
     targetMetric: string;
     owner: string;
     linearInitiative: string;
+    linearUrl: string;
     keyProduct?: string;
     keyWork?: string;
   }
@@ -39,12 +40,14 @@ export const INITIATIVE_DETAILS: Record<
     targetMetric: "501,000 hours saved",
     owner: "Drew Kull",
     linearInitiative: "Working AI First",
+    linearUrl: "https://linear.app/klaviyo/initiative/working-ai-first",
   },
   enterprise: {
     goal: "70% Braze win rate",
     targetMetric: "70% Braze win rate",
     owner: "Drew Kull / Jenna Eldredge",
     linearInitiative: "Enterprise initiative",
+    linearUrl: "https://linear.app/klaviyo/initiative/enterprise",
     keyProduct: "KDS (Klaviyo Demo Studio)",
   },
   growth: {
@@ -52,6 +55,7 @@ export const INITIATIVE_DETAILS: Record<
     targetMetric: "SQLs/MQLs +22%",
     owner: "Drew Kull / Richard Ng",
     linearInitiative: "Growth initiative",
+    linearUrl: "https://linear.app/klaviyo/initiative/growth",
     keyWork:
       "CMS migration, content pipeline, experimentation platform, visitor intelligence",
   },

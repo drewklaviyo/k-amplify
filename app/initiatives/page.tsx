@@ -108,9 +108,17 @@ export default function InitiativesPage() {
                   <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
                     Linear Initiative
                   </div>
-                  <p className="text-[0.82rem] text-text-secondary">
+                  <a
+                    href={details.linearUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-[0.82rem] text-accent-light hover:text-accent transition-colors"
+                  >
                     {details.linearInitiative}
-                  </p>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
                 </div>
 
                 {/* Key Product / Key Work (if applicable) */}
