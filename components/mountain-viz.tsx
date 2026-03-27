@@ -74,408 +74,571 @@ export function MountainViz() {
       <div className="p-5 pb-3">
         <svg viewBox="0 0 800 320" className="w-full h-auto" aria-label={`Mountain progress: ${currentK}K of 501K hours`}>
           <defs>
-            {/* Sky gradient for background */}
+            {/* ── SKY ── */}
             <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#0a0e1a" />
-              <stop offset="60%" stopColor="#111827" />
-              <stop offset="100%" stopColor="#1a1525" />
+              <stop offset="0%" stopColor="#080c18" />
+              <stop offset="45%" stopColor="#0d1220" />
+              <stop offset="80%" stopColor="#111828" />
+              <stop offset="100%" stopColor="#0e1420" />
             </linearGradient>
 
-            {/* CLIFF FACE — dark cool blue-grey shadow side */}
-            <linearGradient id="cliffFaceGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#1a2030" />
-              <stop offset="30%" stopColor="#151c28" />
-              <stop offset="60%" stopColor="#101822" />
-              <stop offset="100%" stopColor="#0a1018" />
+            {/* Subtle sky vignette — top-right brightens slightly (sun source) */}
+            <radialGradient id="skyLightGrad" cx="85%" cy="5%" r="50%">
+              <stop offset="0%" stopColor="#1a2848" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#080c18" stopOpacity="0" />
+            </radialGradient>
+
+            {/* ── MOUNTAIN FACES ── */}
+            {/* Cliff face: deep cool blue-grey, darkest at base */}
+            <linearGradient id="cliffFaceGrad" x1="0.1" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#1c2535" />
+              <stop offset="25%" stopColor="#141e2e" />
+              <stop offset="55%" stopColor="#0e1824" />
+              <stop offset="85%" stopColor="#0a1018" />
+              <stop offset="100%" stopColor="#060c14" />
             </linearGradient>
 
-            {/* LIT SLOPE — warm sunlit face */}
-            <linearGradient id="litSlopeGrad" x1="0.8" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#7a6040" />
-              <stop offset="20%" stopColor="#5a4530" />
-              <stop offset="50%" stopColor="#4a3828" />
-              <stop offset="75%" stopColor="#3a2a18" />
-              <stop offset="100%" stopColor="#2a1f10" />
+            {/* Lit slope: warm golden-brown, rich near summit, deeper at base */}
+            <linearGradient id="litSlopeGrad" x1="0.9" y1="0" x2="0.1" y2="1">
+              <stop offset="0%" stopColor="#8a6e44" />
+              <stop offset="15%" stopColor="#7a5e38" />
+              <stop offset="35%" stopColor="#624a2a" />
+              <stop offset="60%" stopColor="#4e3820" />
+              <stop offset="82%" stopColor="#3a2818" />
+              <stop offset="100%" stopColor="#261a0e" />
             </linearGradient>
 
-            {/* Progress fill */}
+            {/* Secondary warm overlay — catches more golden light toward upper right */}
+            <linearGradient id="goldenLightGrad" x1="1" y1="0" x2="0.3" y2="1">
+              <stop offset="0%" stopColor="#c8a060" stopOpacity="0.22" />
+              <stop offset="40%" stopColor="#a07840" stopOpacity="0.10" />
+              <stop offset="100%" stopColor="#7a5828" stopOpacity="0" />
+            </linearGradient>
+
+            {/* ── PROGRESS ── */}
             <linearGradient id="progressGrad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="var(--color-accent-light)" stopOpacity="0.5" />
+              <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="var(--color-accent-light)" stopOpacity="0.42" />
             </linearGradient>
 
-            {/* Snow gradient — bright white for lit face */}
-            <linearGradient id="snowHeavy" x1="1" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.85" />
-              <stop offset="40%" stopColor="#e8eef5" stopOpacity="0.6" />
-              <stop offset="100%" stopColor="#c0ccd8" stopOpacity="0.3" />
+            {/* ── SNOW ── */}
+            <linearGradient id="snowSummit" x1="0.8" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+              <stop offset="50%" stopColor="#eef2f8" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#d8e2ee" stopOpacity="0.6" />
+            </linearGradient>
+            <linearGradient id="snowUpper" x1="0.8" y1="0" x2="0.1" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.75" />
+              <stop offset="100%" stopColor="#ccd8e8" stopOpacity="0.25" />
+            </linearGradient>
+            <linearGradient id="snowMid" x1="0.8" y1="0" x2="0.1" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#c4d0e0" stopOpacity="0.1" />
+            </linearGradient>
+            <linearGradient id="snowLight" x1="0.8" y1="0" x2="0.1" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#b8c8da" stopOpacity="0.04" />
+            </linearGradient>
+            {/* Shadow snow on cliff face — blue-grey, cold */}
+            <linearGradient id="cliffSnowGrad" x1="0.2" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#8898b0" stopOpacity="0.55" />
+              <stop offset="60%" stopColor="#6878a0" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="#4a5a80" stopOpacity="0.1" />
             </linearGradient>
 
-            <linearGradient id="snowMid" x1="1" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#d0dae5" stopOpacity="0.15" />
+            {/* ── ATMOSPHERIC HAZE ── */}
+            <linearGradient id="hazeGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#0a1020" stopOpacity="0" />
+              <stop offset="100%" stopColor="#0a1020" stopOpacity="0.55" />
             </linearGradient>
 
-            <linearGradient id="snowLight" x1="1" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.25" />
-              <stop offset="100%" stopColor="#c0ccd8" stopOpacity="0.05" />
-            </linearGradient>
-
-            {/* Shadow snow for cliff face — blue-grey tint */}
-            <linearGradient id="cliffSnowGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#8898b0" stopOpacity="0.6" />
-              <stop offset="100%" stopColor="#5a6a80" stopOpacity="0.2" />
-            </linearGradient>
-
-            {/* Clip path for entire mountain shape */}
+            {/* ── CLIP PATHS ── */}
+            {/* Full mountain silhouette */}
             <clipPath id="mountainMasterClip">
               <path d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,320 L0,320 Z" />
             </clipPath>
-
-            {/* Clip path for cliff face only (below the dividing line) */}
+            {/* Cliff face only — the steep front wall below the ridge divider */}
             <clipPath id="cliffClip">
-              <path d="M0,310 L0,300 L40,285 L100,262 L180,240 L260,215 L340,192 L420,170 L500,148 L580,128 L650,110 L720,95 L780,92 L800,98 L800,320 L0,320 Z" />
+              <path d="M0,320 L0,300 L40,287 L100,265 L180,244 L260,218 L340,196 L420,174 L500,152 L580,132 L650,114 L720,99 L780,96 L800,100 L800,320 Z" />
             </clipPath>
-
-            {/* Clip path for lit slope only (above the dividing line) */}
+            {/* Lit slope only — the angled upper face */}
             <clipPath id="litSlopeClip">
-              <path d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,98 L780,92 L720,95 L650,110 L580,128 L500,148 L420,170 L340,192 L260,215 L180,240 L100,262 L40,285 L0,300 Z" />
+              <path d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,100 L780,96 L720,99 L650,114 L580,132 L500,152 L420,174 L340,196 L260,218 L180,244 L100,265 L40,287 L0,300 Z" />
             </clipPath>
 
-            {/* Rock texture pattern */}
-            <pattern id="rockTexture" width="30" height="30" patternUnits="userSpaceOnUse">
-              <circle cx="5" cy="8" r="1.5" fill="#ffffff" opacity="0.06" />
-              <circle cx="18" cy="4" r="1" fill="#ffffff" opacity="0.08" />
-              <circle cx="10" cy="20" r="1.8" fill="#ffffff" opacity="0.04" />
-              <circle cx="25" cy="14" r="0.8" fill="#ffffff" opacity="0.1" />
-              <circle cx="8" cy="27" r="1.2" fill="#ffffff" opacity="0.05" />
-              <circle cx="22" cy="24" r="1.4" fill="#ffffff" opacity="0.04" />
-              <rect x="14" y="10" width="2" height="1" fill="#000000" opacity="0.06" rx="0.5" />
-              <rect x="3" y="16" width="1.5" height="0.8" fill="#000000" opacity="0.05" rx="0.4" />
+            {/* ── TEXTURES ── */}
+            {/* Fine rock grain — lit slope */}
+            <pattern id="rockGrain" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="4" cy="6" r="1.2" fill="#ffffff" opacity="0.05" />
+              <circle cx="14" cy="3" r="0.8" fill="#ffffff" opacity="0.07" />
+              <circle cx="9" cy="16" r="1.4" fill="#ffffff" opacity="0.04" />
+              <circle cx="20" cy="12" r="0.6" fill="#ffffff" opacity="0.08" />
+              <circle cx="7" cy="21" r="1" fill="#ffffff" opacity="0.04" />
+              <circle cx="18" cy="20" r="1.1" fill="#ffffff" opacity="0.03" />
+              <rect x="11" y="8" width="1.8" height="0.8" fill="#000000" opacity="0.05" rx="0.4" />
+              <rect x="2" y="14" width="1.2" height="0.6" fill="#000000" opacity="0.04" rx="0.3" />
+              <rect x="16" y="17" width="1.5" height="0.7" fill="#000000" opacity="0.05" rx="0.3" />
+            </pattern>
+            {/* Cliff strata — horizontal noise for rock layers */}
+            <pattern id="cliffStrata" width="120" height="8" patternUnits="userSpaceOnUse">
+              <line x1="0" y1="4" x2="120" y2="4" stroke="#2a3850" strokeWidth="0.6" opacity="0.4" />
+              <line x1="0" y1="7.5" x2="120" y2="7.5" stroke="#1e2e42" strokeWidth="0.4" opacity="0.25" />
             </pattern>
 
-            {/* Gravel/scree texture */}
-            <pattern id="screeTexture" width="16" height="16" patternUnits="userSpaceOnUse">
-              <circle cx="2" cy="5" r="0.6" fill="#8a7560" opacity="0.15" />
-              <circle cx="8" cy="2" r="0.8" fill="#7a6550" opacity="0.12" />
-              <circle cx="14" cy="8" r="0.5" fill="#8a7560" opacity="0.1" />
-              <circle cx="5" cy="12" r="0.7" fill="#6a5540" opacity="0.12" />
-              <circle cx="11" cy="14" r="0.4" fill="#7a6550" opacity="0.1" />
-            </pattern>
-
-            {/* Filter for subtle glow on snow */}
-            <filter id="snowGlow" x="-10%" y="-10%" width="120%" height="120%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" />
+            {/* ── FILTERS ── */}
+            {/* Soft halo for snow brightness */}
+            <filter id="snowGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
             </filter>
-
-            {/* Filter for ridge glow */}
-            <filter id="ridgeGlow" x="-5%" y="-50%" width="110%" height="200%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" />
+            {/* Wide atmospheric ridge glow */}
+            <filter id="ridgeGlowWide" x="-8%" y="-80%" width="116%" height="260%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+            </filter>
+            {/* Tight ridge glow */}
+            <filter id="ridgeGlowTight" x="-4%" y="-60%" width="108%" height="220%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.8" />
+            </filter>
+            {/* Star softening */}
+            <filter id="starGlow" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" />
+            </filter>
+            {/* Base mist blur */}
+            <filter id="mistFilter" x="-5%" y="-20%" width="110%" height="140%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
             </filter>
           </defs>
 
-          {/* ═══ SKY BACKGROUND ═══ */}
+          {/* ═══════════════════════════════════════════════
+               LAYER 1 — SKY
+          ═══════════════════════════════════════════════ */}
           <rect x="0" y="0" width="800" height="320" fill="url(#skyGrad)" />
+          {/* Golden-hour upper-right sky warmth */}
+          <rect x="0" y="0" width="800" height="320" fill="url(#skyLightGrad)" />
 
-          {/* ═══ DISTANT MOUNTAIN RANGE (atmospheric depth) ═══ */}
+          {/* Stars — sparse, mostly upper half */}
+          {[
+            [30,18],[72,8],[115,22],[158,6],[195,15],[240,4],[285,19],[330,9],[385,5],
+            [428,14],[470,7],[510,20],[555,3],[595,12],[635,22],[670,8],[708,15],[745,4],
+            [775,18],[55,35],[140,42],[230,28],[320,38],[415,30],[505,45],[600,33],[690,40],
+            [760,27],[20,50],[100,58],[190,48],[275,55],[360,44],[450,52],[540,40],[630,50],
+          ].map(([x, y], i) => (
+            <circle
+              key={`star-${i}`}
+              cx={x} cy={y}
+              r={i % 5 === 0 ? 1.2 : i % 3 === 0 ? 0.9 : 0.6}
+              fill="#ffffff"
+              opacity={0.3 + (i % 4) * 0.12}
+              filter="url(#starGlow)"
+            />
+          ))}
+
+          {/* ═══════════════════════════════════════════════
+               LAYER 2 — BACKGROUND MOUNTAINS (3 layers)
+               Each progressively lighter and smaller
+          ═══════════════════════════════════════════════ */}
+
+          {/* Far background range — nearly flat, very dark navy */}
           <path
-            d="M0,300 L60,230 L120,245 L200,180 L260,195 L340,140 L400,155 L480,110 L540,125 L620,80 L680,65 L730,50 L760,45 L800,55 L800,320 L0,320 Z"
-            fill="#0f0d18"
-            opacity="0.6"
+            d="M0,295 L50,268 L90,278 L140,252 L200,265 L265,235 L320,248 L390,218 L450,230 L520,200 L575,212 L640,185 L695,172 L740,160 L775,155 L800,162 L800,320 L0,320 Z"
+            fill="#0d0b1a"
+            opacity="0.85"
           />
+          {/* Mid background range — slightly lighter, bluer */}
           <path
-            d="M0,310 L80,260 L140,270 L220,210 L300,225 L380,175 L440,185 L520,140 L580,155 L640,115 L690,100 L740,92 L780,85 L800,90 L800,320 L0,320 Z"
-            fill="#12101a"
-            opacity="0.45"
+            d="M0,305 L65,278 L105,290 L165,260 L225,275 L295,245 L350,258 L420,228 L475,242 L545,215 L600,228 L658,200 L705,188 L748,176 L780,172 L800,178 L800,320 L0,320 Z"
+            fill="#100e1e"
+            opacity="0.7"
+          />
+          {/* Near background range — warmest, most blue-grey */}
+          <path
+            d="M0,315 L75,292 L120,302 L185,275 L245,288 L310,262 L370,274 L435,248 L490,260 L555,236 L608,248 L665,222 L712,212 L755,200 L785,198 L800,204 L800,320 L0,320 Z"
+            fill="#13111e"
+            opacity="0.55"
           />
 
-          {/* ═══ MAIN MOUNTAIN BODY — full shape fill (base layer) ═══ */}
+          {/* ═══════════════════════════════════════════════
+               LAYER 3 — MAIN MOUNTAIN BASE FILL
+          ═══════════════════════════════════════════════ */}
           <path
             d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,320 L0,320 Z"
-            fill="#1a1510"
+            fill="#181210"
           />
 
-          {/* ═══ CLIFF FACE — dark cool blue-grey front wall (the 3D depth maker) ═══ */}
-          {/* This steep face drops from the dividing line to the base, much darker & cooler */}
+          {/* ═══════════════════════════════════════════════
+               LAYER 4 — CLIFF FACE (front shadow wall)
+               The steeply angled face facing the viewer —
+               this is the #1 source of 3D depth.
+          ═══════════════════════════════════════════════ */}
           <path
-            d="M0,310 L0,300 L40,285 L100,262 L180,240 L260,215 L340,192 L420,170 L500,148 L580,128 L650,110 L720,95 L780,92 L800,98 L800,320 L0,320 Z"
+            d="M0,320 L0,300 L40,287 L100,265 L180,244 L260,218 L340,196 L420,174 L500,152 L580,132 L650,114 L720,99 L780,96 L800,100 L800,320 Z"
             fill="url(#cliffFaceGrad)"
           />
 
-          {/* Cliff face vertical striations — dark near-vertical cracks */}
-          <path d="M50,296 L55,290 L58,310 L52,315 Z" fill="#080c14" opacity="0.5" clipPath="url(#cliffClip)" />
-          <path d="M130,268 L136,260 L140,290 L134,296 Z" fill="#080c14" opacity="0.45" clipPath="url(#cliffClip)" />
-          <path d="M220,240 L228,232 L232,268 L224,274 Z" fill="#080c14" opacity="0.4" clipPath="url(#cliffClip)" />
-          <path d="M320,210 L328,202 L332,242 L324,248 Z" fill="#080c14" opacity="0.38" clipPath="url(#cliffClip)" />
-          <path d="M430,182 L438,174 L442,215 L434,220 Z" fill="#080c14" opacity="0.35" clipPath="url(#cliffClip)" />
-          <path d="M540,152 L548,144 L552,185 L544,190 Z" fill="#080c14" opacity="0.32" clipPath="url(#cliffClip)" />
-          <path d="M640,125 L648,118 L652,155 L644,160 Z" fill="#080c14" opacity="0.28" clipPath="url(#cliffClip)" />
-          <path d="M730,102 L738,96 L742,130 L734,135 Z" fill="#080c14" opacity="0.25" clipPath="url(#cliffClip)" />
+          {/* Cliff strata — horizontal rock layers give geological realism */}
+          <rect x="0" y="0" width="800" height="320" fill="url(#cliffStrata)" clipPath="url(#cliffClip)" opacity="0.9" />
 
-          {/* Cliff face horizontal ledges (subtle) */}
-          <path d="M0,308 L100,278 L200,252 L300,230 L400,208 L500,185 L600,162 L700,140 L800,128" fill="none" stroke="#2a3548" strokeWidth="0.8" opacity="0.3" clipPath="url(#cliffClip)" />
-          <path d="M0,316 L100,292 L200,270 L300,252 L400,235 L500,218 L600,200 L700,182 L800,170" fill="none" stroke="#2a3548" strokeWidth="0.6" opacity="0.2" clipPath="url(#cliffClip)" />
+          {/* Cliff vertical crack/striations — dark near-vertical fractures */}
+          <path d="M45,300 L50,292 L54,318 L48,320 Z" fill="#05090f" opacity="0.6" clipPath="url(#cliffClip)" />
+          <path d="M120,272 L126,263 L130,295 L124,300 Z" fill="#05090f" opacity="0.55" clipPath="url(#cliffClip)" />
+          <path d="M205,248 L212,238 L217,274 L210,280 Z" fill="#05090f" opacity="0.5" clipPath="url(#cliffClip)" />
+          <path d="M295,222 L303,212 L308,252 L300,258 Z" fill="#05090f" opacity="0.45" clipPath="url(#cliffClip)" />
+          <path d="M390,198 L398,188 L403,228 L395,234 Z" fill="#05090f" opacity="0.4" clipPath="url(#cliffClip)" />
+          <path d="M488,174 L496,165 L501,205 L493,210 Z" fill="#05090f" opacity="0.36" clipPath="url(#cliffClip)" />
+          <path d="M582,150 L590,142 L595,180 L587,186 Z" fill="#05090f" opacity="0.32" clipPath="url(#cliffClip)" />
+          <path d="M672,126 L680,118 L685,156 L677,162 Z" fill="#05090f" opacity="0.28" clipPath="url(#cliffClip)" />
+          <path d="M752,106 L760,100 L764,134 L756,140 Z" fill="#05090f" opacity="0.24" clipPath="url(#cliffClip)" />
 
-          {/* ═══ CLIFF FACE SNOW — blue-grey shadow snow (large irregular patches) ═══ */}
+          {/* Cliff secondary cracks — thinner, between the main ones */}
+          <path d="M82,285 L86,278 L88,308 L84,312 Z" fill="#060a10" opacity="0.35" clipPath="url(#cliffClip)" />
+          <path d="M162,260 L167,252 L169,284 L165,288 Z" fill="#060a10" opacity="0.32" clipPath="url(#cliffClip)" />
+          <path d="M250,235 L256,227 L258,260 L253,264 Z" fill="#060a10" opacity="0.28" clipPath="url(#cliffClip)" />
+          <path d="M345,210 L351,202 L353,234 L348,238 Z" fill="#060a10" opacity="0.25" clipPath="url(#cliffClip)" />
+          <path d="M440,186 L446,178 L448,210 L443,214 Z" fill="#060a10" opacity="0.22" clipPath="url(#cliffClip)" />
+          <path d="M536,162 L542,154 L544,186 L539,190 Z" fill="#060a10" opacity="0.2" clipPath="url(#cliffClip)" />
+          <path d="M628,138 L634,130 L636,162 L631,166 Z" fill="#060a10" opacity="0.18" clipPath="url(#cliffClip)" />
+          <path d="M718,114 L724,108 L726,140 L721,144 Z" fill="#060a10" opacity="0.15" clipPath="url(#cliffClip)" />
 
-          {/* Cliff snow — summit area */}
+          {/* Cliff ledge lines — horizontal strata catching slight light */}
+          <path d="M0,312 L80,290 L160,270 L240,253 L320,238 L400,222 L480,206 L560,190 L640,175 L720,162 L800,152"
+            fill="none" stroke="#2e3f58" strokeWidth="1.2" opacity="0.45" clipPath="url(#cliffClip)" />
+          <path d="M0,318 L100,300 L200,282 L300,266 L400,250 L500,235 L600,220 L700,206 L800,196"
+            fill="none" stroke="#263448" strokeWidth="0.8" opacity="0.3" clipPath="url(#cliffClip)" />
+          <path d="M0,308 L60,292 L140,278 L220,264 L310,248 L400,234 L490,218 L580,203 L660,190 L740,178 L800,170"
+            fill="none" stroke="#222e42" strokeWidth="0.5" opacity="0.2" clipPath="url(#cliffClip)" />
+
+          {/* ═══════════════════════════════════════════════
+               LAYER 5 — CLIFF FACE SNOW
+               Blue-grey, cool — in shadow
+          ═══════════════════════════════════════════════ */}
+
+          {/* Summit cliff snow — heaviest accumulation near the peak */}
           <path
-            d="M700,100 L730,98 L760,100 L790,105 L800,110 L800,135 L780,125 L750,118 L720,115 L700,120 L690,112 Z"
-            fill="#7888a0" opacity="0.4" clipPath="url(#cliffClip)"
+            d="M710,99 L732,97 L758,98 L782,100 L800,104 L800,132 L792,122 L774,114 L752,108 L730,110 L714,118 L706,110 Z"
+            fill="url(#cliffSnowGrad)" clipPath="url(#cliffClip)"
           />
           <path
-            d="M740,96 L770,98 L795,105 L800,115 L800,128 L785,118 L760,112 L738,110 L730,104 Z"
-            fill="#8898b0" opacity="0.35" clipPath="url(#cliffClip)"
+            d="M742,97 L765,98 L790,103 L800,108 L800,124 L788,115 L768,109 L748,106 L738,102 Z"
+            fill="#9aaabf" opacity="0.38" clipPath="url(#cliffClip)"
+          />
+          {/* Irregular upper cliff snow pockets */}
+          <path
+            d="M598,132 L630,126 L662,120 L688,116 L696,124 L684,136 L656,142 L626,148 L604,152 L592,144 Z"
+            fill="#7888a0" opacity="0.32" clipPath="url(#cliffClip)"
+          />
+          <path
+            d="M635,124 L664,119 L688,116 L694,126 L682,138 L658,144 L638,148 L628,140 Z"
+            fill="#8898b4" opacity="0.26" clipPath="url(#cliffClip)"
+          />
+          {/* Mid cliff snow — wide irregular patches */}
+          <path
+            d="M455,174 L490,167 L528,160 L558,155 L566,165 L548,178 L514,184 L478,192 L460,196 L448,188 Z"
+            fill="#6070a0" opacity="0.24" clipPath="url(#cliffClip)"
+          />
+          <path
+            d="M494,168 L526,162 L556,157 L562,167 L548,178 L518,184 L498,190 L486,182 Z"
+            fill="#7888b0" opacity="0.19" clipPath="url(#cliffClip)"
+          />
+          {/* Lower-mid cliff snow — sparse */}
+          <path
+            d="M300,228 L338,220 L380,212 L408,208 L414,218 L396,228 L358,236 L318,244 L302,242 L292,235 Z"
+            fill="#506090" opacity="0.16" clipPath="url(#cliffClip)"
+          />
+          {/* Base frost traces */}
+          <path
+            d="M115,278 L165,268 L220,256 L260,248 L266,258 L238,268 L185,282 L130,296 L108,292 Z"
+            fill="#3c4e72" opacity="0.1" clipPath="url(#cliffClip)"
           />
 
-          {/* Cliff snow — upper area */}
+          {/* ═══════════════════════════════════════════════
+               LAYER 6 — LIT SLOPE (sunlit angled face)
+               Warm golden-brown — this is the #2 3D cue
+          ═══════════════════════════════════════════════ */}
           <path
-            d="M580,135 L620,128 L660,122 L690,118 L700,125 L690,138 L660,142 L625,148 L590,152 L575,145 Z"
-            fill="#687890" opacity="0.3" clipPath="url(#cliffClip)"
-          />
-          <path
-            d="M620,130 L655,125 L685,120 L695,128 L685,140 L655,145 L628,148 L615,140 Z"
-            fill="#8090a8" opacity="0.25" clipPath="url(#cliffClip)"
-          />
-
-          {/* Cliff snow — mid area */}
-          <path
-            d="M430,178 L475,170 L520,162 L555,158 L565,168 L548,180 L510,184 L470,192 L440,196 L425,188 Z"
-            fill="#5a6a82" opacity="0.22" clipPath="url(#cliffClip)"
-          />
-          <path
-            d="M480,172 L520,165 L550,160 L558,170 L545,180 L515,184 L485,190 L472,182 Z"
-            fill="#708098" opacity="0.18" clipPath="url(#cliffClip)"
-          />
-
-          {/* Cliff snow — lower-mid */}
-          <path
-            d="M280,228 L330,218 L380,208 L410,204 L418,215 L398,225 L355,232 L310,240 L285,242 L275,235 Z"
-            fill="#4a5a72" opacity="0.16" clipPath="url(#cliffClip)"
-          />
-
-          {/* Cliff snow — base frost */}
-          <path
-            d="M100,275 L160,262 L220,248 L260,240 L268,250 L240,260 L180,275 L120,290 L95,288 Z"
-            fill="#3a4a62" opacity="0.1" clipPath="url(#cliffClip)"
-          />
-
-          {/* ═══ LIT SLOPE — warm sunlit upper face ═══ */}
-          {/* This is the top portion of the mountain above the dividing line */}
-          <path
-            d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,98 L780,92 L720,95 L650,110 L580,128 L500,148 L420,170 L340,192 L260,215 L180,240 L100,262 L40,285 L0,300 Z"
+            d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,100 L780,96 L720,99 L650,114 L580,132 L500,152 L420,174 L340,196 L260,218 L180,244 L100,265 L40,287 L0,300 Z"
             fill="url(#litSlopeGrad)"
           />
 
-          {/* Rock texture overlay on the lit slope */}
-          <rect x="0" y="0" width="800" height="320" fill="url(#rockTexture)" clipPath="url(#litSlopeClip)" />
-          <rect x="0" y="0" width="800" height="320" fill="url(#screeTexture)" clipPath="url(#litSlopeClip)" />
-
-          {/* ═══ RIDGE LINE HIGHLIGHT — bright glowing edge where two faces meet ═══ */}
-          {/* Outer glow (wide, soft) */}
+          {/* Golden hour warm overlay — upper right catches most sun */}
           <path
-            d="M0,300 L40,285 L100,262 L180,240 L260,215 L340,192 L420,170 L500,148 L580,128 L650,110 L720,95 L780,92 L800,98"
-            fill="none"
-            stroke="#c8a878"
-            strokeWidth="4"
-            opacity="0.25"
-            filter="url(#ridgeGlow)"
-          />
-          {/* Core ridge highlight (bright, sharp) */}
-          <path
-            d="M0,300 L40,285 L100,262 L180,240 L260,215 L340,192 L420,170 L500,148 L580,128 L650,110 L720,95 L780,92 L800,98"
-            fill="none"
-            stroke="#d4b888"
-            strokeWidth="2"
-            opacity="0.6"
-          />
-          {/* Brightest inner edge */}
-          <path
-            d="M0,300 L40,285 L100,262 L180,240 L260,215 L340,192 L420,170 L500,148 L580,128 L650,110 L720,95 L780,92 L800,98"
-            fill="none"
-            stroke="#e8d0a0"
-            strokeWidth="0.8"
-            opacity="0.8"
+            d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,100 L780,96 L720,99 L650,114 L580,132 L500,152 L420,174 L340,196 L260,218 L180,244 L100,265 L40,287 L0,300 Z"
+            fill="url(#goldenLightGrad)"
           />
 
-          {/* ═══ TOP RIDGE highlight (summit edge catches most light) ═══ */}
+          {/* Rock grain texture on lit face */}
+          <rect x="0" y="0" width="800" height="320" fill="url(#rockGrain)" clipPath="url(#litSlopeClip)" opacity="0.85" />
+
+          {/* Diagonal ridge lines on lit slope — secondary ridges catching/shedding light */}
+          <path d="M55,295 L95,272 L150,255 L192,242 L215,236"
+            fill="none" stroke="#7a5e38" strokeWidth="2.2" opacity="0.4" clipPath="url(#litSlopeClip)" />
+          <path d="M57,297 L97,274 L152,257 L194,244 L217,238"
+            fill="none" stroke="#160e06" strokeWidth="1.2" opacity="0.3" clipPath="url(#litSlopeClip)" />
+          {/* Shadow-side of these ridges */}
+          <path d="M52,296 L92,273 L148,256 L190,243 L213,237"
+            fill="none" stroke="#c89848" strokeWidth="0.6" opacity="0.15" clipPath="url(#litSlopeClip)" />
+
+          <path d="M175,256 L232,238 L298,214 L358,196 L405,182"
+            fill="none" stroke="#7a5e38" strokeWidth="2" opacity="0.35" clipPath="url(#litSlopeClip)" />
+          <path d="M177,258 L234,240 L300,216 L360,198 L407,184"
+            fill="none" stroke="#160e06" strokeWidth="1" opacity="0.25" clipPath="url(#litSlopeClip)" />
+
+          <path d="M345,202 L415,178 L484,154 L544,136 L592,122"
+            fill="none" stroke="#7a5e38" strokeWidth="1.7" opacity="0.28" clipPath="url(#litSlopeClip)" />
+          <path d="M347,204 L417,180 L486,156 L546,138 L594,124"
+            fill="none" stroke="#160e06" strokeWidth="0.9" opacity="0.2" clipPath="url(#litSlopeClip)" />
+
+          <path d="M510,156 L570,136 L632,116 L685,102 L725,94"
+            fill="none" stroke="#7a5e38" strokeWidth="1.4" opacity="0.22" clipPath="url(#litSlopeClip)" />
+
+          {/* ═══════════════════════════════════════════════
+               LAYER 7 — ROCK OUTCROPS on lit slope
+               Each outcrop = lit face + shadow underside
+          ═══════════════════════════════════════════════ */}
+
+          {/* Outcrop A — lower left */}
+          <path d="M108,262 L136,252 L148,256 L132,270 Z" fill="#5a421e" opacity="0.7" clipPath="url(#litSlopeClip)" />
+          <path d="M108,270 L132,270 L148,256 L152,263 L138,276 L112,278 Z" fill="#0e0a04" opacity="0.45" clipPath="url(#litSlopeClip)" />
+          <path d="M108,262 L116,259 L125,262 L118,268 Z" fill="#8a6a38" opacity="0.35" clipPath="url(#litSlopeClip)" />
+
+          {/* Outcrop B — lower mid */}
+          <path d="M272,222 L302,212 L315,216 L298,228 Z" fill="#5a421e" opacity="0.65" clipPath="url(#litSlopeClip)" />
+          <path d="M272,228 L298,228 L315,216 L320,222 L305,234 L276,236 Z" fill="#0e0a04" opacity="0.38" clipPath="url(#litSlopeClip)" />
+          <path d="M272,222 L280,219 L290,222 L283,228 Z" fill="#8a6a38" opacity="0.3" clipPath="url(#litSlopeClip)" />
+
+          {/* Outcrop C — mid slope */}
+          <path d="M434,162 L460,152 L473,156 L455,168 Z" fill="#5a421e" opacity="0.58" clipPath="url(#litSlopeClip)" />
+          <path d="M434,168 L455,168 L473,156 L477,162 L462,174 L438,176 Z" fill="#0e0a04" opacity="0.32" clipPath="url(#litSlopeClip)" />
+          <path d="M434,162 L442,159 L451,162 L444,168 Z" fill="#8a6a38" opacity="0.26" clipPath="url(#litSlopeClip)" />
+
+          {/* Outcrop D — upper slope */}
+          <path d="M592,110 L616,102 L627,106 L612,116 Z" fill="#5a421e" opacity="0.5" clipPath="url(#litSlopeClip)" />
+          <path d="M592,116 L612,116 L627,106 L631,112 L618,122 L596,124 Z" fill="#0e0a04" opacity="0.26" clipPath="url(#litSlopeClip)" />
+          <path d="M592,110 L600,107 L608,110 L602,116 Z" fill="#8a6a38" opacity="0.22" clipPath="url(#litSlopeClip)" />
+
+          {/* Outcrop E — near summit */}
+          <path d="M696,56 L715,50 L724,53 L710,62 Z" fill="#5a421e" opacity="0.42" clipPath="url(#litSlopeClip)" />
+          <path d="M696,62 L710,62 L724,53 L727,58 L716,66 L699,68 Z" fill="#0e0a04" opacity="0.22" clipPath="url(#litSlopeClip)" />
+
+          {/* ═══════════════════════════════════════════════
+               LAYER 8 — CREVASSES on lit slope
+               Dark sinuous lines running down the face
+          ═══════════════════════════════════════════════ */}
+          <path d="M155,244 Q161,258 158,272" fill="none" stroke="#100808" strokeWidth="1.6" opacity="0.35" strokeLinecap="round" clipPath="url(#litSlopeClip)" />
+          <path d="M233,222 Q240,237 237,252" fill="none" stroke="#100808" strokeWidth="1.4" opacity="0.3" strokeLinecap="round" clipPath="url(#litSlopeClip)" />
+          <path d="M318,196 Q326,212 323,226" fill="none" stroke="#100808" strokeWidth="1.3" opacity="0.26" strokeLinecap="round" clipPath="url(#litSlopeClip)" />
+          <path d="M408,168 Q416,182 413,196" fill="none" stroke="#100808" strokeWidth="1.1" opacity="0.22" strokeLinecap="round" clipPath="url(#litSlopeClip)" />
+          <path d="M502,140 Q510,154 507,168" fill="none" stroke="#100808" strokeWidth="1" opacity="0.19" strokeLinecap="round" clipPath="url(#litSlopeClip)" />
+          <path d="M596,108 Q603,121 600,134" fill="none" stroke="#100808" strokeWidth="0.85" opacity="0.16" strokeLinecap="round" clipPath="url(#litSlopeClip)" />
+          <path d="M682,74 Q688,87 685,100" fill="none" stroke="#100808" strokeWidth="0.7" opacity="0.13" strokeLinecap="round" clipPath="url(#litSlopeClip)" />
+
+          {/* ═══════════════════════════════════════════════
+               LAYER 9 — BOULDERS on lit slope
+          ═══════════════════════════════════════════════ */}
+          <ellipse cx="88" cy="266" rx="8" ry="4" fill="#3a2810" opacity="0.6" clipPath="url(#litSlopeClip)" />
+          <ellipse cx="88" cy="268" rx="8" ry="2" fill="#0c0804" opacity="0.4" clipPath="url(#litSlopeClip)" />
+          <ellipse cx="205" cy="234" rx="7" ry="3.5" fill="#3a2810" opacity="0.55" clipPath="url(#litSlopeClip)" />
+          <ellipse cx="205" cy="236" rx="7" ry="1.8" fill="#0c0804" opacity="0.35" clipPath="url(#litSlopeClip)" />
+          <ellipse cx="358" cy="188" rx="6" ry="3" fill="#3a2810" opacity="0.5" clipPath="url(#litSlopeClip)" />
+          <ellipse cx="358" cy="190" rx="6" ry="1.5" fill="#0c0804" opacity="0.3" clipPath="url(#litSlopeClip)" />
+          <ellipse cx="498" cy="142" rx="5" ry="2.5" fill="#3a2810" opacity="0.42" clipPath="url(#litSlopeClip)" />
+          <ellipse cx="498" cy="144" rx="5" ry="1.2" fill="#0c0804" opacity="0.26" clipPath="url(#litSlopeClip)" />
+          <ellipse cx="648" cy="98" rx="4.5" ry="2.2" fill="#3a2810" opacity="0.36" clipPath="url(#litSlopeClip)" />
+          <ellipse cx="648" cy="100" rx="4.5" ry="1.1" fill="#0c0804" opacity="0.22" clipPath="url(#litSlopeClip)" />
+
+          {/* Small scatter stones */}
+          <circle cx="65" cy="278" r="3.2" fill="#4a3018" opacity="0.45" clipPath="url(#litSlopeClip)" />
+          <circle cx="140" cy="255" r="2.8" fill="#4a3018" opacity="0.4" clipPath="url(#litSlopeClip)" />
+          <circle cx="305" cy="205" r="2.8" fill="#4a3018" opacity="0.38" clipPath="url(#litSlopeClip)" />
+          <circle cx="415" cy="168" r="2.4" fill="#4a3018" opacity="0.34" clipPath="url(#litSlopeClip)" />
+          <circle cx="535" cy="132" r="2.2" fill="#4a3018" opacity="0.3" clipPath="url(#litSlopeClip)" />
+          <circle cx="688" cy="96" r="1.8" fill="#4a3018" opacity="0.26" clipPath="url(#litSlopeClip)" />
+          <circle cx="186" cy="242" r="2" fill="#4a3018" opacity="0.32" clipPath="url(#litSlopeClip)" />
+          <circle cx="462" cy="152" r="2" fill="#4a3018" opacity="0.28" clipPath="url(#litSlopeClip)" />
+
+          {/* ═══════════════════════════════════════════════
+               LAYER 10 — LIT SLOPE SNOW
+               Bright white/warm-white — heaviest at summit,
+               organic and irregular throughout
+          ═══════════════════════════════════════════════ */}
+
+          {/* ZONE 1 — SUMMIT CAP: thick, bright, nearly opaque */}
+          {/* Primary cap — the very top */}
           <path
-            d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32"
-            fill="none"
-            stroke="#a08060"
-            strokeWidth="1.5"
-            opacity="0.5"
-          />
-          <path
-            d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32"
-            fill="none"
-            stroke="#c8a878"
-            strokeWidth="0.6"
-            opacity="0.4"
-          />
-
-          {/* ═══ ROCK RIDGES on lit slope ═══ */}
-          <path
-            d="M60,292 L100,268 L160,248 L200,234 L220,228"
-            fill="none" stroke="#6a5238" strokeWidth="2" opacity="0.35"
-            clipPath="url(#litSlopeClip)"
-          />
-          <path
-            d="M60,294 L100,270 L160,250 L200,236 L220,230"
-            fill="none" stroke="#1a1208" strokeWidth="1" opacity="0.25"
-            clipPath="url(#litSlopeClip)"
-          />
-          <path
-            d="M180,252 L240,232 L310,208 L370,190 L420,175"
-            fill="none" stroke="#6a5238" strokeWidth="1.8" opacity="0.3"
-            clipPath="url(#litSlopeClip)"
-          />
-          <path
-            d="M350,198 L420,172 L490,148 L550,130 L600,115"
-            fill="none" stroke="#6a5238" strokeWidth="1.5" opacity="0.25"
-            clipPath="url(#litSlopeClip)"
-          />
-          <path
-            d="M520,152 L580,132 L640,112 L690,100 L730,96"
-            fill="none" stroke="#6a5238" strokeWidth="1.2" opacity="0.2"
-            clipPath="url(#litSlopeClip)"
-          />
-
-          {/* ═══ ROCK OUTCROPS on lit slope ═══ */}
-          <path d="M120,258 L145,248 L155,252 L140,264 Z" fill="#4a3820" opacity="0.6" clipPath="url(#litSlopeClip)" />
-          <path d="M120,264 L140,264 L155,252 L158,258 L145,270 L122,272 Z" fill="#1a1208" opacity="0.3" clipPath="url(#litSlopeClip)" />
-
-          <path d="M280,218 L310,208 L322,212 L305,224 Z" fill="#4a3820" opacity="0.55" clipPath="url(#litSlopeClip)" />
-          <path d="M280,224 L305,224 L322,212 L326,218 L312,230 L284,232 Z" fill="#1a1208" opacity="0.25" clipPath="url(#litSlopeClip)" />
-
-          <path d="M440,158 L465,148 L478,152 L460,164 Z" fill="#4a3820" opacity="0.5" clipPath="url(#litSlopeClip)" />
-          <path d="M440,164 L460,164 L478,152 L482,158 L468,170 L444,172 Z" fill="#1a1208" opacity="0.22" clipPath="url(#litSlopeClip)" />
-
-          <path d="M600,108 L622,100 L632,104 L618,114 Z" fill="#4a3820" opacity="0.45" clipPath="url(#litSlopeClip)" />
-          <path d="M600,114 L618,114 L632,104 L636,110 L624,120 L604,122 Z" fill="#1a1208" opacity="0.2" clipPath="url(#litSlopeClip)" />
-
-          {/* ═══ CREVASSE LINES on lit slope ═══ */}
-          <path d="M160,240 Q165,252 162,265" fill="none" stroke="#1a1208" strokeWidth="1.5" opacity="0.3" clipPath="url(#litSlopeClip)" />
-          <path d="M240,218 Q248,232 245,248" fill="none" stroke="#1a1208" strokeWidth="1.3" opacity="0.25" clipPath="url(#litSlopeClip)" />
-          <path d="M330,192 Q338,205 335,218" fill="none" stroke="#1a1208" strokeWidth="1.2" opacity="0.22" clipPath="url(#litSlopeClip)" />
-          <path d="M460,155 Q468,168 465,180" fill="none" stroke="#1a1208" strokeWidth="1" opacity="0.2" clipPath="url(#litSlopeClip)" />
-          <path d="M560,118 Q566,130 563,142" fill="none" stroke="#1a1208" strokeWidth="0.8" opacity="0.18" clipPath="url(#litSlopeClip)" />
-          <path d="M660,80 Q666,92 663,104" fill="none" stroke="#1a1208" strokeWidth="0.7" opacity="0.15" clipPath="url(#litSlopeClip)" />
-
-          {/* ═══ BOULDERS on lit slope ═══ */}
-          <ellipse cx="95" cy="262" rx="7" ry="3.5" fill="#3a2a18" opacity="0.5" clipPath="url(#litSlopeClip)" />
-          <ellipse cx="210" cy="230" rx="6" ry="3" fill="#3a2a18" opacity="0.45" clipPath="url(#litSlopeClip)" />
-          <ellipse cx="365" cy="185" rx="5" ry="2.5" fill="#3a2a18" opacity="0.4" clipPath="url(#litSlopeClip)" />
-          <ellipse cx="505" cy="140" rx="4.5" ry="2.2" fill="#3a2a18" opacity="0.35" clipPath="url(#litSlopeClip)" />
-          <ellipse cx="655" cy="100" rx="4" ry="2" fill="#3a2a18" opacity="0.3" clipPath="url(#litSlopeClip)" />
-
-          <circle cx="70" cy="275" r="3" fill="#4a3828" opacity="0.4" clipPath="url(#litSlopeClip)" />
-          <circle cx="145" cy="252" r="2.5" fill="#4a3828" opacity="0.35" clipPath="url(#litSlopeClip)" />
-          <circle cx="310" cy="202" r="2.5" fill="#4a3828" opacity="0.32" clipPath="url(#litSlopeClip)" />
-          <circle cx="420" cy="165" r="2" fill="#4a3828" opacity="0.3" clipPath="url(#litSlopeClip)" />
-          <circle cx="540" cy="128" r="2" fill="#4a3828" opacity="0.28" clipPath="url(#litSlopeClip)" />
-          <circle cx="690" cy="96" r="1.5" fill="#4a3828" opacity="0.25" clipPath="url(#litSlopeClip)" />
-
-          {/* ═══ LIT SLOPE SNOW — bright white on the sunlit face ═══ */}
-
-          {/* --- ZONE 1: SUMMIT — heavy bright white snow --- */}
-          <path
-            d="M700,36 L720,30 L750,25 L780,28 L800,32 L800,38 L785,34 L760,30 L740,28 L720,32 L705,38 Z"
-            fill="#ffffff" opacity="0.9"
+            d="M705,38 L722,30 L750,25 L780,28 L800,32 L800,44 L790,38 L772,32 L752,28 L733,28 L718,34 Z"
+            fill="url(#snowSummit)"
             clipPath="url(#mountainMasterClip)"
           />
+          {/* Summit fill underside */}
           <path
-            d="M670,48 L690,40 L720,30 L750,25 L780,28 L800,32 L800,55 L790,45 L770,38 L748,33 L730,32 L710,36 L692,42 L678,50 Z"
-            fill="#ffffff" opacity="0.7"
+            d="M675,50 L695,42 L722,32 L752,27 L780,30 L800,34 L800,62 L792,50 L774,40 L754,35 L735,35 L715,40 L696,48 L680,54 Z"
+            fill="#ffffff" opacity="0.72"
             clipPath="url(#litSlopeClip)"
           />
-          {/* Peak snow patches */}
-          <path d="M735,30 L748,27 L758,30 L750,35 L738,34 Z" fill="#ffffff" opacity="0.8" clipPath="url(#litSlopeClip)" />
-          <path d="M770,30 L782,28 L792,32 L784,36 L772,34 Z" fill="#ffffff" opacity="0.75" clipPath="url(#litSlopeClip)" />
+          {/* Summit snow depth accumulation */}
+          <path
+            d="M718,32 L745,27 L775,30 L798,34 L800,46 L790,40 L770,35 L748,32 L726,33 Z"
+            fill="#ffffff" opacity="0.82"
+            clipPath="url(#litSlopeClip)"
+          />
+          {/* Summit snow irregularities */}
+          <path d="M738,28 L754,25 L768,28 L762,34 L746,34 Z" fill="#ffffff" opacity="0.88" clipPath="url(#litSlopeClip)" />
+          <path d="M768,29 L784,27 L796,31 L788,37 L774,35 Z" fill="#ffffff" opacity="0.82" clipPath="url(#litSlopeClip)" />
+          <path d="M752,26 L764,25 L772,28 L766,32 L756,31 Z" fill="#ffffff" opacity="0.95" clipPath="url(#litSlopeClip)" />
 
-          {/* --- ZONE 2: UPPER — large irregular snow fields on lit face --- */}
+          {/* ZONE 2 — UPPER: large irregular snow fields */}
           <path
-            d="M600,75 L640,62 L680,50 L720,40 L750,32 L760,38 L740,48 L700,58 L660,70 L625,80 L600,88 L590,82 Z"
-            fill="#ffffff" opacity="0.55"
+            d="M608,78 L645,65 L685,52 L722,40 L752,32 L764,38 L742,50 L706,60 L665,74 L630,84 L608,92 L598,85 Z"
+            fill="url(#snowUpper)"
             clipPath="url(#litSlopeClip)"
           />
           <path
-            d="M620,68 L660,56 L700,45 L730,38 L740,44 L710,55 L670,66 L635,78 L615,82 Z"
-            fill="#ffffff" opacity="0.45"
+            d="M625,72 L662,58 L702,46 L732,38 L744,44 L716,57 L676,68 L640,80 L620,86 Z"
+            fill="#ffffff" opacity="0.48"
             clipPath="url(#litSlopeClip)"
           />
-          {/* Broad drift below summit on lit face */}
+          {/* Large snow shelf below summit */}
           <path
-            d="M650,52 L698,42 L750,30 L778,34 L800,38 L800,70 L780,55 L745,48 L710,52 L670,62 L645,68 L635,60 Z"
-            fill="#dde6ef" opacity="0.35"
+            d="M655,55 L700,44 L750,32 L782,35 L800,40 L800,72 L785,58 L754,50 L715,54 L675,65 L650,72 L638,64 Z"
+            fill="#e8eef8" opacity="0.38"
             clipPath="url(#litSlopeClip)"
           />
-          {/* Wind-blown streaks */}
-          <path d="M700,42 C688,48 676,45 665,52" fill="none" stroke="#ffffff" strokeWidth="1.8" opacity="0.35" clipPath="url(#litSlopeClip)" />
-          <path d="M670,52 C660,58 648,55 638,62" fill="none" stroke="#ffffff" strokeWidth="1.5" opacity="0.3" clipPath="url(#litSlopeClip)" />
+          {/* Wind-streaked snow coming off ridge */}
+          <path d="M702,44 C688,50 675,46 663,54" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" opacity="0.4" clipPath="url(#litSlopeClip)" />
+          <path d="M672,54 C658,61 646,57 636,65" fill="none" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" opacity="0.32" clipPath="url(#litSlopeClip)" />
+          <path d="M720,38 C708,43 698,40 688,46" fill="none" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" opacity="0.28" clipPath="url(#litSlopeClip)" />
+          {/* Isolated upper snowfield pocket */}
+          <path d="M596,82 L622,74 L634,78 L620,90 L600,92 Z" fill="#ffffff" opacity="0.4" clipPath="url(#litSlopeClip)" />
+          <path d="M560,96 L582,88 L592,92 L578,104 L558,106 Z" fill="#ffffff" opacity="0.32" clipPath="url(#litSlopeClip)" />
 
-          {/* --- ZONE 3: MID-UPPER — moderate snow with rock gaps --- */}
+          {/* ZONE 3 — MID-UPPER: moderate patches with rock gaps */}
           <path
-            d="M520,108 L560,96 L600,82 L630,74 L640,80 L615,92 L575,106 L540,118 L515,122 Z"
-            fill="url(#snowMid)" opacity="0.5"
+            d="M522,112 L558,100 L596,86 L628,78 L638,85 L612,96 L574,110 L540,122 L515,126 Z"
+            fill="url(#snowMid)"
             clipPath="url(#litSlopeClip)"
           />
           <path
-            d="M555,96 L590,84 L618,78 L628,84 L600,96 L565,108 L548,106 Z"
-            fill="#ffffff" opacity="0.32"
+            d="M556,100 L590,88 L618,82 L628,88 L602,100 L566,112 L548,110 Z"
+            fill="#ffffff" opacity="0.3"
             clipPath="url(#litSlopeClip)"
           />
-          <path d="M530,104 L558,94 L566,98 L542,110 Z" fill="#ffffff" opacity="0.28" clipPath="url(#litSlopeClip)" />
-          <path d="M580,85 L600,78 L608,82 L590,92 Z" fill="#e8eef5" opacity="0.3" clipPath="url(#litSlopeClip)" />
+          {/* Small pockets */}
+          <path d="M526,108 L550,98 L559,102 L538,114 Z" fill="#ffffff" opacity="0.26" clipPath="url(#litSlopeClip)" />
+          <path d="M575,88 L596,80 L605,84 L585,96 Z" fill="#eef4fc" opacity="0.28" clipPath="url(#litSlopeClip)" />
+          <path d="M504,118 L524,110 L530,114 L514,124 Z" fill="#ffffff" opacity="0.2" clipPath="url(#litSlopeClip)" />
 
-          {/* --- ZONE 4: MID — patchy snow on lit face --- */}
+          {/* Couloir snow channels — these fill vertical gullies */}
+          <path d="M706,40 Q710,58 707,78 Q703,96 700,112" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity="0.14" clipPath="url(#litSlopeClip)" />
+          <path d="M706,40 Q710,58 707,78 Q703,96 700,112" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" opacity="0.32" clipPath="url(#litSlopeClip)" />
+          <path d="M654,54 Q658,74 655,94 Q651,112 648,128" fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" opacity="0.12" clipPath="url(#litSlopeClip)" />
+          <path d="M654,54 Q658,74 655,94 Q651,112 648,128" fill="none" stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" opacity="0.28" clipPath="url(#litSlopeClip)" />
+          <path d="M582,76 Q586,96 583,116 Q579,134 576,150" fill="none" stroke="#dde8f4" strokeWidth="3.5" strokeLinecap="round" opacity="0.1" clipPath="url(#litSlopeClip)" />
+          <path d="M582,76 Q586,96 583,116 Q579,134 576,150" fill="none" stroke="#dde8f4" strokeWidth="1.4" strokeLinecap="round" opacity="0.22" clipPath="url(#litSlopeClip)" />
+          <path d="M502,104 Q506,124 503,144 Q499,160 496,175" fill="none" stroke="#d4e2f0" strokeWidth="2.5" strokeLinecap="round" opacity="0.08" clipPath="url(#litSlopeClip)" />
+          <path d="M502,104 Q506,124 503,144 Q499,160 496,175" fill="none" stroke="#d4e2f0" strokeWidth="1.1" strokeLinecap="round" opacity="0.18" clipPath="url(#litSlopeClip)" />
+          <path d="M412,138 Q416,158 413,178 Q409,194 406,208" fill="none" stroke="#ccd8ec" strokeWidth="2" strokeLinecap="round" opacity="0.06" clipPath="url(#litSlopeClip)" />
+          <path d="M412,138 Q416,158 413,178 Q409,194 406,208" fill="none" stroke="#ccd8ec" strokeWidth="0.9" strokeLinecap="round" opacity="0.14" clipPath="url(#litSlopeClip)" />
+
+          {/* ZONE 4 — MID: scattered patches */}
           <path
-            d="M400,150 L440,138 L480,128 L510,122 L518,130 L490,142 L450,154 L415,164 L398,160 Z"
-            fill="url(#snowLight)" opacity="0.4"
+            d="M402,154 L440,142 L478,132 L508,126 L516,134 L488,146 L450,158 L416,168 L400,164 Z"
+            fill="url(#snowLight)"
             clipPath="url(#litSlopeClip)"
           />
           <path
-            d="M440,140 L475,130 L505,124 L512,132 L485,142 L452,152 L435,150 Z"
-            fill="#ffffff" opacity="0.22"
+            d="M440,144 L474,134 L504,128 L511,136 L484,146 L450,156 L436,154 Z"
+            fill="#ffffff" opacity="0.2"
             clipPath="url(#litSlopeClip)"
           />
-          <path d="M415,148 L438,138 L446,142 L426,154 Z" fill="#ffffff" opacity="0.18" clipPath="url(#litSlopeClip)" />
-          <path d="M465,132 L488,122 L496,126 L476,138 Z" fill="#ffffff" opacity="0.15" clipPath="url(#litSlopeClip)" />
+          <path d="M410,152 L432,142 L441,146 L422,158 Z" fill="#ffffff" opacity="0.17" clipPath="url(#litSlopeClip)" />
+          <path d="M460,136 L484,126 L492,130 L472,142 Z" fill="#ffffff" opacity="0.14" clipPath="url(#litSlopeClip)" />
 
-          {/* --- ZONE 5: LOWER-MID — sparse frost --- */}
+          {/* ZONE 5 — LOWER-MID: frost streaks */}
           <path
-            d="M300,196 L340,184 L380,174 L400,170 L406,178 L385,188 L348,198 L312,208 L296,204 Z"
-            fill="url(#snowLight)" opacity="0.25"
+            d="M302,200 L338,188 L378,178 L402,174 L408,182 L385,192 L348,202 L314,212 L298,208 Z"
+            fill="url(#snowLight)"
             clipPath="url(#litSlopeClip)"
           />
           <path
-            d="M340,186 L372,176 L395,172 L400,180 L378,190 L348,198 L334,196 Z"
-            fill="#ffffff" opacity="0.1"
+            d="M340,190 L372,180 L398,176 L402,184 L378,194 L348,204 L334,202 Z"
+            fill="#ffffff" opacity="0.09"
             clipPath="url(#litSlopeClip)"
           />
+          <path d="M310,198 L330,190 L338,194 L322,204 Z" fill="#dde6f0" opacity="0.09" clipPath="url(#litSlopeClip)" />
 
-          {/* --- ZONE 6: LOWER — hints of frost --- */}
-          <path d="M180,234 L210,224 L224,228 L200,240 L184,240 Z" fill="#d0dae5" opacity="0.1" clipPath="url(#litSlopeClip)" />
-          <path d="M240,218 L268,208 L278,212 L256,224 L244,224 Z" fill="#d0dae5" opacity="0.08" clipPath="url(#litSlopeClip)" />
+          {/* ZONE 6 — BASE FROST: barely perceptible */}
+          <path d="M178,238 L205,228 L218,232 L196,244 L180,244 Z" fill="#c8d8ea" opacity="0.09" clipPath="url(#litSlopeClip)" />
+          <path d="M236,222 L260,214 L270,218 L248,228 L238,228 Z" fill="#c8d8ea" opacity="0.07" clipPath="url(#litSlopeClip)" />
+          <path d="M98,262 L118,254 L124,258 L106,268 Z" fill="#b8cae0" opacity="0.06" clipPath="url(#litSlopeClip)" />
+          <path d="M138,252 L156,244 L162,248 L146,258 Z" fill="#b8cae0" opacity="0.05" clipPath="url(#litSlopeClip)" />
 
-          {/* --- ZONE 7: BASE — barely visible frost --- */}
-          <path d="M100,258 L124,250 L130,254 L110,264 Z" fill="#c0ccd8" opacity="0.06" clipPath="url(#litSlopeClip)" />
-          <path d="M140,248 L160,240 L166,244 L148,254 Z" fill="#c0ccd8" opacity="0.05" clipPath="url(#litSlopeClip)" />
+          {/* Glowing snow halos near summit — adds luminosity */}
+          <circle cx="750" cy="27" r="12" fill="#ffffff" opacity="0.12" filter="url(#snowGlow)" clipPath="url(#litSlopeClip)" />
+          <circle cx="718" cy="34" r="9" fill="#ffffff" opacity="0.09" filter="url(#snowGlow)" clipPath="url(#litSlopeClip)" />
+          <circle cx="684" cy="48" r="7" fill="#ffffff" opacity="0.07" filter="url(#snowGlow)" clipPath="url(#litSlopeClip)" />
+          <circle cx="615" cy="82" r="5" fill="#ffffff" opacity="0.05" filter="url(#snowGlow)" clipPath="url(#litSlopeClip)" />
 
-          {/* ═══ GLOWING SNOW HIGHLIGHTS on lit face ═══ */}
-          <circle cx="745" cy="28" r="8" fill="#ffffff" opacity="0.15" filter="url(#snowGlow)" clipPath="url(#litSlopeClip)" />
-          <circle cx="710" cy="35" r="6" fill="#ffffff" opacity="0.1" filter="url(#snowGlow)" clipPath="url(#litSlopeClip)" />
-          <circle cx="680" cy="48" r="5" fill="#ffffff" opacity="0.08" filter="url(#snowGlow)" clipPath="url(#litSlopeClip)" />
-          <circle cx="590" cy="82" r="4" fill="#ffffff" opacity="0.06" filter="url(#snowGlow)" clipPath="url(#litSlopeClip)" />
+          {/* ═══════════════════════════════════════════════
+               LAYER 11 — RIDGE LINE GLOW
+               The brightest visual cue — the hot edge where
+               lit slope meets cliff face. Three sub-layers.
+          ═══════════════════════════════════════════════ */}
 
-          {/* ═══ SNOW COULOIRS on lit face ═══ */}
-          <path d="M700,38 Q705,55 702,75 Q698,92 695,108" fill="none" stroke="#ffffff" strokeWidth="4" opacity="0.12" clipPath="url(#litSlopeClip)" />
-          <path d="M650,52 Q655,72 652,92 Q648,110 645,125" fill="none" stroke="#ffffff" strokeWidth="3.5" opacity="0.1" clipPath="url(#litSlopeClip)" />
-          <path d="M580,75 Q585,95 582,115 Q578,132 575,148" fill="none" stroke="#dde6ef" strokeWidth="3" opacity="0.08" clipPath="url(#litSlopeClip)" />
-          <path d="M500,102 Q505,122 502,142 Q498,158 495,172" fill="none" stroke="#d0dae5" strokeWidth="2.5" opacity="0.06" clipPath="url(#litSlopeClip)" />
-          <path d="M410,135 Q415,155 412,175 Q408,192 405,205" fill="none" stroke="#c8d4e0" strokeWidth="2" opacity="0.05" clipPath="url(#litSlopeClip)" />
+          {/* Widest outer aura — very soft golden haze */}
+          <path
+            d="M0,300 L40,287 L100,265 L180,244 L260,218 L340,196 L420,174 L500,152 L580,132 L650,114 L720,99 L780,96 L800,100"
+            fill="none" stroke="#b08840" strokeWidth="10" opacity="0.12"
+            filter="url(#ridgeGlowWide)"
+          />
+          {/* Mid glow layer */}
+          <path
+            d="M0,300 L40,287 L100,265 L180,244 L260,218 L340,196 L420,174 L500,152 L580,132 L650,114 L720,99 L780,96 L800,100"
+            fill="none" stroke="#d0a860" strokeWidth="5" opacity="0.3"
+            filter="url(#ridgeGlowTight)"
+          />
+          {/* Sharp bright line */}
+          <path
+            d="M0,300 L40,287 L100,265 L180,244 L260,218 L340,196 L420,174 L500,152 L580,132 L650,114 L720,99 L780,96 L800,100"
+            fill="none" stroke="#d8b870" strokeWidth="2.2" opacity="0.65" strokeLinecap="round"
+          />
+          {/* Brightest inner highlight — almost white at the very edge */}
+          <path
+            d="M0,300 L40,287 L100,265 L180,244 L260,218 L340,196 L420,174 L500,152 L580,132 L650,114 L720,99 L780,96 L800,100"
+            fill="none" stroke="#f0ddb0" strokeWidth="0.9" opacity="0.85" strokeLinecap="round"
+          />
 
-          {/* Progress fill clipped to mountain */}
+          {/* ═══════════════════════════════════════════════
+               LAYER 12 — TOP RIDGE EDGE
+               The skyline silhouette of the mountain
+          ═══════════════════════════════════════════════ */}
+          <path
+            d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32"
+            fill="none" stroke="#b08850" strokeWidth="1.8" opacity="0.55" strokeLinecap="round"
+          />
+          <path
+            d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32"
+            fill="none" stroke="#d4b070" strokeWidth="0.7" opacity="0.45" strokeLinecap="round"
+          />
+
+          {/* ═══════════════════════════════════════════════
+               LAYER 13 — ATMOSPHERIC HAZE
+               Subtle dark mist rising from the base — adds
+               aerial perspective and grounds the mountain
+          ═══════════════════════════════════════════════ */}
+          <rect
+            x="0" y="240" width="800" height="80"
+            fill="url(#hazeGrad)"
+            clipPath="url(#mountainMasterClip)"
+            filter="url(#mistFilter)"
+            opacity="0.5"
+          />
+
+          {/* ═══════════════════════════════════════════════
+               LAYER 14 — PROGRESS FILL
+               Accent color wash clipped to completed portion
+          ═══════════════════════════════════════════════ */}
           <clipPath id="mountainClip">
             <path d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,320 L0,320 Z" />
           </clipPath>
