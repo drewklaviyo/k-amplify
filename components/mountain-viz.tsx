@@ -487,59 +487,71 @@ export function MountainViz() {
           <circle cx="680" cy="48" r="5" fill="#ffffff" opacity="0.08" filter="url(#snowGlow)" clipPath="url(#mountainMasterClip)" />
           <circle cx="590" cy="78" r="4" fill="#ffffff" opacity="0.06" filter="url(#snowGlow)" clipPath="url(#mountainMasterClip)" />
 
-          {/* ═══ BASE CAMP — positioned ~15-20% up the mountain on the slope ═══ */}
-          {/* Base camp sits at roughly x=155, y=238 (around the 50K-100K area on the slope) */}
-          <g clipPath="url(#mountainMasterClip)">
-            {/* Flat platform / cleared area */}
-            <ellipse cx="165" cy="240" rx="38" ry="6" fill="#1a150e" opacity="0.6" />
-            <ellipse cx="165" cy="238" rx="34" ry="4" fill="#2a2018" opacity="0.5" />
+          {/* ═══ LARGE FACE SNOW FIELDS — wide patches on the mountain body ═══ */}
+          {/* These sit BELOW the ridge, on the sloped face, giving 3D snow coverage */}
 
-            {/* Tent 1 — main orange/amber tent (largest) */}
-            <polygon points="140,236 158,212 176,236" fill="#5a3010" stroke="#E67E22" strokeWidth="1.5" opacity="0.9" />
-            {/* Tent 1 front flap detail */}
-            <line x1="158" y1="212" x2="158" y2="236" stroke="#E67E22" strokeWidth="0.8" opacity="0.5" />
-            <line x1="149" y1="224" x2="167" y2="224" stroke="#E67E22" strokeWidth="0.5" opacity="0.3" />
-            {/* Tent 1 shadow */}
-            <ellipse cx="158" cy="237" rx="18" ry="3" fill="#000000" opacity="0.25" />
+          {/* Summit face — heavy snow blanket covering the top face area */}
+          <path
+            d="M650,48 L680,55 L720,48 L750,40 L780,45 L800,50 L800,80 L780,68 L750,58 L720,55 L690,62 L660,68 L640,72 L630,68 Z"
+            fill="#ffffff" opacity="0.35" clipPath="url(#mountainMasterClip)"
+          />
+          <path
+            d="M700,38 L730,42 L760,38 L790,42 L800,48 L800,65 L775,55 L745,48 L715,50 L695,55 L685,50 Z"
+            fill="#ffffff" opacity="0.45" clipPath="url(#mountainMasterClip)"
+          />
 
-            {/* Tent 2 — second amber tent */}
-            <polygon points="178,236 192,216 206,236" fill="#4a2808" stroke="#D4740E" strokeWidth="1.2" opacity="0.85" />
-            <line x1="192" y1="216" x2="192" y2="236" stroke="#D4740E" strokeWidth="0.6" opacity="0.4" />
-            {/* Tent 2 shadow */}
-            <ellipse cx="192" cy="237" rx="14" ry="2.5" fill="#000000" opacity="0.2" />
+          {/* Upper face — large snow fields with gaps showing rock */}
+          <path
+            d="M560,78 L590,85 L630,78 L660,72 L680,78 L690,88 L670,95 L640,92 L610,98 L580,102 L555,96 L548,88 Z"
+            fill="#d8e4ef" opacity="0.28" clipPath="url(#mountainMasterClip)"
+          />
+          <path
+            d="M600,70 L640,76 L670,68 L690,75 L700,88 L680,95 L655,90 L625,95 L600,100 L585,92 L580,82 Z"
+            fill="#ffffff" opacity="0.22" clipPath="url(#mountainMasterClip)"
+          />
 
-            {/* Tent 3 — small supply tent */}
-            <polygon points="125,236 134,222 143,236" fill="#3d2510" stroke="#C06A0A" strokeWidth="1" opacity="0.8" />
-            <line x1="134" y1="222" x2="134" y2="236" stroke="#C06A0A" strokeWidth="0.5" opacity="0.3" />
+          {/* Mid-upper face — snow collecting in concavities */}
+          <path
+            d="M440,130 L475,138 L510,130 L540,125 L560,132 L565,145 L545,152 L515,148 L485,155 L458,158 L435,150 L430,140 Z"
+            fill="#d0dce8" opacity="0.2" clipPath="url(#mountainMasterClip)"
+          />
+          <path
+            d="M490,118 L520,125 L548,118 L568,124 L572,135 L555,142 L530,138 L505,144 L480,146 L465,138 L462,128 Z"
+            fill="#ffffff" opacity="0.15" clipPath="url(#mountainMasterClip)"
+          />
 
-            {/* Flag pole on main tent */}
-            <line x1="158" y1="212" x2="158" y2="198" stroke="#8b8b9e" strokeWidth="1.2" />
-            <path d="M158,198 L172,201 L158,204 Z" fill="var(--color-accent)" opacity="0.95" />
+          {/* Mid face — scattered irregular patches */}
+          <path
+            d="M330,165 L365,172 L395,162 L415,170 L420,182 L400,190 L370,186 L345,192 L320,194 L308,184 L310,174 Z"
+            fill="#c8d6e2" opacity="0.14" clipPath="url(#mountainMasterClip)"
+          />
+          <path
+            d="M370,155 L398,162 L420,155 L435,162 L438,172 L420,180 L395,176 L372,182 L350,184 L340,175 L345,165 Z"
+            fill="#ffffff" opacity="0.1" clipPath="url(#mountainMasterClip)"
+          />
 
-            {/* Supply boxes */}
-            <rect x="208" y="232" width="8" height="6" rx="1" fill="#3a2a18" stroke="#5a4530" strokeWidth="0.5" opacity="0.7" />
-            <rect x="218" y="233" width="6" height="5" rx="1" fill="#332418" stroke="#5a4530" strokeWidth="0.5" opacity="0.6" />
+          {/* Lower-mid face — thin patchy snow */}
+          <path
+            d="M200,220 L235,228 L265,218 L285,226 L288,238 L270,245 L242,240 L218,248 L195,248 L188,238 L192,228 Z"
+            fill="#c0ccd8" opacity="0.1" clipPath="url(#mountainMasterClip)"
+          />
+          <path
+            d="M260,200 L288,208 L310,198 L325,205 L328,215 L312,222 L288,218 L265,224 L245,225 L238,216 L242,208 Z"
+            fill="#ffffff" opacity="0.07" clipPath="url(#mountainMasterClip)"
+          />
 
-            {/* Campfire glow */}
-            <circle cx="196" cy="234" r="4" fill="#E67E22" opacity="0.15" />
-            <circle cx="196" cy="234" r="2.5" fill="#F0A050" opacity="0.25" />
-            <circle cx="196" cy="234" r="1.2" fill="#FFD080" opacity="0.4" />
-          </g>
+          {/* Lower face — very faint frost */}
+          <path
+            d="M120,255 L148,262 L172,252 L188,260 L190,270 L175,278 L150,274 L128,280 L110,278 L106,268 L112,260 Z"
+            fill="#b8c4d0" opacity="0.06" clipPath="url(#mountainMasterClip)"
+          />
 
-          {/* Base camp label */}
-          <text
-            x="165"
-            y="256"
-            textAnchor="middle"
-            fill="#D4A574"
-            fontSize="9"
-            fontWeight="700"
-            fontFamily="Inter, sans-serif"
-            opacity="0.8"
-            letterSpacing="1.5"
-          >
-            BASE CAMP
-          </text>
+          {/* Vertical snow couloirs running down the face (snow-filled gullies) */}
+          <path d="M700,38 Q705,55 702,75 Q698,92 695,108" fill="none" stroke="#ffffff" strokeWidth="4" opacity="0.12" clipPath="url(#mountainMasterClip)" />
+          <path d="M650,52 Q655,72 652,92 Q648,110 645,125" fill="none" stroke="#ffffff" strokeWidth="3.5" opacity="0.1" clipPath="url(#mountainMasterClip)" />
+          <path d="M580,75 Q585,95 582,115 Q578,132 575,148" fill="none" stroke="#dde6ef" strokeWidth="3" opacity="0.08" clipPath="url(#mountainMasterClip)" />
+          <path d="M500,102 Q505,122 502,142 Q498,158 495,172" fill="none" stroke="#d0dae5" strokeWidth="2.5" opacity="0.06" clipPath="url(#mountainMasterClip)" />
+          <path d="M410,135 Q415,155 412,175 Q408,192 405,205" fill="none" stroke="#c8d4e0" strokeWidth="2" opacity="0.05" clipPath="url(#mountainMasterClip)" />
 
           {/* Progress fill clipped to mountain */}
           <clipPath id="mountainClip">
