@@ -76,6 +76,20 @@ export function DemoSubmissionCard({
           >
             {orgLabel}
           </span>
+          {submission.source_url && (
+            <a
+              href={submission.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[0.68rem] text-text-secondary hover:text-accent-light transition-colors flex items-center gap-1"
+              title="View in Linear"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              Linear
+            </a>
+          )}
           {submission.is_builder_winner && (
             <span className="text-[0.68rem] font-medium px-2 py-0.5 rounded-md bg-accent/15 text-accent-light border border-accent/25">
               🐐 Builder

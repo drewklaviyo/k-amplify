@@ -22,6 +22,7 @@ export interface Submission {
   source_type: "project_update" | "issue_comment";
   source_id: string;
   source_project_name: string | null;
+  source_url: string | null;
   voting_period_id: string | null;
   posted_at: string;
   created_at: string;
