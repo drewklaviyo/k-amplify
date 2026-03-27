@@ -1,0 +1,27 @@
+components/demo-submission-card.tsx
+  6936130eadf6a10e 79-92
+app/api/demos/sync/route.ts
+  6936130eadf6a10e 156,190,240
+lib/supabase-types.ts
+  6936130eadf6a10e 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.20",
+  "base_commit_sha": "cfae7ec8772b368b3872f6da4fd44a8817f15e70",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 18,
+      "total_deletions": 0,
+      "accepted_lines": 18,
+      "overriden_lines": 0
+    }
+  }
+}
