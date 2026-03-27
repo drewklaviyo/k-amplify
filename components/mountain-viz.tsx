@@ -134,23 +134,65 @@ export function MountainViz() {
           </clipPath>
           <rect x="0" y="0" width="800" height="320" fill="url(#ridgeLines)" clipPath="url(#mountainClipRidge)" />
 
-          {/* Snow cap at peak */}
+          {/* Snow cap at peak — larger coverage */}
           <path
-            d="M700,35 L720,30 L750,25 L780,28 L800,32 L795,34 L770,30 L745,28 L725,33 Z"
+            d="M680,45 L700,38 L720,30 L750,25 L780,28 L800,32 L798,36 L785,33 L770,30 L745,28 L725,33 L705,40 L690,44 Z"
             fill="url(#snowGrad)"
           />
-          {/* Extra snow streaks */}
-          <path d="M730,32 L745,28 L760,30 L750,33 Z" fill="#ffffff" opacity="0.1" />
-          <path d="M755,27 L770,30 L780,29 L768,26 Z" fill="#ffffff" opacity="0.08" />
+          {/* Snow streaks extending further down the ridge */}
+          <path d="M730,32 L745,28 L760,30 L750,33 Z" fill="#ffffff" opacity="0.12" />
+          <path d="M755,27 L770,30 L780,29 L768,26 Z" fill="#ffffff" opacity="0.1" />
+          <path d="M700,38 L715,33 L730,35 L720,39 Z" fill="#ffffff" opacity="0.08" />
+          <path d="M670,50 L685,45 L700,48 L688,52 Z" fill="#ffffff" opacity="0.05" />
+          <path d="M640,58 L660,52 L675,55 L658,60 Z" fill="#ffffff" opacity="0.04" />
+          {/* Snow patches on upper slopes */}
+          <path d="M600,72 L620,66 L635,70 L618,75 Z" fill="#ffffff" opacity="0.03" />
+          <path d="M560,82 L575,77 L588,80 L572,85 Z" fill="#ffffff" opacity="0.025" />
 
-          {/* Scattered rocks/boulders */}
+          {/* Ridge lines — horizontal rock striations */}
+          <line x1="200" y1="225" x2="320" y2="175" stroke="#ffffff" strokeWidth="0.4" opacity="0.05" />
+          <line x1="280" y1="200" x2="420" y2="140" stroke="#ffffff" strokeWidth="0.3" opacity="0.04" />
+          <line x1="400" y1="145" x2="540" y2="95" stroke="#ffffff" strokeWidth="0.4" opacity="0.04" />
+          <line x1="500" y1="110" x2="650" y2="55" stroke="#ffffff" strokeWidth="0.3" opacity="0.05" />
+          <line x1="580" y1="80" x2="720" y2="35" stroke="#ffffff" strokeWidth="0.3" opacity="0.04" />
+          {/* Diagonal crevasse lines */}
+          <line x1="350" y1="155" x2="370" y2="175" stroke="#1a1510" strokeWidth="0.8" opacity="0.3" />
+          <line x1="480" y1="105" x2="495" y2="120" stroke="#1a1510" strokeWidth="0.6" opacity="0.25" />
+          <line x1="620" y1="60" x2="632" y2="72" stroke="#1a1510" strokeWidth="0.5" opacity="0.2" />
+
+          {/* Scattered rocks/boulders — more of them */}
           <circle cx="120" cy="248" r="3" fill="#3d3025" opacity="0.6" />
+          <circle cx="180" cy="228" r="2" fill="#352a1e" opacity="0.5" />
           <circle cx="250" cy="192" r="2.5" fill="#3d3025" opacity="0.5" />
+          <circle cx="320" cy="168" r="1.8" fill="#352a1e" opacity="0.4" />
           <circle cx="380" cy="145" r="3.5" fill="#3d3025" opacity="0.5" />
+          <circle cx="450" cy="125" r="2" fill="#352a1e" opacity="0.45" />
           <circle cx="510" cy="98" r="2" fill="#4a3828" opacity="0.6" />
+          <circle cx="575" cy="78" r="1.5" fill="#4a3828" opacity="0.4" />
           <circle cx="640" cy="52" r="2.5" fill="#4a3828" opacity="0.5" />
+          <circle cx="700" cy="40" r="1.5" fill="#4a3828" opacity="0.4" />
           <ellipse cx="300" cy="170" rx="5" ry="3" fill="#2a2018" opacity="0.4" />
+          <ellipse cx="440" cy="130" rx="4" ry="2" fill="#2a2018" opacity="0.35" />
           <ellipse cx="550" cy="85" rx="4" ry="2.5" fill="#2a2018" opacity="0.4" />
+          <ellipse cx="680" cy="48" rx="3" ry="1.5" fill="#2a2018" opacity="0.3" />
+
+          {/* Base camp near the bottom — small tents */}
+          <g transform="translate(55, 278)" opacity="0.6">
+            {/* Tent 1 */}
+            <polygon points="0,0 6,-10 12,0" fill="#4a3828" stroke="#5a4838" strokeWidth="0.5" />
+            <line x1="6" y1="-10" x2="6" y2="-13" stroke="#8b8b9e" strokeWidth="0.5" />
+            {/* Tent 2 */}
+            <polygon points="16,0 21,-8 26,0" fill="#3d2e1a" stroke="#4a3828" strokeWidth="0.5" />
+            {/* Small flag */}
+            <line x1="21" y1="-8" x2="21" y2="-12" stroke="#8b8b9e" strokeWidth="0.4" />
+            <path d="M21,-12 L26,-11 L21,-10 Z" fill="var(--color-accent)" opacity="0.6" />
+            {/* Ground line */}
+            <line x1="-4" y1="0" x2="30" y2="0" stroke="#4a3828" strokeWidth="0.8" opacity="0.4" />
+          </g>
+          {/* Base camp label */}
+          <text x="75" y="272" textAnchor="middle" fill="var(--color-text-secondary)" fontSize="7" fontFamily="Inter, sans-serif" opacity="0.4">
+            BASE CAMP
+          </text>
 
           {/* Progress fill clipped to mountain */}
           <clipPath id="mountainClip">
@@ -227,32 +269,46 @@ export function MountainViz() {
           )}
 
           {/* Speech bubble when goat is clicked */}
-          {goatMessage && (
-            <g>
-              <rect
-                x={goatX - 75}
-                y={goatY - 65}
-                width="150"
-                height="28"
-                rx="8"
-                fill="var(--color-surface)"
-                stroke="var(--color-border)"
-                strokeWidth="1"
-                opacity="0.95"
-              />
-              <text
-                x={goatX}
-                y={goatY - 47}
-                textAnchor="middle"
-                fontSize="10"
-                fill="var(--color-text)"
-                fontFamily="Inter, sans-serif"
-                fontWeight="600"
-              >
-                {goatMessage}
-              </text>
-            </g>
-          )}
+          {goatMessage && (() => {
+            const bubbleW = 220;
+            const bubbleH = 36;
+            const bubbleX = Math.max(10, Math.min(goatX - bubbleW / 2, 800 - bubbleW - 10));
+            const bubbleY = goatY - 75;
+            return (
+              <g>
+                <rect
+                  x={bubbleX}
+                  y={bubbleY}
+                  width={bubbleW}
+                  height={bubbleH}
+                  rx="10"
+                  fill="var(--color-surface)"
+                  stroke="var(--color-border)"
+                  strokeWidth="1"
+                  opacity="0.95"
+                />
+                {/* Pointer triangle */}
+                <polygon
+                  points={`${goatX - 6},${bubbleY + bubbleH} ${goatX + 6},${bubbleY + bubbleH} ${goatX},${bubbleY + bubbleH + 8}`}
+                  fill="var(--color-surface)"
+                  stroke="var(--color-border)"
+                  strokeWidth="1"
+                />
+                <rect x={bubbleX + 1} y={bubbleY + bubbleH - 2} width={bubbleW - 2} height="4" fill="var(--color-surface)" />
+                <text
+                  x={bubbleX + bubbleW / 2}
+                  y={bubbleY + bubbleH / 2 + 5}
+                  textAnchor="middle"
+                  fontSize="12"
+                  fill="var(--color-text)"
+                  fontFamily="Inter, sans-serif"
+                  fontWeight="600"
+                >
+                  {goatMessage}
+                </text>
+              </g>
+            );
+          })()}
 
           {/* GOAT — clickable, walking ON TOP of the mountain ridge, facing right */}
           <g
