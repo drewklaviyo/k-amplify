@@ -97,7 +97,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
   {
     slug: "rnd",
     label: "R&D",
-    teamNames: ["Amplify R&D"],
+    teamNames: ["Amplify R&D", "Amplify"],
     goalName: "Reduce PM + Design admin toil by 80%",
     pmOwner: "Christina Valente",
     initiatives: ["waif"],
