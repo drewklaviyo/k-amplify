@@ -134,63 +134,85 @@ export function MountainViz() {
           </clipPath>
           <rect x="0" y="0" width="800" height="320" fill="url(#ridgeLines)" clipPath="url(#mountainClipRidge)" />
 
-          {/* Snow cap at peak — larger coverage */}
+          {/* ═══ SNOW — covers top ~40% of the mountain ═══ */}
+          {/* Large snow field clipped to mountain shape */}
+          <clipPath id="snowClip">
+            <path d="M0,300 L40,280 L100,250 L180,220 L260,190 L340,160 L420,130 L500,100 L580,72 L650,48 L720,30 L750,25 L780,28 L800,32 L800,320 L0,320 Z" />
+          </clipPath>
+          {/* Main snow blanket — covers from ~500,100 to the peak */}
           <path
-            d="M680,45 L700,38 L720,30 L750,25 L780,28 L800,32 L798,36 L785,33 L770,30 L745,28 L725,33 L705,40 L690,44 Z"
-            fill="url(#snowGrad)"
+            d="M480,110 L500,100 L530,88 L560,78 L580,72 L610,62 L640,52 L670,44 L700,36 L720,30 L750,25 L780,28 L800,32 L800,50 L785,38 L760,32 L740,30 L720,34 L700,40 L680,48 L660,54 L640,58 L620,65 L600,72 L580,78 L560,84 L540,92 L520,98 L500,106 L490,112 Z"
+            fill="#c8d8e8"
+            opacity="0.18"
+            clipPath="url(#snowClip)"
           />
-          {/* Snow streaks extending further down the ridge */}
-          <path d="M730,32 L745,28 L760,30 L750,33 Z" fill="#ffffff" opacity="0.12" />
-          <path d="M755,27 L770,30 L780,29 L768,26 Z" fill="#ffffff" opacity="0.1" />
-          <path d="M700,38 L715,33 L730,35 L720,39 Z" fill="#ffffff" opacity="0.08" />
-          <path d="M670,50 L685,45 L700,48 L688,52 Z" fill="#ffffff" opacity="0.05" />
-          <path d="M640,58 L660,52 L675,55 L658,60 Z" fill="#ffffff" opacity="0.04" />
-          {/* Snow patches on upper slopes */}
-          <path d="M600,72 L620,66 L635,70 L618,75 Z" fill="#ffffff" opacity="0.03" />
-          <path d="M560,82 L575,77 L588,80 L572,85 Z" fill="#ffffff" opacity="0.025" />
+          {/* Bright snow on the ridge line itself */}
+          <path
+            d="M580,72 L610,62 L640,52 L670,44 L700,36 L720,30 L750,25 L780,28 L800,32 L795,36 L775,32 L755,28 L735,30 L715,34 L695,40 L675,47 L655,54 L635,60 L615,66 L595,73 Z"
+            fill="#ffffff"
+            opacity="0.2"
+          />
+          {/* Peak snow — brightest */}
+          <path
+            d="M700,36 L720,30 L750,25 L780,28 L800,32 L795,35 L770,30 L745,27 L725,32 L708,38 Z"
+            fill="#ffffff"
+            opacity="0.35"
+          />
+          {/* Snow drifts and patches scattered across upper face */}
+          <path d="M720,32 L740,28 L755,30 L742,34 Z" fill="#ffffff" opacity="0.25" />
+          <path d="M690,42 L710,36 L725,39 L708,44 Z" fill="#ffffff" opacity="0.2" />
+          <path d="M660,52 L680,46 L692,50 L674,55 Z" fill="#ffffff" opacity="0.15" />
+          <path d="M630,62 L650,55 L665,59 L648,65 Z" fill="#ffffff" opacity="0.12" />
+          <path d="M600,74 L618,67 L632,71 L616,77 Z" fill="#ffffff" opacity="0.1" />
+          <path d="M565,86 L585,78 L598,82 L580,89 Z" fill="#ffffff" opacity="0.08" />
+          <path d="M530,98 L548,91 L562,95 L546,101 Z" fill="#ffffff" opacity="0.06" />
+          <path d="M500,108 L515,102 L528,106 L514,112 Z" fill="#ffffff" opacity="0.05" />
+          {/* Wispy snow trails */}
+          <path d="M750,26 C740,30 730,28 720,32" stroke="#ffffff" strokeWidth="1" fill="none" opacity="0.15" />
+          <path d="M700,38 C690,42 678,40 668,46" stroke="#ffffff" strokeWidth="0.8" fill="none" opacity="0.1" />
+          <path d="M650,50 C640,54 628,52 618,58" stroke="#ffffff" strokeWidth="0.6" fill="none" opacity="0.08" />
 
-          {/* Ridge lines — horizontal rock striations */}
-          <line x1="200" y1="225" x2="320" y2="175" stroke="#ffffff" strokeWidth="0.4" opacity="0.05" />
-          <line x1="280" y1="200" x2="420" y2="140" stroke="#ffffff" strokeWidth="0.3" opacity="0.04" />
-          <line x1="400" y1="145" x2="540" y2="95" stroke="#ffffff" strokeWidth="0.4" opacity="0.04" />
-          <line x1="500" y1="110" x2="650" y2="55" stroke="#ffffff" strokeWidth="0.3" opacity="0.05" />
-          <line x1="580" y1="80" x2="720" y2="35" stroke="#ffffff" strokeWidth="0.3" opacity="0.04" />
-          {/* Diagonal crevasse lines */}
-          <line x1="350" y1="155" x2="370" y2="175" stroke="#1a1510" strokeWidth="0.8" opacity="0.3" />
-          <line x1="480" y1="105" x2="495" y2="120" stroke="#1a1510" strokeWidth="0.6" opacity="0.25" />
-          <line x1="620" y1="60" x2="632" y2="72" stroke="#1a1510" strokeWidth="0.5" opacity="0.2" />
+          {/* ═══ RIDGES & ROCK DETAIL ═══ */}
+          {/* Major ridge lines following the slope */}
+          <line x1="150" y1="240" x2="350" y2="162" stroke="#ffffff" strokeWidth="0.5" opacity="0.06" />
+          <line x1="250" y1="200" x2="450" y2="128" stroke="#ffffff" strokeWidth="0.4" opacity="0.05" />
+          <line x1="350" y1="168" x2="550" y2="90" stroke="#ffffff" strokeWidth="0.5" opacity="0.05" />
+          <line x1="450" y1="135" x2="620" y2="65" stroke="#ffffff" strokeWidth="0.4" opacity="0.04" />
+          {/* Dark crevasses */}
+          <line x1="320" y1="165" x2="340" y2="180" stroke="#100c08" strokeWidth="1" opacity="0.2" />
+          <line x1="420" y1="132" x2="438" y2="148" stroke="#100c08" strokeWidth="0.8" opacity="0.18" />
+          <line x1="520" y1="100" x2="535" y2="112" stroke="#100c08" strokeWidth="0.7" opacity="0.15" />
+          <line x1="610" y1="65" x2="622" y2="76" stroke="#100c08" strokeWidth="0.6" opacity="0.12" />
 
-          {/* Scattered rocks/boulders — more of them */}
-          <circle cx="120" cy="248" r="3" fill="#3d3025" opacity="0.6" />
-          <circle cx="180" cy="228" r="2" fill="#352a1e" opacity="0.5" />
-          <circle cx="250" cy="192" r="2.5" fill="#3d3025" opacity="0.5" />
-          <circle cx="320" cy="168" r="1.8" fill="#352a1e" opacity="0.4" />
-          <circle cx="380" cy="145" r="3.5" fill="#3d3025" opacity="0.5" />
-          <circle cx="450" cy="125" r="2" fill="#352a1e" opacity="0.45" />
-          <circle cx="510" cy="98" r="2" fill="#4a3828" opacity="0.6" />
-          <circle cx="575" cy="78" r="1.5" fill="#4a3828" opacity="0.4" />
-          <circle cx="640" cy="52" r="2.5" fill="#4a3828" opacity="0.5" />
-          <circle cx="700" cy="40" r="1.5" fill="#4a3828" opacity="0.4" />
-          <ellipse cx="300" cy="170" rx="5" ry="3" fill="#2a2018" opacity="0.4" />
+          {/* Scattered rocks/boulders */}
+          <ellipse cx="180" cy="226" rx="6" ry="3" fill="#2a2018" opacity="0.5" />
+          <ellipse cx="300" cy="172" rx="5" ry="3" fill="#2a2018" opacity="0.4" />
           <ellipse cx="440" cy="130" rx="4" ry="2" fill="#2a2018" opacity="0.35" />
-          <ellipse cx="550" cy="85" rx="4" ry="2.5" fill="#2a2018" opacity="0.4" />
-          <ellipse cx="680" cy="48" rx="3" ry="1.5" fill="#2a2018" opacity="0.3" />
+          <ellipse cx="550" cy="86" rx="4" ry="2.5" fill="#2a2018" opacity="0.3" />
+          <circle cx="130" cy="246" r="3" fill="#3d3025" opacity="0.5" />
+          <circle cx="250" cy="194" r="2.5" fill="#3d3025" opacity="0.4" />
+          <circle cx="380" cy="147" r="3" fill="#3d3025" opacity="0.4" />
+          <circle cx="510" cy="100" r="2" fill="#4a3828" opacity="0.5" />
+          <circle cx="640" cy="54" r="2" fill="#4a3828" opacity="0.4" />
 
-          {/* Base camp near the bottom — small tents */}
-          <g transform="translate(55, 278)" opacity="0.6">
-            {/* Tent 1 */}
-            <polygon points="0,0 6,-10 12,0" fill="#4a3828" stroke="#5a4838" strokeWidth="0.5" />
-            <line x1="6" y1="-10" x2="6" y2="-13" stroke="#8b8b9e" strokeWidth="0.5" />
-            {/* Tent 2 */}
-            <polygon points="16,0 21,-8 26,0" fill="#3d2e1a" stroke="#4a3828" strokeWidth="0.5" />
-            {/* Small flag */}
-            <line x1="21" y1="-8" x2="21" y2="-12" stroke="#8b8b9e" strokeWidth="0.4" />
-            <path d="M21,-12 L26,-11 L21,-10 Z" fill="var(--color-accent)" opacity="0.6" />
-            {/* Ground line */}
-            <line x1="-4" y1="0" x2="30" y2="0" stroke="#4a3828" strokeWidth="0.8" opacity="0.4" />
+          {/* ═══ BASE CAMP — clearly visible at bottom-left ═══ */}
+          <g transform="translate(30, 260)">
+            {/* Flat ground area */}
+            <ellipse cx="30" cy="22" rx="40" ry="4" fill="#2a2018" opacity="0.4" />
+            {/* Tent 1 — orange accent tent (largest) */}
+            <polygon points="8,20 22,0 36,20" fill="#4a3020" stroke="#E67E22" strokeWidth="1" opacity="0.8" />
+            <line x1="22" y1="0" x2="22" y2="20" stroke="#E67E22" strokeWidth="0.5" opacity="0.4" />
+            {/* Tent 2 — smaller */}
+            <polygon points="40,20 50,6 60,20" fill="#3d2a18" stroke="#8b8b9e" strokeWidth="0.7" opacity="0.7" />
+            {/* Flag pole on tent 1 */}
+            <line x1="22" y1="0" x2="22" y2="-8" stroke="#8b8b9e" strokeWidth="0.8" />
+            <path d="M22,-8 L30,-6 L22,-4 Z" fill="var(--color-accent)" opacity="0.9" />
+            {/* Campfire glow */}
+            <circle cx="48" cy="18" r="2" fill="#E67E22" opacity="0.3" />
+            <circle cx="48" cy="18" r="1" fill="#F0A050" opacity="0.5" />
           </g>
-          {/* Base camp label */}
-          <text x="75" y="272" textAnchor="middle" fill="var(--color-text-secondary)" fontSize="7" fontFamily="Inter, sans-serif" opacity="0.4">
+          {/* Base camp label — bigger, more visible */}
+          <text x="60" y="252" textAnchor="middle" fill="var(--color-text-secondary)" fontSize="9" fontWeight="600" fontFamily="Inter, sans-serif" opacity="0.6" letterSpacing="1">
             BASE CAMP
           </text>
 
@@ -268,41 +290,57 @@ export function MountainViz() {
             </g>
           )}
 
-          {/* Speech bubble when goat is clicked */}
+          {/* Speech bubble when goat is clicked — positioned well above the goat */}
           {goatMessage && (() => {
-            const bubbleW = 220;
-            const bubbleH = 36;
-            const bubbleX = Math.max(10, Math.min(goatX - bubbleW / 2, 800 - bubbleW - 10));
-            const bubbleY = goatY - 75;
+            const bubbleW = 240;
+            const bubbleH = 40;
+            // Position bubble 55px above the goat (goat is at goatY-18, so bubble bottom at goatY-55)
+            const bubbleBottom = goatY - 55;
+            const bubbleY = Math.max(4, bubbleBottom - bubbleH);
+            const bubbleX = Math.max(8, Math.min(goatX - bubbleW / 2, 800 - bubbleW - 8));
+            // Clamp pointer x within the bubble
+            const pointerX = Math.max(bubbleX + 16, Math.min(goatX, bubbleX + bubbleW - 16));
             return (
               <g>
+                {/* Shadow */}
+                <rect
+                  x={bubbleX + 2}
+                  y={bubbleY + 2}
+                  width={bubbleW}
+                  height={bubbleH}
+                  rx="12"
+                  fill="#000"
+                  opacity="0.3"
+                />
+                {/* Bubble body */}
                 <rect
                   x={bubbleX}
                   y={bubbleY}
                   width={bubbleW}
                   height={bubbleH}
-                  rx="10"
-                  fill="var(--color-surface)"
-                  stroke="var(--color-border)"
-                  strokeWidth="1"
-                  opacity="0.95"
+                  rx="12"
+                  fill="var(--color-surface-2)"
+                  stroke="var(--color-accent)"
+                  strokeWidth="1.5"
                 />
-                {/* Pointer triangle */}
+                {/* Pointer triangle — below bubble, pointing at goat */}
                 <polygon
-                  points={`${goatX - 6},${bubbleY + bubbleH} ${goatX + 6},${bubbleY + bubbleH} ${goatX},${bubbleY + bubbleH + 8}`}
-                  fill="var(--color-surface)"
-                  stroke="var(--color-border)"
-                  strokeWidth="1"
+                  points={`${pointerX - 7},${bubbleY + bubbleH - 1} ${pointerX + 7},${bubbleY + bubbleH - 1} ${pointerX},${bubbleY + bubbleH + 10}`}
+                  fill="var(--color-surface-2)"
+                  stroke="var(--color-accent)"
+                  strokeWidth="1.5"
                 />
-                <rect x={bubbleX + 1} y={bubbleY + bubbleH - 2} width={bubbleW - 2} height="4" fill="var(--color-surface)" />
+                {/* Cover the triangle's top edge overlap */}
+                <rect x={pointerX - 8} y={bubbleY + bubbleH - 3} width="16" height="4" fill="var(--color-surface-2)" />
+                {/* Text */}
                 <text
                   x={bubbleX + bubbleW / 2}
                   y={bubbleY + bubbleH / 2 + 5}
                   textAnchor="middle"
-                  fontSize="12"
+                  fontSize="13"
                   fill="var(--color-text)"
                   fontFamily="Inter, sans-serif"
-                  fontWeight="600"
+                  fontWeight="700"
                 >
                   {goatMessage}
                 </text>
