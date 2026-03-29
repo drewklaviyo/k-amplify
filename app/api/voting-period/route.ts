@@ -29,7 +29,25 @@ export async function GET() {
       awards = awardData;
     }
 
-    return NextResponse.json({ period, awards });
+    // Get previous period's awards (last week's winners)
+    let previousAwards = null;
+    const { data: prevPeriod } = await supabase
+      .from("voting_periods")
+      .select("*")
+      .eq("status", "announced")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (prevPeriod && prevPeriod.id !== period.id) {
+      const { data: prevAwardData } = await supabase
+        .from("awards")
+        .select("*, submissions(*)")
+        .eq("voting_period_id", prevPeriod.id);
+      previousAwards = prevAwardData;
+    }
+
+    return NextResponse.json({ period, awards, previousPeriod: prevPeriod?.id !== period.id ? prevPeriod : null, previousAwards });
   } catch (error) {
     console.error("Error fetching voting period:", error);
     return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });

@@ -6,6 +6,8 @@ import type { VotingPeriod, Award, Submission, SubmissionWithVotes } from "@/lib
 interface PeriodResponse {
   period: VotingPeriod | null;
   awards: (Award & { submissions: Submission })[] | null;
+  previousPeriod: VotingPeriod | null;
+  previousAwards: (Award & { submissions: Submission })[] | null;
 }
 
 const GOAT_QUOTES = [
@@ -37,6 +39,26 @@ const MEDALS = ["🥇", "🥈", "🥉"];
 
 interface VotingStatusProps {
   submissions?: SubmissionWithVotes[];
+}
+
+function WinnerLink({ award, label }: { award: Award & { submissions: Submission }; label: string }) {
+  const loomUrl = award.submissions?.loom_url;
+  return (
+    <span className="inline-flex items-center gap-1">
+      <strong>{award.winner_name}</strong>
+      <span className="text-xs opacity-70">({label})</span>
+      {loomUrl && (
+        <a
+          href={loomUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-0.5 text-xs underline underline-offset-2 opacity-80 hover:opacity-100 transition-opacity"
+        >
+          ▶ Watch
+        </a>
+      )}
+    </span>
+  );
 }
 
 export function VotingStatus({ submissions = [] }: VotingStatusProps) {
@@ -74,60 +96,101 @@ export function VotingStatus({ submissions = [] }: VotingStatusProps) {
 
   if (!data?.period) return null;
 
-  const { period, awards } = data;
+  const { period, awards, previousAwards } = data;
 
+  // Previous week's winners banner
+  const prevBuilder = previousAwards?.find((a) => a.category === "builder");
+  const prevLearner = previousAwards?.find((a) => a.category === "learner");
+  const hasPrevWinners = prevBuilder || prevLearner;
+
+  // Current week announced
   if (period.status === "announced" && awards && awards.length > 0) {
     const builder = awards.find((a) => a.category === "builder");
     const learner = awards.find((a) => a.category === "learner");
     return (
-      <div className="rounded-xl border border-accent/30 bg-accent/8 p-4 mb-6">
-        <p className="text-sm font-semibold text-accent-light">
-          🐐 This week&apos;s GOATs: {builder?.winner_name ?? "TBD"} (Builder) & {learner?.winner_name ?? "TBD"} (Learner)
-        </p>
+      <div className="space-y-3 mb-6">
+        <div className="rounded-xl border border-accent/30 bg-accent/8 p-4">
+          <p className="text-sm font-semibold text-accent-light flex flex-wrap items-center gap-1.5">
+            🐐 This week&apos;s GOATs:{" "}
+            {builder && <WinnerLink award={builder} label="Builder" />}
+            {builder && learner && <span>&</span>}
+            {learner && <WinnerLink award={learner} label="Learner" />}
+          </p>
+        </div>
       </div>
     );
   }
 
+  // Voting closed
   if (period.status === "closed") {
     return (
-      <div className="rounded-xl border border-orange/30 bg-orange/8 p-4 mb-6">
-        <p className="text-sm font-medium text-orange">
-          Voting closed — winners being tallied
-        </p>
+      <div className="space-y-3 mb-6">
+        {hasPrevWinners && (
+          <PreviousWinnersBanner builder={prevBuilder} learner={prevLearner} />
+        )}
+        <div className="rounded-xl border border-orange/30 bg-orange/8 p-4">
+          <p className="text-sm font-medium text-orange">
+            Voting closed — winners being tallied
+          </p>
+        </div>
       </div>
     );
   }
 
-  // Open — show leaderboard or motivational quote
+  // Voting open
   return (
-    <div className="rounded-xl border border-green/30 bg-green/8 p-4 mb-6">
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-medium text-green">
-          Voting open — closes Friday 4:00 PM ET
-        </p>
-        <span className="text-xs text-green/80 font-mono tabular-nums">{countdown}</span>
-      </div>
-
-      {leaderboard.length > 0 ? (
-        <div className="flex gap-4 mt-2">
-          {leaderboard.map((s, i) => (
-            <div key={s.id} className="flex items-center gap-2 min-w-0">
-              <span className="text-base shrink-0">{MEDALS[i]}</span>
-              <div className="min-w-0">
-                <p className="text-xs text-text font-medium truncate">{s.submitter_name}</p>
-                <p className="text-[10px] text-green/70 truncate">{s.title}</p>
-              </div>
-              <span className="text-xs text-green font-bold tabular-nums shrink-0 ml-1">
-                {s.totalVotes}
-              </span>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-xs text-green/70 mt-1">
-          {GOAT_QUOTES[quoteIndex]}
-        </p>
+    <div className="space-y-3 mb-6">
+      {hasPrevWinners && (
+        <PreviousWinnersBanner builder={prevBuilder} learner={prevLearner} />
       )}
+      <div className="rounded-xl border border-green/30 bg-green/8 p-4">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-sm font-medium text-green">
+            Voting open — closes Friday 4:00 PM ET
+          </p>
+          <span className="text-xs text-green/80 font-mono tabular-nums">{countdown}</span>
+        </div>
+
+        {leaderboard.length > 0 ? (
+          <div className="flex gap-4 mt-2">
+            {leaderboard.map((s, i) => (
+              <div key={s.id} className="flex items-center gap-2 min-w-0">
+                <span className="text-base shrink-0">{MEDALS[i]}</span>
+                <div className="min-w-0">
+                  <p className="text-xs text-text font-medium truncate">{s.submitter_name}</p>
+                  <p className="text-[10px] text-green/70 truncate">{s.title}</p>
+                </div>
+                <span className="text-xs text-green font-bold tabular-nums shrink-0 ml-1">
+                  {s.totalVotes}
+                </span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-xs text-green/70 mt-1">
+            {GOAT_QUOTES[quoteIndex]}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PreviousWinnersBanner({
+  builder,
+  learner,
+}: {
+  builder?: (Award & { submissions: Submission }) | null;
+  learner?: (Award & { submissions: Submission }) | null;
+}) {
+  return (
+    <div className="rounded-xl border border-accent/20 bg-accent/5 px-4 py-3">
+      <p className="text-xs font-semibold text-accent-light/80 flex flex-wrap items-center gap-1.5">
+        🏆 Last week&apos;s GOATs:{" "}
+        {builder && <WinnerLink award={builder} label="Builder" />}
+        {builder && learner && <span className="text-accent-light/50">&</span>}
+        {learner && <WinnerLink award={learner} label="Learner" />}
+      </p>
     </div>
   );
 }
