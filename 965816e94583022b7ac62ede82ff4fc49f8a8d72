@@ -1,0 +1,25 @@
+app/api/voting-period/route.ts
+  6936130eadf6a10e 32-50
+components/voting-status.tsx
+  6936130eadf6a10e 9-10,44-63,99,101-106,111-119,124,127-135,140,142-152,154-165,167-193
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.22",
+  "base_commit_sha": "965816e94583022b7ac62ede82ff4fc49f8a8d72",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo <drew.kull@klaviyo.com>",
+      "messages": [],
+      "total_additions": 118,
+      "total_deletions": 37,
+      "accepted_lines": 118,
+      "overriden_lines": 0
+    }
+  }
+}
