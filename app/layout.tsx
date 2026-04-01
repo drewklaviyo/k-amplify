@@ -7,6 +7,19 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Base K:Amplify",
   description: "Base Camp for Amplify's climb to 501K hours saved",
+  metadataBase: new URL("https://kamplify.team"),
+  openGraph: {
+    title: "Base K:Amplify",
+    description: "Base Camp for Amplify's climb to 501K hours saved",
+    url: "https://kamplify.team",
+    siteName: "Base K:Amplify",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Base K:Amplify",
+    description: "Base Camp for Amplify's climb to 501K hours saved",
+  },
 };
 
 export default function RootLayout({
