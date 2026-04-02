@@ -1,0 +1,25 @@
+components/custom-select.tsx
+  6936130eadf6a10e 1-78
+app/intake/page.tsx
+  6936130eadf6a10e 6,100,102-105,110,112-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.4",
+  "base_commit_sha": "543be3db92c6ff0dd0a7520b0a05669c3a02e94f",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 89,
+      "total_deletions": 20,
+      "accepted_lines": 89,
+      "overriden_lines": 0
+    }
+  }
+}
