@@ -13,7 +13,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/signin",
   },
   callbacks: {
-    authorized({ auth }) {
+    authorized({ auth, request }) {
+      // Allow API routes through (cron jobs, internal calls)
+      if (request.nextUrl.pathname.startsWith("/api")) return true;
+      // Allow public pages
+      if (request.nextUrl.pathname === "/signin") return true;
+      // Everything else requires auth
       return !!auth?.user;
     },
   },
