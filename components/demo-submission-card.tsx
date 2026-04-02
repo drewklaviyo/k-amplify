@@ -34,6 +34,9 @@ interface DemoSubmissionCardProps {
   votingOpen: boolean;
   showVoting: boolean;
   onVote: (submissionId: string, category: "builder" | "learner") => void;
+  likeCount?: number;
+  isLiked?: boolean;
+  onLike?: (submissionId: string) => void;
 }
 
 export function DemoSubmissionCard({
@@ -45,6 +48,9 @@ export function DemoSubmissionCard({
   votingOpen,
   showVoting,
   onVote,
+  likeCount = 0,
+  isLiked = false,
+  onLike,
 }: DemoSubmissionCardProps) {
   const orgColor = ORG_COLORS[submission.org_slug] ?? "#8888a0";
   const orgLabel = ORG_LABELS[submission.org_slug] ?? submission.org_slug;
@@ -122,12 +128,15 @@ export function DemoSubmissionCard({
             submissionId={submission.id}
             builderVotes={submission.builder_votes}
             learnerVotes={submission.learner_votes}
+            likeCount={likeCount}
+            isLiked={isLiked}
             userBuilderVote={userBuilderVote}
             userLearnerVote={userLearnerVote}
             userEmail={userEmail}
             userName={userName}
             votingOpen={votingOpen}
             onVote={onVote}
+            onLike={onLike ?? (() => {})}
           />
         )}
       </div>

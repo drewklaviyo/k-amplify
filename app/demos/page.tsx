@@ -30,6 +30,10 @@ export default function DemosPage() {
   const [votingOpen, setVotingOpen] = useState(false);
   const [currentPeriod, setCurrentPeriod] = useState<VotingPeriod | null>(null);
 
+  // Likes state
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const [userLikes, setUserLikes] = useState<Set<string>>(new Set());
+
   // Archive state
   const [archivePeriods, setArchivePeriods] = useState<VotingPeriod[]>([]);
   const [selectedArchivePeriod, setSelectedArchivePeriod] = useState<string>("all");
@@ -61,6 +65,18 @@ export default function DemosPage() {
       })
       .catch(() => {});
   }, []);
+
+  // Fetch likes
+  useEffect(() => {
+    const email = userEmail ?? "";
+    fetch(`/api/likes?email=${encodeURIComponent(email)}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setLikeCounts(d.likeCounts ?? {});
+        setUserLikes(new Set(d.userLikes ?? []));
+      })
+      .catch(() => {});
+  }, [userEmail]);
 
   // Fetch voting period
   useEffect(() => {
@@ -171,6 +187,20 @@ export default function DemosPage() {
     document.cookie = `bka_user_name=${encodeURIComponent(name)}; path=/; max-age=${30 * 86400}`;
     setUserEmail(email);
     setUserName(name);
+  };
+
+  const handleLike = (submissionId: string) => {
+    const wasLiked = userLikes.has(submissionId);
+    setUserLikes((prev) => {
+      const next = new Set(prev);
+      if (wasLiked) next.delete(submissionId);
+      else next.add(submissionId);
+      return next;
+    });
+    setLikeCounts((prev) => ({
+      ...prev,
+      [submissionId]: (prev[submissionId] ?? 0) + (wasLiked ? -1 : 1),
+    }));
   };
 
   const handleVote = (submissionId: string, category: "builder" | "learner") => {
@@ -383,6 +413,9 @@ export default function DemosPage() {
                   votingOpen={votingOpen}
                   showVoting={tab === "this-week"}
                   onVote={handleVote}
+                  likeCount={likeCounts[sub.id] ?? 0}
+                  isLiked={userLikes.has(sub.id)}
+                  onLike={handleLike}
                 />
               ))}
             </div>

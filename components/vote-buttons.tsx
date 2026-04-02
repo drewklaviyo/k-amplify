@@ -6,26 +6,33 @@ interface VoteButtonsProps {
   submissionId: string;
   builderVotes: number;
   learnerVotes: number;
-  userBuilderVote: string | null; // submission ID the user voted for as builder
-  userLearnerVote: string | null; // submission ID the user voted for as learner
+  likeCount: number;
+  isLiked: boolean;
+  userBuilderVote: string | null;
+  userLearnerVote: string | null;
   userEmail: string | null;
   userName: string | null;
   votingOpen: boolean;
   onVote: (submissionId: string, category: "builder" | "learner") => void;
+  onLike: (submissionId: string) => void;
 }
 
 export function VoteButtons({
   submissionId,
   builderVotes,
   learnerVotes,
+  likeCount,
+  isLiked,
   userBuilderVote,
   userLearnerVote,
   userEmail,
   userName,
   votingOpen,
   onVote,
+  onLike,
 }: VoteButtonsProps) {
   const [loading, setLoading] = useState<"builder" | "learner" | null>(null);
+  const [likeLoading, setLikeLoading] = useState(false);
 
   const isBuilderVoted = userBuilderVote === submissionId;
   const isLearnerVoted = userLearnerVote === submissionId;
@@ -53,6 +60,23 @@ export function VoteButtons({
       // Silently fail
     } finally {
       setLoading(null);
+    }
+  };
+
+  const handleLike = async () => {
+    if (!userEmail || likeLoading) return;
+    setLikeLoading(true);
+    try {
+      await fetch("/api/likes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ submissionId, userEmail }),
+      });
+      onLike(submissionId);
+    } catch {
+      // Silently fail
+    } finally {
+      setLikeLoading(false);
     }
   };
 
@@ -87,6 +111,21 @@ export function VoteButtons({
         <span>Learner</span>
         <span className="bg-bg/50 px-1.5 py-0.5 rounded text-[10px] tabular-nums font-semibold">
           {learnerVotes}
+        </span>
+      </button>
+
+      <button
+        onClick={handleLike}
+        disabled={!userEmail || likeLoading}
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+          isLiked
+            ? "bg-pink-500/20 text-pink-400 border-pink-500/40 shadow-sm"
+            : "bg-surface-2 text-text-secondary border-border hover:text-text hover:border-pink-500/30"
+        } ${!userEmail ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+      >
+        <span>{likeLoading ? "..." : isLiked ? "❤️" : "🤍"}</span>
+        <span className="bg-bg/50 px-1.5 py-0.5 rounded text-[10px] tabular-nums font-semibold">
+          {likeCount}
         </span>
       </button>
     </div>
