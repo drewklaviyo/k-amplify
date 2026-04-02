@@ -1,0 +1,29 @@
+app/api/likes/route.ts
+  6936130eadf6a10e 1-65
+components/demo-submission-card.tsx
+  6936130eadf6a10e 37-39,51-53,131-132,139
+components/vote-buttons.tsx
+  6936130eadf6a10e 9-12,17,24-25,32,35,66-82,116-128
+app/demos/page.tsx
+  6936130eadf6a10e 33-36,69-80,192-205,416-418
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.4",
+  "base_commit_sha": "0a52ac1d935065227c50023c9182759f76211ff7",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 148,
+      "total_deletions": 2,
+      "accepted_lines": 148,
+      "overriden_lines": 0
+    }
+  }
+}
