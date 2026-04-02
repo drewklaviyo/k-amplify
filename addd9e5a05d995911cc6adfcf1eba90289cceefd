@@ -1,0 +1,23 @@
+middleware.ts
+  6936130eadf6a10e 1,3-22,26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.4",
+  "base_commit_sha": "addd9e5a05d995911cc6adfcf1eba90289cceefd",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 23,
+      "total_deletions": 13,
+      "accepted_lines": 23,
+      "overriden_lines": 0
+    }
+  }
+}
