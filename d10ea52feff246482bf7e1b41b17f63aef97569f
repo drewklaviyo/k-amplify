@@ -1,0 +1,25 @@
+components/roadmap-grid.tsx
+  6936130eadf6a10e 1-533
+app/roadmap/page.tsx
+  6936130eadf6a10e 8-9,21-30,32-38,50,52-56,65,69-80,83-88,91,104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.4",
+  "base_commit_sha": "d10ea52feff246482bf7e1b41b17f63aef97569f",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 579,
+      "total_deletions": 93,
+      "accepted_lines": 579,
+      "overriden_lines": 0
+    }
+  }
+}
