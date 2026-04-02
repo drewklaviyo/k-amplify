@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePageTitle } from "@/lib/use-page-title";
 import {
   INITIATIVE_LIST,
@@ -7,11 +8,25 @@ import {
   ORG_CONFIGS,
   INITIATIVES,
 } from "@/lib/config";
+import { MarkdownContent } from "@/components/markdown-content";
 import Link from "next/link";
 import type { InitiativeSlug } from "@/lib/types";
+import type { InitiativeUpdateData } from "@/app/api/initiatives/route";
 
 export default function InitiativesPage() {
   usePageTitle("Initiatives");
+  const [updates, setUpdates] = useState<Record<string, InitiativeUpdateData>>({});
+
+  useEffect(() => {
+    fetch("/api/initiatives")
+      .then((r) => r.json())
+      .then((d) => {
+        const map: Record<string, InitiativeUpdateData> = {};
+        for (const u of d.initiatives ?? []) map[u.slug] = u;
+        setUpdates(map);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <div className="pt-10 animate-in">
@@ -120,6 +135,32 @@ export default function InitiativesPage() {
                     </svg>
                   </a>
                 </div>
+
+                {/* Latest Update from Linear */}
+                {updates[init.slug]?.latestUpdate && (() => {
+                  const u = updates[init.slug].latestUpdate!;
+                  const healthColor = u.health === "onTrack" ? "text-green" : u.health === "atRisk" ? "text-orange" : u.health === "offTrack" ? "text-red" : "text-text-secondary";
+                  const healthLabel = u.health === "onTrack" ? "On Track" : u.health === "atRisk" ? "At Risk" : u.health === "offTrack" ? "Off Track" : null;
+                  const preview = u.body.length > 300 ? u.body.substring(0, 300).replace(/\s\S*$/, "").trim() + "..." : u.body;
+                  return (
+                    <div className="mb-5">
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide">
+                          Latest Update
+                        </div>
+                        {healthLabel && (
+                          <span className={`text-[0.6rem] font-semibold ${healthColor}`}>{healthLabel}</span>
+                        )}
+                      </div>
+                      <div className="text-[0.68rem] text-text-secondary/60 mb-1.5">
+                        {u.author} · {new Date(u.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                      </div>
+                      <div className="bg-bg rounded-lg p-3 border border-border text-[0.8rem] leading-relaxed max-h-40 overflow-y-auto">
+                        <MarkdownContent>{preview}</MarkdownContent>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Key Product / Key Work (if applicable) */}
                 {details.keyProduct && (

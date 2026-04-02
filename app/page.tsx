@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePageTitle } from "@/lib/use-page-title";
 import { GoalSummary, ActivityItem, OrgSlug } from "@/lib/types";
+import type { InitiativeUpdateData } from "@/app/api/initiatives/route";
 import { OrgCard } from "@/components/org-card";
 import { GridSkeleton } from "@/components/skeleton";
 import { INITIATIVE_LIST, INITIATIVE_DETAILS, ORG_CONFIGS, ORG_BY_SLUG } from "@/lib/config";
@@ -15,6 +16,7 @@ export default function HomePage() {
   const [demoCounts, setDemoCounts] = useState<Record<OrgSlug, number> | null>(null);
   const [activity, setActivity] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [initUpdates, setInitUpdates] = useState<Record<string, InitiativeUpdateData>>({});
   usePageTitle("Home");
 
   useEffect(() => {
@@ -27,6 +29,15 @@ export default function HomePage() {
       })
       .catch(() => setGoals([]))
       .finally(() => setLoading(false));
+
+    fetch("/api/initiatives")
+      .then((r) => r.json())
+      .then((d) => {
+        const map: Record<string, InitiativeUpdateData> = {};
+        for (const u of d.initiatives ?? []) map[u.slug] = u;
+        setInitUpdates(map);
+      })
+      .catch(() => {});
   }, []);
 
   // Compute summary stats
@@ -109,6 +120,9 @@ export default function HomePage() {
               {INITIATIVE_LIST.map((init) => {
                 const details = INITIATIVE_DETAILS[init.slug];
                 const orgs = ORG_CONFIGS.filter((c) => c.initiatives.includes(init.slug));
+                const update = initUpdates[init.slug];
+                const health = update?.latestUpdate?.health ?? update?.health;
+                const healthColor = health === "onTrack" ? "bg-green" : health === "atRisk" ? "bg-orange" : health === "offTrack" ? "bg-red" : null;
                 return (
                   <Link
                     key={init.slug}
@@ -121,8 +135,14 @@ export default function HomePage() {
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: init.color }} />
                         <span className="text-sm font-bold" style={{ color: init.color }}>{init.name}</span>
+                        {healthColor && <div className={`w-2 h-2 rounded-full ${healthColor} ml-auto`} />}
                       </div>
                       <p className="text-[0.78rem] text-text-secondary mb-3">{details.goal}</p>
+                      {update?.latestUpdate && (
+                        <p className="text-[0.68rem] text-text-secondary/60 mb-2">
+                          Updated {new Date(update.latestUpdate.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })} by {update.latestUpdate.author}
+                        </p>
+                      )}
                       <div className="flex items-center gap-2 flex-wrap">
                         <span
                           className="inline-flex text-[0.7rem] font-semibold px-2 py-0.5 rounded-md border"
