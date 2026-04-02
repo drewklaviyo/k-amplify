@@ -3,6 +3,7 @@
 import { useState, FormEvent } from "react";
 import { OrgSlug } from "@/lib/types";
 import { ORG_CONFIGS, INTAKE_REQUEST_TYPES, INTAKE_URGENCIES } from "@/lib/config";
+import { CustomSelect } from "@/components/custom-select";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -96,32 +97,22 @@ export default function IntakePage() {
 
         <div>
           <label className="block text-sm font-medium mb-1.5">Team</label>
-          <select
-            required
+          <CustomSelect
             value={team}
-            onChange={(e) => setTeam(e.target.value as OrgSlug)}
-            className={inputClasses}
-          >
-            <option value="" disabled>Select a team</option>
-            {ORG_CONFIGS.map((c) => (
-              <option key={c.slug} value={c.slug}>{c.label}</option>
-            ))}
-          </select>
+            onChange={(v) => setTeam(v as OrgSlug)}
+            options={ORG_CONFIGS.map((c) => ({ value: c.slug, label: c.label }))}
+            placeholder="Select a team"
+          />
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-1.5">Request type</label>
-          <select
-            required
+          <CustomSelect
             value={requestType}
-            onChange={(e) => setRequestType(e.target.value)}
-            className={inputClasses}
-          >
-            <option value="" disabled>Select type</option>
-            {INTAKE_REQUEST_TYPES.map((t) => (
-              <option key={t} value={t}>{t}</option>
-            ))}
-          </select>
+            onChange={setRequestType}
+            options={INTAKE_REQUEST_TYPES.map((t) => ({ value: t, label: t }))}
+            placeholder="Select type"
+          />
         </div>
 
         <div>
