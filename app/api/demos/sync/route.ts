@@ -34,7 +34,7 @@ function getCurrentWeekPeriod() {
 
 // GraphQL query for issue comments with Loom URLs
 const TEAM_ISSUE_COMMENTS_QUERY = `
-  query TeamIssueComments($teamId: String!, $after: String, $updatedAfter: DateTime) {
+  query TeamIssueComments($teamId: String!, $after: String, $updatedAfter: DateTimeOrDuration) {
     team(id: $teamId) {
       issues(first: 50, after: $after, filter: { updatedAt: { gte: $updatedAfter } }) {
         nodes {
