@@ -133,9 +133,12 @@ export default function HomePage() {
                     <div className="absolute top-0 left-0 right-0 h-16 opacity-[0.03] pointer-events-none" style={{ background: `linear-gradient(180deg, ${init.color}, transparent)` }} />
                     <div className="relative p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: init.color }} />
-                        <span className="text-sm font-bold" style={{ color: init.color }}>{init.name}</span>
-                        {healthColor && <div className={`w-2 h-2 rounded-full ${healthColor} ml-auto`} />}
+                        {healthColor ? (
+                          <div className={`w-2 h-2 rounded-full ${healthColor} shrink-0`} />
+                        ) : (
+                          <div className="w-2 h-2 rounded-full bg-text-secondary/30 shrink-0" />
+                        )}
+                        <span className="text-sm font-bold text-text">{init.name}</span>
                       </div>
                       <p className="text-[0.78rem] text-text-secondary mb-3">{details.goal}</p>
                       {update?.latestUpdate && (

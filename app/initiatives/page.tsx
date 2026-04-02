@@ -13,9 +13,40 @@ import Link from "next/link";
 import type { InitiativeSlug } from "@/lib/types";
 import type { InitiativeUpdateData } from "@/app/api/initiatives/route";
 
+const UPDATE_COLLAPSE_THRESHOLD = 400;
+
+function HealthDot({ health }: { health: string | null }) {
+  const color =
+    health === "onTrack"
+      ? "bg-green"
+      : health === "atRisk"
+        ? "bg-orange"
+        : health === "offTrack"
+          ? "bg-red"
+          : "bg-text-secondary/40";
+  return <span className={`inline-block w-2 h-2 rounded-full shrink-0 ${color}`} />;
+}
+
+function healthLabel(health: string | null): string | null {
+  if (health === "onTrack") return "On Track";
+  if (health === "atRisk") return "At Risk";
+  if (health === "offTrack") return "Off Track";
+  return null;
+}
+
+function healthTextColor(health: string | null): string {
+  if (health === "onTrack") return "text-green";
+  if (health === "atRisk") return "text-orange";
+  if (health === "offTrack") return "text-red";
+  return "text-text-secondary";
+}
+
 export default function InitiativesPage() {
   usePageTitle("Initiatives");
-  const [updates, setUpdates] = useState<Record<string, InitiativeUpdateData>>({});
+  const [updates, setUpdates] = useState<Record<string, InitiativeUpdateData>>(
+    {}
+  );
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetch("/api/initiatives")
@@ -28,9 +59,12 @@ export default function InitiativesPage() {
       .catch(() => {});
   }, []);
 
+  const toggleExpanded = (slug: string) =>
+    setExpanded((prev) => ({ ...prev, [slug]: !prev[slug] }));
+
   return (
     <div className="pt-10 animate-in">
-      <div className="mb-8">
+      <div className="mb-10">
         <h1 className="text-[2.2rem] font-extrabold tracking-tight leading-tight mb-2 text-gradient">
           Initiatives
         </h1>
@@ -40,175 +74,163 @@ export default function InitiativesPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 stagger-in">
+      <div className="space-y-2 stagger-in">
         {INITIATIVE_LIST.map((init) => {
           const details = INITIATIVE_DETAILS[init.slug];
           const orgs = ORG_CONFIGS.filter((c) =>
             c.initiatives.includes(init.slug)
           );
+          const update = updates[init.slug]?.latestUpdate;
+          const initHealth = updates[init.slug]?.health ?? null;
+          const isLong =
+            update && update.body.length > UPDATE_COLLAPSE_THRESHOLD;
+          const isExpanded = expanded[init.slug] ?? false;
 
           return (
             <div
               key={init.slug}
-              className="bg-surface border border-border rounded-xl overflow-hidden hover:border-border/80 transition-colors relative group"
+              className="border-b border-border pb-8 last:border-b-0 last:pb-0"
             >
-              {/* Colored accent bar */}
-              <div
-                className="h-1.5"
-                style={{
-                  background: `linear-gradient(90deg, ${init.color}, ${init.color}88)`,
-                }}
-              />
-
-              {/* Subtle background glow */}
-              <div
-                className="absolute top-0 left-0 right-0 h-24 opacity-[0.04] pointer-events-none"
-                style={{
-                  background: `linear-gradient(180deg, ${init.color}, transparent)`,
-                }}
-              />
-
-              <div className="relative p-6">
-                {/* Initiative name */}
-                <div className="flex items-center gap-2.5 mb-4">
-                  <div
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                    style={{ backgroundColor: init.color }}
-                  />
+              {/* Header row */}
+              <div className="flex items-start justify-between gap-4 mb-1.5">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <HealthDot health={initHealth} />
                   <h2
-                    className="text-lg font-bold tracking-tight"
+                    className="text-[1.1rem] font-semibold tracking-tight truncate"
                     style={{ color: init.color }}
                   >
                     {init.name}
                   </h2>
                 </div>
-
-                {/* Goal */}
-                <div className="mb-5">
-                  <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
-                    Goal
-                  </div>
-                  <p className="text-[0.88rem] font-semibold leading-snug">
-                    {details.goal}
-                  </p>
-                </div>
-
-                {/* Target Metric */}
-                <div className="mb-5">
-                  <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
-                    Target Metric
-                  </div>
-                  <div
-                    className="inline-flex items-center text-[0.82rem] font-bold px-3 py-1.5 rounded-lg border"
-                    style={{
-                      color: init.color,
-                      backgroundColor: `${init.color}14`,
-                      borderColor: `${init.color}25`,
-                    }}
-                  >
-                    {details.targetMetric}
-                  </div>
-                </div>
-
-                {/* Owner */}
-                <div className="mb-5">
-                  <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
-                    Owner
-                  </div>
-                  <p className="text-[0.85rem] text-text">{details.owner}</p>
-                </div>
-
-                {/* Linear Initiative */}
-                <div className="mb-5">
-                  <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
-                    Linear Initiative
-                  </div>
+                <div className="flex items-center gap-4 shrink-0 text-[0.82rem] text-text-secondary">
+                  <span>{details.owner}</span>
                   <a
                     href={details.linearUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[0.82rem] text-accent-light hover:text-accent transition-colors"
+                    className="inline-flex items-center gap-1 text-text-secondary hover:text-text transition-colors"
                   >
-                    {details.linearInitiative}
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    Linear
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      />
                     </svg>
                   </a>
                 </div>
+              </div>
 
-                {/* Latest Update from Linear */}
-                {updates[init.slug]?.latestUpdate && (() => {
-                  const u = updates[init.slug].latestUpdate!;
-                  const healthColor = u.health === "onTrack" ? "text-green" : u.health === "atRisk" ? "text-orange" : u.health === "offTrack" ? "text-red" : "text-text-secondary";
-                  const healthLabel = u.health === "onTrack" ? "On Track" : u.health === "atRisk" ? "At Risk" : u.health === "offTrack" ? "Off Track" : null;
-                  const preview = u.body.length > 300 ? u.body.substring(0, 300).replace(/\s\S*$/, "").trim() + "..." : u.body;
-                  return (
-                    <div className="mb-5">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide">
-                          Latest Update
-                        </div>
-                        {healthLabel && (
-                          <span className={`text-[0.6rem] font-semibold ${healthColor}`}>{healthLabel}</span>
-                        )}
-                      </div>
-                      <div className="text-[0.68rem] text-text-secondary/60 mb-1.5">
-                        {u.author} · {new Date(u.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                      </div>
-                      <div className="bg-bg rounded-lg p-3 border border-border text-[0.8rem] leading-relaxed max-h-40 overflow-y-auto">
-                        <MarkdownContent>{preview}</MarkdownContent>
-                      </div>
-                    </div>
-                  );
-                })()}
+              {/* Goal */}
+              <p className="text-[0.88rem] text-text-secondary leading-relaxed mb-3 ml-[18px]">
+                {details.goal}
+              </p>
 
-                {/* Key Product / Key Work (if applicable) */}
+              {/* Metadata row */}
+              <div className="flex items-center gap-3 ml-[18px] mb-5 flex-wrap">
+                <span className="text-[0.78rem] font-medium text-text bg-surface-2 border border-border px-2.5 py-1 rounded-md">
+                  {details.targetMetric}
+                </span>
                 {details.keyProduct && (
-                  <div className="mb-5">
-                    <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
-                      Key Product
-                    </div>
-                    <p className="text-[0.82rem] text-text">
-                      {details.keyProduct}
-                    </p>
-                  </div>
+                  <span className="text-[0.78rem] text-text-secondary">
+                    Product: {details.keyProduct}
+                  </span>
                 )}
                 {details.keyWork && (
-                  <div className="mb-5">
-                    <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-1.5">
-                      Key Work
-                    </div>
-                    <p className="text-[0.82rem] text-text-secondary leading-relaxed">
-                      {details.keyWork}
-                    </p>
-                  </div>
+                  <span className="text-[0.78rem] text-text-secondary">
+                    Work: {details.keyWork}
+                  </span>
                 )}
-
-                {/* Org chips */}
-                <div className="border-t border-border pt-4 mt-auto">
-                  <div className="text-[0.65rem] font-semibold text-text-secondary uppercase tracking-wide mb-2.5">
-                    Orgs ({orgs.length})
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {orgs.map((org) => (
+                <span className="text-[0.78rem] text-text-secondary/60">|</span>
+                <span className="text-[0.78rem] text-text-secondary">
+                  Orgs:{" "}
+                  {orgs.map((org, i) => (
+                    <span key={org.slug}>
+                      {i > 0 && ", "}
                       <Link
-                        key={org.slug}
                         href={`/roadmap?team=${org.slug}`}
-                        className="text-[0.72rem] font-medium px-2.5 py-1 rounded-lg border border-border bg-surface-2 text-text-secondary hover:text-text hover:border-border/80 transition-all"
+                        className="hover:text-text transition-colors underline decoration-border underline-offset-2 hover:decoration-text-secondary"
                       >
                         {org.label}
                       </Link>
-                    ))}
+                    </span>
+                  ))}
+                </span>
+              </div>
+
+              {/* Latest Update */}
+              {update && (
+                <div className="ml-[18px]">
+                  <div className="flex items-center gap-2 text-[0.75rem] text-text-secondary mb-2">
+                    <span className="font-medium uppercase tracking-wider">
+                      Latest Update
+                    </span>
+                    <span className="text-text-secondary/30">---</span>
+                    {healthLabel(update.health) && (
+                      <span
+                        className={`font-semibold ${healthTextColor(update.health)}`}
+                      >
+                        {healthLabel(update.health)}
+                      </span>
+                    )}
+                    <span className="text-text-secondary/50">·</span>
+                    <span>{update.author}</span>
+                    <span className="text-text-secondary/50">·</span>
+                    <span>
+                      {new Date(update.date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+
+                  <div className="text-[0.875rem] leading-relaxed text-text">
+                    {isLong && !isExpanded ? (
+                      <>
+                        <MarkdownContent>
+                          {update.body
+                            .substring(0, UPDATE_COLLAPSE_THRESHOLD)
+                            .replace(/\s\S*$/, "")
+                            .trim() + "..."}
+                        </MarkdownContent>
+                        <button
+                          onClick={() => toggleExpanded(init.slug)}
+                          className="text-[0.8rem] text-text-secondary hover:text-text mt-1.5 transition-colors"
+                        >
+                          Show more
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <MarkdownContent>{update.body}</MarkdownContent>
+                        {isLong && (
+                          <button
+                            onClick={() => toggleExpanded(init.slug)}
+                            className="text-[0.8rem] text-text-secondary hover:text-text mt-1.5 transition-colors"
+                          >
+                            Show less
+                          </button>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           );
         })}
       </div>
 
       {/* Summary row */}
-      <div className="mt-10 bg-surface-2/50 border border-border rounded-xl p-5 text-[0.78rem] text-text-secondary">
+      <div className="mt-10 border border-border rounded-lg p-5 text-[0.78rem] text-text-secondary">
         <div className="font-semibold text-text mb-2 text-xs uppercase tracking-wide">
           How Initiatives Map to Orgs
         </div>
