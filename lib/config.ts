@@ -92,7 +92,7 @@ export const ORG_CONFIGS: OrgConfig[] = [
   },
   {
     slug: "cs",
-    label: "CS/Services",
+    label: "Success/Services",
     teamNames: ["Amplify Success & Services"],
     goalName: "Increase CSM time with customers by 30%",
     pmOwner: "Tyler Beck",
