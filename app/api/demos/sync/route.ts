@@ -34,9 +34,9 @@ function getCurrentWeekPeriod() {
 
 // GraphQL query for issue comments with Loom URLs
 const TEAM_ISSUE_COMMENTS_QUERY = `
-  query TeamIssueComments($teamId: String!, $after: String) {
+  query TeamIssueComments($teamId: String!, $after: String, $updatedAfter: DateTime) {
     team(id: $teamId) {
-      issues(first: 50, after: $after) {
+      issues(first: 50, after: $after, filter: { updatedAt: { gte: $updatedAfter } }) {
         nodes {
           id
           title
@@ -200,15 +200,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Scan issue comments for Loom URLs
+    // Scan issue comments for Loom URLs (paginated, last 30 days)
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
     for (const team of data.teams) {
       try {
-        const commentsData = await linearGraphQL<IssueCommentsResponse>(
+        let cursor: string | null = null;
+        let hasMore = true;
+
+        while (hasMore) {
+        const commentsData: IssueCommentsResponse = await linearGraphQL<IssueCommentsResponse>(
           TEAM_ISSUE_COMMENTS_QUERY,
-          { teamId: team.id },
+          { teamId: team.id, after: cursor, updatedAfter: thirtyDaysAgo },
         );
 
-        if (!commentsData.team) continue;
+        if (!commentsData.team) break;
 
         for (const issue of commentsData.team.issues.nodes) {
           for (const comment of issue.comments.nodes) {
@@ -247,6 +252,11 @@ export async function POST(request: NextRequest) {
               if (!error) syncedCount++;
             }
           }
+        }
+
+        // Paginate
+        hasMore = commentsData.team.issues.pageInfo.hasNextPage;
+        cursor = commentsData.team.issues.pageInfo.endCursor;
         }
       } catch (err) {
         console.error(`Error scanning comments for team ${team.name}:`, err);
