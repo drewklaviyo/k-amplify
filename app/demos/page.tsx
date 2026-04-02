@@ -35,20 +35,31 @@ export default function DemosPage() {
   const [selectedArchivePeriod, setSelectedArchivePeriod] = useState<string>("all");
   const [winnersOnly, setWinnersOnly] = useState(false);
 
-  // Load email from cookie on mount
+  // Load user from Okta session (fallback to cookie for backwards compat)
   useEffect(() => {
-    const savedEmail = document.cookie
-      .split("; ")
-      .find((c) => c.startsWith("bka_user_email="))
-      ?.split("=")[1];
-    const savedName = document.cookie
-      .split("; ")
-      .find((c) => c.startsWith("bka_user_name="))
-      ?.split("=")[1];
-    if (savedEmail) {
-      setUserEmail(decodeURIComponent(savedEmail));
-      setUserName(savedName ? decodeURIComponent(savedName) : null);
-    }
+    fetch("/api/auth/session-info")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.user?.email) {
+          setUserEmail(d.user.email);
+          setUserName(d.user.name ?? d.user.email);
+        } else {
+          // Fallback to cookie
+          const savedEmail = document.cookie
+            .split("; ")
+            .find((c) => c.startsWith("bka_user_email="))
+            ?.split("=")[1];
+          const savedName = document.cookie
+            .split("; ")
+            .find((c) => c.startsWith("bka_user_name="))
+            ?.split("=")[1];
+          if (savedEmail) {
+            setUserEmail(decodeURIComponent(savedEmail));
+            setUserName(savedName ? decodeURIComponent(savedName) : null);
+          }
+        }
+      })
+      .catch(() => {});
   }, []);
 
   // Fetch voting period
@@ -253,37 +264,6 @@ export default function DemosPage() {
         <SummitBoard />
       ) : (
         <>
-          {/* Email identification (pre-Okta) */}
-          {tab === "this-week" && !userEmail && (
-            <div className="rounded-xl border border-border bg-surface p-4 mb-6">
-              <p className="text-sm font-medium text-text mb-3">Enter your email to vote</p>
-              <div className="flex gap-2 flex-wrap">
-                <input
-                  type="text"
-                  placeholder="Your name"
-                  value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
-                  className="bg-bg border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/50 focus:border-accent/50 focus:outline-none w-40"
-                />
-                <input
-                  type="email"
-                  placeholder="you@klaviyo.com"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleIdentify()}
-                  className="bg-bg border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/50 focus:border-accent/50 focus:outline-none flex-1 min-w-[200px]"
-                />
-                <button
-                  onClick={handleIdentify}
-                  disabled={!emailInput.endsWith("@klaviyo.com")}
-                  className="px-4 py-2 bg-accent/15 text-accent-light text-sm font-medium rounded-lg hover:bg-accent/25 border border-accent/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Start voting
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Voting status banner */}
           {tab === "this-week" && <VotingStatus submissions={submissions} />}
 

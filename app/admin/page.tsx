@@ -35,13 +35,14 @@ export default function AdminPage() {
   const [editingConfig, setEditingConfig] = useState<string | null>(null);
   const [configValue, setConfigValue] = useState("");
 
-  // Load admin email from cookie
+  // Load admin email from Okta session
   useEffect(() => {
-    const email = document.cookie
-      .split("; ")
-      .find((c) => c.startsWith("bka_user_email="))
-      ?.split("=")[1];
-    if (email) setAdminEmail(decodeURIComponent(email));
+    fetch("/api/auth/session-info")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.user?.email) setAdminEmail(d.user.email);
+      })
+      .catch(() => {});
   }, []);
 
   // Fetch voting period and submissions
