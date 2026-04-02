@@ -1,0 +1,29 @@
+app/page.tsx
+  6936130eadf6a10e 6,19,32-40,123-125,138,141-145
+app/initiatives/page.tsx
+  6936130eadf6a10e 3,11,14,18-29,139-164
+lib/config.ts
+  6936130eadf6a10e 33,44-45,52,61-62
+app/api/initiatives/route.ts
+  6936130eadf6a10e 1-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.4",
+  "base_commit_sha": "573b263cc0028c7602884064caf9ffff44eb7de7",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 183,
+      "total_deletions": 2,
+      "accepted_lines": 183,
+      "overriden_lines": 0
+    }
+  }
+}
