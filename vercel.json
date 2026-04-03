@@ -3,6 +3,7 @@
   "crons": [
     { "path": "/api/demos/sync", "schedule": "*/15 * * * *" },
     { "path": "/api/people/sync", "schedule": "0 3 * * *" },
-    { "path": "/api/voting-period/close", "schedule": "0 20 * * 5" }
+    { "path": "/api/voting-period/close", "schedule": "0 20 * * 5" },
+    { "path": "/api/analytics/compute", "schedule": "30 * * * *" }
   ]
 }

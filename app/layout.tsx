@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nav } from "@/components/nav";
 import { LayoutProvider } from "@/components/layout-context";
 import { MainContainer } from "@/components/main-container";
+import { AnalyticsProvider } from "@/lib/analytics/provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -39,10 +40,12 @@ export default function RootLayout({
       </head>
       <body>
         <LayoutProvider>
-          <Nav />
-          <MainContainer>
-            {children}
-          </MainContainer>
+          <AnalyticsProvider>
+            <Nav />
+            <MainContainer>
+              {children}
+            </MainContainer>
+          </AnalyticsProvider>
         </LayoutProvider>
       </body>
     </html>
