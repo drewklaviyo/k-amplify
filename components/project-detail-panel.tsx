@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import type { ProjectSummary } from "@/lib/types";
 import { MarkdownContent } from "./markdown-content";
+import { HealthBadge } from "./health-badge";
 
 interface ProjectDetailPanelProps {
   project: ProjectSummary;
@@ -160,7 +161,7 @@ export function ProjectDetailPanel({
       />
 
       {/* Panel */}
-      <div className="fixed top-0 right-0 h-full w-[480px] max-w-[90vw] z-50 bg-surface border-l border-border shadow-2xl shadow-black/50 overflow-y-auto animate-in"
+      <div className="fixed top-0 right-0 h-full w-[520px] max-w-[90vw] z-50 bg-surface border-l border-border shadow-2xl shadow-black/50 overflow-y-auto animate-in"
         style={{ animation: "slideInRight 0.25s ease-out both" }}
       >
         {/* Header */}
@@ -223,10 +224,19 @@ export function ProjectDetailPanel({
 
         {/* Content */}
         <div className="p-6 pt-0 space-y-5">
+          {/* Description */}
           {project.description && (
-            <p className="text-sm text-text-secondary leading-relaxed mt-3">
-              {project.description}
-            </p>
+            <div className="mt-3">
+              <MarkdownContent>{project.description}</MarkdownContent>
+            </div>
+          )}
+
+          {/* Team name */}
+          {project.teamName && (
+            <div className="flex items-center gap-2 text-xs text-text-secondary">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: barColor }} />
+              <span>{project.teamName}</span>
+            </div>
           )}
 
           {/* Mini timeline */}
