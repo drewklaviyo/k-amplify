@@ -47,7 +47,9 @@ interface TeamMembersResponse {
   } | null;
 }
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) { return handleSync(request); }
+export async function POST(request: NextRequest) { return handleSync(request); }
+async function handleSync(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization");
     if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {

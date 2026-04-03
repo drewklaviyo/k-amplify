@@ -3,7 +3,9 @@ import { createServerSupabase } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) { return handleClose(request); }
+export async function POST(request: NextRequest) { return handleClose(request); }
+async function handleClose(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization");
     if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {

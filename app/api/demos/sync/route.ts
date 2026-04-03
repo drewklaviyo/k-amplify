@@ -77,7 +77,17 @@ interface IssueCommentsResponse {
   } | null;
 }
 
+// Vercel crons send GET requests
+export async function GET(request: NextRequest) {
+  return handleSync(request);
+}
+
+// Manual sync from admin sends POST
 export async function POST(request: NextRequest) {
+  return handleSync(request);
+}
+
+async function handleSync(request: NextRequest) {
   try {
     // Verify cron secret in production
     const authHeader = request.headers.get("authorization");
