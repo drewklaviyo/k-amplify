@@ -1,0 +1,43 @@
+lib/analytics/provider.tsx
+  6936130eadf6a10e 1-215
+app/api/analytics/compute/route.ts
+  6936130eadf6a10e 1-20
+app/admin/metrics/page.tsx
+  6936130eadf6a10e 1-512
+lib/analytics/collector.ts
+  6936130eadf6a10e 1-109
+lib/analytics/compute-daily.ts
+  6936130eadf6a10e 1-118
+app/layout.tsx
+  6936130eadf6a10e 5,43-48
+app/api/analytics/stats/route.ts
+  6936130eadf6a10e 1-250
+vercel.json
+  6936130eadf6a10e 6-7
+app/api/analytics/live/route.ts
+  6936130eadf6a10e 1-100
+app/api/analytics/collect/route.ts
+  6936130eadf6a10e 1-154
+lib/analytics/session.ts
+  6936130eadf6a10e 1-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "285f29c6047e6c2a771346c9ffed1c19cf85f16b",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 1556,
+      "total_deletions": 7,
+      "accepted_lines": 1554,
+      "overriden_lines": 0
+    }
+  }
+}
