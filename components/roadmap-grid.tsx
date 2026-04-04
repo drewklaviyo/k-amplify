@@ -168,6 +168,7 @@ function ProjectCard({
 
 export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
   const [zoom, setZoom] = useState<ZoomLevel>("month");
+  const [showBacklog, setShowBacklog] = useState(false);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
     null,
   );
@@ -331,11 +332,19 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
             <span className="inline-block w-2 h-2 rounded-full bg-accent/60" />
             {datedCount} with dates
           </span>
-          <span className="text-border">|</span>
-          <span className="flex items-center gap-1.5">
-            <span className="inline-block w-2 h-2 rounded-full bg-surface-2 border border-border" />
-            {backlogProjects.length} backlog
-          </span>
+          {backlogProjects.length > 0 && (
+            <>
+              <span className="text-border">|</span>
+              <button
+                onClick={() => setShowBacklog(!showBacklog)}
+                className={`flex items-center gap-1.5 transition-colors ${showBacklog ? "text-text" : "text-text-secondary hover:text-text"}`}
+              >
+                <span className="inline-block w-2 h-2 rounded-full bg-surface-2 border border-border" />
+                {backlogProjects.length} backlog
+                <span className="text-[10px]">{showBacklog ? "▾" : "▸"}</span>
+              </button>
+            </>
+          )}
         </div>
         <div className="flex gap-0.5 bg-surface border border-border rounded-xl p-1">
           {(["quarter", "month", "week"] as const).map((level) => (
@@ -478,8 +487,8 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
               </div>
             ))}
 
-            {/* Backlog / No Date column */}
-            {backlogProjects.length > 0 && (
+            {/* Backlog / No Date column — hidden by default */}
+            {showBacklog && backlogProjects.length > 0 && (
               <div
                 className="shrink-0 rounded-xl border border-dashed border-border/50 bg-surface/20"
                 style={{ width: colWidth }}
