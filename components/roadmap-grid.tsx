@@ -180,22 +180,25 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
   );
 
   // Build month buckets
-  const { monthBuckets, backlogProjects } = useMemo(() => {
+  const { monthBuckets, backlogProjects, undatedProjects } = useMemo(() => {
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();
 
     // Collect all projects by month key
     const byMonth = new Map<string, ProjectSummary[]>();
-    const backlog: ProjectSummary[] = [];
+    const backlog: ProjectSummary[] = []; // Status = "Backlog" — hidden by default
+    const undated: ProjectSummary[] = []; // No date but not Backlog status — always visible
 
     for (const p of allProjects) {
       if (p.targetDate) {
         const key = getMonthKey(p.targetDate);
         if (!byMonth.has(key)) byMonth.set(key, []);
         byMonth.get(key)!.push(p);
-      } else {
+      } else if (p.status.name.toLowerCase() === "backlog") {
         backlog.push(p);
+      } else {
+        undated.push(p);
       }
     }
 
@@ -260,7 +263,7 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
       }
     }
 
-    return { monthBuckets: buckets, backlogProjects: sortProjects(backlog) };
+    return { monthBuckets: buckets, backlogProjects: sortProjects(backlog), undatedProjects: sortProjects(undated) };
   }, [allProjects]);
 
   // Group month buckets by quarter for rendering quarter headers
@@ -321,7 +324,7 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
 
   const colWidth = ZOOM_CONFIG[zoom].columnWidth;
   const totalProjects = allProjects.length;
-  const datedCount = totalProjects - backlogProjects.length;
+  const datedCount = totalProjects - backlogProjects.length - undatedProjects.length;
 
   return (
     <div className="relative animate-in">
@@ -332,6 +335,15 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
             <span className="inline-block w-2 h-2 rounded-full bg-accent/60" />
             {datedCount} with dates
           </span>
+          {undatedProjects.length > 0 && (
+            <>
+              <span className="text-border">|</span>
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block w-2 h-2 rounded-full bg-orange/60" />
+                {undatedProjects.length} no date
+              </span>
+            </>
+          )}
           {backlogProjects.length > 0 && (
             <>
               <span className="text-border">|</span>
@@ -487,8 +499,8 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
               </div>
             ))}
 
-            {/* Backlog / No Date column — hidden by default */}
-            {showBacklog && backlogProjects.length > 0 && (
+            {/* No Date column — always visible for undated non-backlog projects */}
+            {(undatedProjects.length > 0 || (showBacklog && backlogProjects.length > 0)) && (
               <div
                 className="shrink-0 rounded-xl border border-dashed border-border/50 bg-surface/20"
                 style={{ width: colWidth }}
@@ -499,12 +511,12 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
                       No Date
                     </span>
                     <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-orange/10 text-orange border border-orange/20">
-                      {backlogProjects.length}
+                      {undatedProjects.length + (showBacklog ? backlogProjects.length : 0)}
                     </span>
                   </div>
                 </div>
                 <div className="p-2 space-y-2">
-                  {backlogProjects.map((project) => (
+                  {undatedProjects.map((project) => (
                     <ProjectCard
                       key={project.id}
                       project={project}
@@ -512,6 +524,25 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
                       onClick={() => handleCardClick(project.id)}
                     />
                   ))}
+                  {showBacklog && backlogProjects.length > 0 && (
+                    <>
+                      {undatedProjects.length > 0 && (
+                        <div className="flex items-center gap-2 pt-1 pb-0.5">
+                          <div className="flex-1 h-px bg-border/50" />
+                          <span className="text-[9px] text-text-secondary/50 uppercase tracking-wider">Backlog</span>
+                          <div className="flex-1 h-px bg-border/50" />
+                        </div>
+                      )}
+                      {backlogProjects.map((project) => (
+                        <ProjectCard
+                          key={project.id}
+                          project={project}
+                          zoom={zoom}
+                          onClick={() => handleCardClick(project.id)}
+                        />
+                      ))}
+                    </>
+                  )}
                 </div>
               </div>
             )}
