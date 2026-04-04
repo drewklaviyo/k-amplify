@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
 import { linearGraphQL, fetchAmplifyData } from "@/lib/linear";
-import { extractLoomUrls } from "@/lib/loom";
+import { extractLoomUrls, extractDescription } from "@/lib/loom";
 
 export const dynamic = "force-dynamic";
 
@@ -164,6 +164,7 @@ async function handleSync(request: NextRequest) {
                 source_id: update.id,
                 source_project_name: project.name,
                 source_url: project.url ?? null,
+                description: extractDescription(update.body),
                 voting_period_id: isThisWeek ? votingPeriodId : null,
                 posted_at: update.createdAt,
               },
@@ -253,6 +254,7 @@ async function handleSync(request: NextRequest) {
                   source_id: comment.id,
                   source_project_name: issue.title,
                   source_url: issue.url ?? null,
+                  description: extractDescription(comment.body),
                   voting_period_id: isThisWeek ? votingPeriodId : null,
                   posted_at: comment.createdAt,
                 },

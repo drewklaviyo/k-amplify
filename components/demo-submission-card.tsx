@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { SubmissionWithVotes } from "@/lib/supabase-types";
 import { VoteButtons } from "./vote-buttons";
 
@@ -16,7 +17,7 @@ const ORG_LABELS: Record<string, string> = {
   sales: "Sales",
   demos: "Demos",
   support: "Support",
-  cs: "CS/Services",
+  cs: "Success/Services",
   rnd: "R&D",
   marketing: "Marketing",
 };
@@ -24,6 +25,8 @@ const ORG_LABELS: Record<string, string> = {
 function toEmbedUrl(loomUrl: string): string {
   return loomUrl.replace("/share/", "/embed/");
 }
+
+const DESC_TRUNCATE = 120;
 
 interface DemoSubmissionCardProps {
   submission: SubmissionWithVotes;
@@ -52,11 +55,14 @@ export function DemoSubmissionCard({
   isLiked = false,
   onLike,
 }: DemoSubmissionCardProps) {
+  const [descExpanded, setDescExpanded] = useState(false);
   const orgColor = ORG_COLORS[submission.org_slug] ?? "#8888a0";
   const orgLabel = ORG_LABELS[submission.org_slug] ?? submission.org_slug;
+  const desc = (submission as SubmissionWithVotes & { description?: string }).description ?? "";
+  const isLongDesc = desc.length > DESC_TRUNCATE;
 
   return (
-    <div className="bg-surface border border-border rounded-xl overflow-hidden mb-4 hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 transition-all shadow-sm shadow-black/10 group">
+    <div className="bg-surface border border-border rounded-xl overflow-hidden hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5 transition-all shadow-sm shadow-black/10 group">
       {/* Loom embed */}
       <div className="relative w-full" style={{ paddingBottom: "56.25%" }}>
         <iframe
@@ -69,7 +75,7 @@ export function DemoSubmissionCard({
       </div>
 
       <div className="p-4">
-        {/* Title + org tag + GOAT badge */}
+        {/* Title + org tag + badges */}
         <div className="flex items-center gap-2 mb-1 flex-wrap">
           <h3 className="font-semibold text-sm">{submission.title}</h3>
           <span
@@ -121,6 +127,25 @@ export function DemoSubmissionCard({
             year: "numeric",
           })}
         </p>
+
+        {/* Description */}
+        {desc && (
+          <div className="mt-2">
+            <p className="text-xs text-text-secondary/80 leading-relaxed">
+              {isLongDesc && !descExpanded
+                ? desc.substring(0, DESC_TRUNCATE).replace(/\s\S*$/, "").trim() + "..."
+                : desc}
+            </p>
+            {isLongDesc && (
+              <button
+                onClick={() => setDescExpanded(!descExpanded)}
+                className="text-[0.68rem] text-text-secondary/60 hover:text-text-secondary mt-0.5 transition-colors"
+              >
+                {descExpanded ? "Show less" : "Show more"}
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Vote buttons */}
         {showVoting && (

@@ -8,11 +8,20 @@ import { DemoSubmissionCard } from "@/components/demo-submission-card";
 import { VotingStatus } from "@/components/voting-status";
 import { SummitBoard } from "@/components/summit-board";
 import { HowVotingWorks } from "@/components/how-voting-works";
+import { useLayout } from "@/components/layout-context";
 import { CardSkeleton } from "@/components/skeleton";
 
 type Tab = "this-week" | "archive" | "summit-board";
 
 export default function DemosPage() {
+  const { setWide } = useLayout();
+
+  // Use wide layout for demos
+  useEffect(() => {
+    setWide(true);
+    return () => { setWide(false); };
+  }, [setWide]);
+
   const [tab, setTab] = useState<Tab>("this-week");
   const [filter, setFilter] = useState<OrgSlug | "all">("all");
   const [submissions, setSubmissions] = useState<SubmissionWithVotes[]>([]);
