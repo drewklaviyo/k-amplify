@@ -1,0 +1,31 @@
+lib/supabase-types.ts
+  6936130eadf6a10e 26
+lib/loom.ts
+  6936130eadf6a10e 8-39
+app/api/demos/sync/route.ts
+  6936130eadf6a10e 4,167,257
+components/demo-submission-card.tsx
+  6936130eadf6a10e 3,20,29-30,58,61-62,65,78,131-148
+app/demos/page.tsx
+  6936130eadf6a10e 11,17-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "51fd96fbffc345948b28f801b65d5fdeeb85e872",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 73,
+      "total_deletions": 4,
+      "accepted_lines": 73,
+      "overriden_lines": 0
+    }
+  }
+}
