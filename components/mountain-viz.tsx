@@ -651,92 +651,112 @@ export function MountainViz() {
             clipPath="url(#mountainClip)"
           />
 
-          {/* ═══ GLIDE PATH — red dashed line showing quarterly targets ═══ */}
+          {/* ═══ GLIDE PATH — J-curve showing time (X) vs hours target (Y) ═══ */}
           {(() => {
-            // Quarterly glide path targets
-            const glidePoints = [
-              { label: "Q1", fraction: 17604 / 501000, hours: 17604 },   // Mar
-              { label: "Q2", fraction: 95844 / 501000, hours: 95844 },   // Jun
-              { label: "Q3", fraction: 293268 / 501000, hours: 293268 }, // Sep
-              { label: "Q4", fraction: 501000 / 501000, hours: 501000 }, // Dec
+            // X axis = time through the year (0% = Jan 1, 100% = Dec 31)
+            // Y axis = hours target as fraction of 501K (mapped to mountain height)
+            // This creates the J-curve: flat in Q1, steep ramp Q3-Q4
+
+            const glideData = [
+              { label: "Jan", timeFrac: 0.0, hoursFrac: 0 },
+              { label: "Q1",  timeFrac: 0.25, hoursFrac: 17604 / 501000 },   // 3.5%
+              { label: "Q2",  timeFrac: 0.5,  hoursFrac: 95844 / 501000 },   // 19.1%
+              { label: "Q3",  timeFrac: 0.75, hoursFrac: 293268 / 501000 },  // 58.5%
+              { label: "Q4",  timeFrac: 1.0,  hoursFrac: 1.0 },              // 100%
             ];
 
-            const points = glidePoints.map((gp) => ({
-              ...gp,
-              x: getX(gp.fraction),
-              y: getY(gp.fraction),
+            // Map time to X position (left edge to right edge of mountain)
+            const minX = 40;  // left edge of mountain
+            const maxX = 760; // right edge of mountain
+            const timeToX = (t: number) => minX + t * (maxX - minX);
+
+            const points = glideData.map((gd) => ({
+              ...gd,
+              x: timeToX(gd.timeFrac),
+              y: getY(gd.hoursFrac),
             }));
 
-            // Build SVG path through glide points (start from base)
-            const startX = getX(0);
-            const startY = getY(0);
-            const pathD = `M${startX},${startY} ${points.map((p) => `L${p.x},${p.y}`).join(" ")}`;
+            // Build smooth cubic bezier curve through points
+            const p = points;
+            const pathD = `M${p[0].x},${p[0].y} C${p[0].x + 60},${p[0].y} ${p[1].x - 40},${p[1].y} ${p[1].x},${p[1].y} C${p[1].x + 50},${p[1].y} ${p[2].x - 50},${p[2].y} ${p[2].x},${p[2].y} C${p[2].x + 40},${p[2].y} ${p[3].x - 40},${p[3].y} ${p[3].x},${p[3].y} C${p[3].x + 30},${p[3].y} ${p[4].x - 30},${p[4].y} ${p[4].x},${p[4].y}`;
 
-            // Calculate "where you should be today" based on day of year
+            // Today marker — interpolate on the curve
             const now = new Date();
             const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
-            const yearProgress = dayOfYear / 365;
-            // Interpolate on the glide path curve
-            const quarterBoundaries = [0, 0.25, 0.5, 0.75, 1.0]; // Q1=0-25%, Q2=25-50%, etc.
-            const quarterTargets = [0, 17604 / 501000, 95844 / 501000, 293268 / 501000, 1.0];
-            let todayTarget = 0;
-            for (let i = 0; i < quarterBoundaries.length - 1; i++) {
-              if (yearProgress >= quarterBoundaries[i] && yearProgress <= quarterBoundaries[i + 1]) {
-                const qProgress = (yearProgress - quarterBoundaries[i]) / (quarterBoundaries[i + 1] - quarterBoundaries[i]);
-                todayTarget = quarterTargets[i] + qProgress * (quarterTargets[i + 1] - quarterTargets[i]);
+            const yearProgress = Math.min(dayOfYear / 365, 1);
+
+            // Interpolate hours target for today
+            let todayHoursFrac = 0;
+            for (let i = 0; i < glideData.length - 1; i++) {
+              if (yearProgress >= glideData[i].timeFrac && yearProgress <= glideData[i + 1].timeFrac) {
+                const segProgress = (yearProgress - glideData[i].timeFrac) / (glideData[i + 1].timeFrac - glideData[i].timeFrac);
+                todayHoursFrac = glideData[i].hoursFrac + segProgress * (glideData[i + 1].hoursFrac - glideData[i].hoursFrac);
                 break;
               }
             }
-            const todayX = getX(todayTarget);
-            const todayY = getY(todayTarget);
+            const todayX = timeToX(yearProgress);
+            const todayY = getY(todayHoursFrac);
+            const todayTargetK = Math.round(todayHoursFrac * 501);
 
             return (
               <g>
-                {/* Glide path line — red dashed */}
+                {/* Glide path curve — red dashed */}
                 <path
                   d={pathD}
                   fill="none"
                   stroke="var(--color-red)"
                   strokeWidth="2"
                   strokeDasharray="6,4"
-                  opacity="0.6"
+                  opacity="0.5"
+                  clipPath="url(#mountainMasterClip)"
                 />
 
-                {/* Quarter target dots */}
-                {points.map((p) => (
-                  <g key={p.label}>
+                {/* Quarter target dots (skip Jan start) */}
+                {points.slice(1).map((pt) => (
+                  <g key={pt.label}>
                     <circle
-                      cx={p.x} cy={p.y} r="3.5"
+                      cx={pt.x} cy={pt.y} r="3"
                       fill="var(--color-red)"
-                      opacity="0.7"
+                      opacity="0.6"
                     />
                     <text
-                      x={p.x} y={p.y + 16}
+                      x={pt.x} y={Math.min(pt.y + 14, 310)}
                       textAnchor="middle"
                       fill="var(--color-red)"
                       fontSize="8"
                       fontWeight="600"
                       fontFamily="Inter, sans-serif"
-                      opacity="0.6"
+                      opacity="0.5"
                     >
-                      {p.label}
+                      {pt.label}
                     </text>
                   </g>
                 ))}
 
-                {/* "You should be here" marker on glide path */}
+                {/* Today's target marker — where you SHOULD be */}
                 <circle
-                  cx={todayX} cy={todayY} r="5"
+                  cx={todayX} cy={todayY} r="6"
                   fill="none"
                   stroke="var(--color-red)"
-                  strokeWidth="2"
-                  opacity="0.8"
+                  strokeWidth="1.5"
+                  opacity="0.7"
                 />
                 <circle
-                  cx={todayX} cy={todayY} r="2"
+                  cx={todayX} cy={todayY} r="2.5"
                   fill="var(--color-red)"
-                  opacity="0.9"
+                  opacity="0.8"
                 />
+                <text
+                  x={todayX} y={Math.min(todayY + 18, 310)}
+                  textAnchor="middle"
+                  fill="var(--color-red)"
+                  fontSize="8"
+                  fontWeight="700"
+                  fontFamily="Inter, sans-serif"
+                  opacity="0.7"
+                >
+                  Target: {todayTargetK}K
+                </text>
               </g>
             );
           })()}
