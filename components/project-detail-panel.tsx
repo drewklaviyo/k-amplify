@@ -50,10 +50,10 @@ function MiniTimeline({ project }: { project: ProjectSummary }) {
       <p className="text-[10px] text-text-secondary font-medium uppercase tracking-wider mb-3">
         Timeline
       </p>
-      <div className="relative h-10 rounded-xl bg-bg border border-border overflow-hidden">
+      <div className="relative h-10 rounded-xl bg-bg border border-border overflow-visible">
         {/* Project bar */}
         <div
-          className="absolute top-2 h-6 rounded-lg"
+          className="absolute top-2 h-6 rounded-lg overflow-hidden"
           style={{
             left: `${barStartPct}%`,
             width: `${barWidthPct}%`,
