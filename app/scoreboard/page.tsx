@@ -400,16 +400,20 @@ export default function ScoreboardPage() {
                   </div>
                   <ProgressBar value={org.hoursSaved} target={org.hoursTarget} />
                 </td>
-                <td className="px-4 py-3 text-text-secondary">
-                  <div className="font-medium">--</div>
+                <td className="px-4 py-3">
+                  <div className={`font-medium ${org.keyMetricValue ? "text-text" : "text-text-secondary"}`}>
+                    {org.keyMetricValue || "--"}
+                  </div>
                   <div className="text-[0.7rem] text-text-secondary/60">
-                    {org.keyMetricLabel}
+                    {org.keyMetricLabel}{org.keyMetricTarget ? ` (target: ${org.keyMetricTarget})` : ""}
                   </div>
                 </td>
-                <td className="px-4 py-3 text-text-secondary">
-                  <div className="font-medium">--</div>
+                <td className="px-4 py-3">
+                  <div className={`font-medium ${org.adoptionValue ? "text-text" : "text-text-secondary"}`}>
+                    {org.adoptionValue || "--"}
+                  </div>
                   <div className="text-[0.7rem] text-text-secondary/60">
-                    {org.adoptionLabel}
+                    {org.adoptionLabel}{org.adoptionTarget ? ` (target: ${org.adoptionTarget})` : ""}
                   </div>
                 </td>
                 <td className="px-4 py-3 text-right">

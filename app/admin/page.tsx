@@ -4,6 +4,90 @@ import { useEffect, useState, useCallback } from "react";
 import type { VotingPeriod, SubmissionWithVotes, ConfigRow, Person, HoursSaved } from "@/lib/supabase-types";
 import { ORG_CONFIGS } from "@/lib/config";
 
+function OrgMetricRow({
+  orgSlug,
+  orgLabel,
+  keyMetricValue,
+  adoptionValue,
+  loading,
+  onSave,
+}: {
+  orgSlug: string;
+  orgLabel: string;
+  keyMetricValue: string;
+  adoptionValue: string;
+  loading: boolean;
+  onSave: (orgSlug: string, keyMetricValue: string, adoptionValue: string) => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [kmv, setKmv] = useState(keyMetricValue);
+  const [av, setAv] = useState(adoptionValue);
+
+  // Sync with parent when data loads
+  useEffect(() => {
+    setKmv(keyMetricValue);
+    setAv(adoptionValue);
+  }, [keyMetricValue, adoptionValue]);
+
+  return (
+    <tr className="border-b border-border/50 hover:bg-surface-2/50">
+      <td className="p-3 text-text font-medium">{orgLabel}</td>
+      <td className="p-3">
+        {editing ? (
+          <input
+            type="text"
+            value={kmv}
+            onChange={(e) => setKmv(e.target.value)}
+            placeholder="e.g., ~50%"
+            className="bg-bg border border-accent/50 rounded-md px-2 py-1 text-sm text-text w-32 focus:outline-none"
+          />
+        ) : (
+          <span className={keyMetricValue ? "text-text" : "text-text-secondary/40"}>{keyMetricValue || "--"}</span>
+        )}
+      </td>
+      <td className="p-3">
+        {editing ? (
+          <input
+            type="text"
+            value={av}
+            onChange={(e) => setAv(e.target.value)}
+            placeholder="e.g., 42"
+            className="bg-bg border border-accent/50 rounded-md px-2 py-1 text-sm text-text w-32 focus:outline-none"
+          />
+        ) : (
+          <span className={adoptionValue ? "text-text" : "text-text-secondary/40"}>{adoptionValue || "--"}</span>
+        )}
+      </td>
+      <td className="p-3 text-right">
+        {editing ? (
+          <div className="flex gap-1 justify-end">
+            <button
+              onClick={() => { onSave(orgSlug, kmv, av); setEditing(false); }}
+              disabled={loading}
+              className="px-2 py-1 bg-green/15 text-green text-xs rounded-md border border-green/20 hover:bg-green/25"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => { setEditing(false); setKmv(keyMetricValue); setAv(adoptionValue); }}
+              className="px-2 py-1 bg-surface-2 text-text-secondary text-xs rounded-md border border-border hover:text-text"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setEditing(true)}
+            className="px-2 py-1 bg-surface-2 text-text-secondary text-xs rounded-md border border-border hover:text-text"
+          >
+            Edit
+          </button>
+        )}
+      </td>
+    </tr>
+  );
+}
+
 export default function AdminPage() {
   const [adminEmail, setAdminEmail] = useState("");
 
@@ -18,6 +102,10 @@ export default function AdminPage() {
   const [editingHoursId, setEditingHoursId] = useState<string | null>(null);
   const [editHoursValue, setEditHoursValue] = useState("");
   const [editNoteValue, setEditNoteValue] = useState("");
+
+  // Org metrics state
+  const [orgMetrics, setOrgMetrics] = useState<Record<string, { key_metric_value: string; adoption_value: string }>>({});
+  const [metricsLoading, setMetricsLoading] = useState(false);
 
   // Voting management state
   const [currentPeriod, setCurrentPeriod] = useState<VotingPeriod | null>(null);
@@ -83,6 +171,28 @@ export default function AdminPage() {
   }, [peopleSearch]);
 
   // Fetch hours saved data
+  // Fetch org metrics
+  const fetchOrgMetrics = useCallback(async () => {
+    try {
+      const res = await fetch("/api/org-metrics");
+      const data = await res.json();
+      setOrgMetrics(data.metrics ?? {});
+    } catch {}
+  }, []);
+
+  const handleSaveMetric = async (orgSlug: string, keyMetricValue: string, adoptionValue: string) => {
+    setMetricsLoading(true);
+    try {
+      await fetch("/api/org-metrics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orgSlug, keyMetricValue, adoptionValue }),
+      });
+      fetchOrgMetrics();
+    } catch {}
+    setMetricsLoading(false);
+  };
+
   const fetchHoursSaved = useCallback(async () => {
     try {
       const res = await fetch("/api/hours-saved");
@@ -92,7 +202,7 @@ export default function AdminPage() {
     } catch {}
   }, []);
 
-  useEffect(() => { fetchVoting(); fetchConfig(); fetchHoursSaved(); }, [fetchVoting, fetchConfig, fetchHoursSaved]);
+  useEffect(() => { fetchVoting(); fetchConfig(); fetchHoursSaved(); fetchOrgMetrics(); }, [fetchVoting, fetchConfig, fetchHoursSaved, fetchOrgMetrics]);
   useEffect(() => { if (peopleSearch) fetchPeople(); }, [peopleSearch, fetchPeople]);
 
   const handleAddHours = async () => {
@@ -419,6 +529,43 @@ export default function AdminPage() {
                       )}
                     </td>
                   </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Org Metrics — Key Metric + Adoption per team */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">Key Metrics & Adoption</h2>
+        <p className="text-xs text-text-secondary mb-4">
+          Enter the current value for each team&apos;s key metric and adoption metric. These show on the Scoreboard.
+        </p>
+
+        <div className="rounded-xl border border-border bg-surface overflow-hidden">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-[10px] text-text-secondary uppercase tracking-wider border-b border-border">
+                <th className="text-left p-3 font-semibold">Team</th>
+                <th className="text-left p-3 font-semibold">Key Metric</th>
+                <th className="text-left p-3 font-semibold">Adoption</th>
+                <th className="text-right p-3 font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ORG_CONFIGS.map((org) => {
+                const current = orgMetrics[org.slug] ?? { key_metric_value: "", adoption_value: "" };
+                return (
+                  <OrgMetricRow
+                    key={org.slug}
+                    orgSlug={org.slug}
+                    orgLabel={org.label}
+                    keyMetricValue={current.key_metric_value}
+                    adoptionValue={current.adoption_value}
+                    loading={metricsLoading}
+                    onSave={handleSaveMetric}
+                  />
                 );
               })}
             </tbody>

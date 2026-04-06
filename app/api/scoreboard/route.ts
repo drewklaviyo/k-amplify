@@ -157,9 +157,14 @@ export async function GET() {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
 
-    // Fetch real hours saved from Supabase
+    // Fetch real data from Supabase
     const supabase = createServerSupabase();
     const { data: hoursRows } = await supabase.from("hours_saved").select("org_slug, hours");
+    const { data: metricsRows } = await supabase.from("org_metrics").select("org_slug, key_metric_value, adoption_value");
+    const metricsByOrg: Record<string, { key_metric_value: string; adoption_value: string }> = {};
+    for (const row of metricsRows ?? []) {
+      metricsByOrg[row.org_slug] = { key_metric_value: row.key_metric_value, adoption_value: row.adoption_value };
+    }
     const hoursByOrg: Record<string, number> = {};
     for (const row of hoursRows ?? []) {
       hoursByOrg[row.org_slug] = (hoursByOrg[row.org_slug] ?? 0) + row.hours;
@@ -196,10 +201,10 @@ export async function GET() {
         costPerHour,
         dollarsSaved: realHours * costPerHour,
         keyMetricLabel: snowflake?.keyMetricLabel ?? "",
-        keyMetricValue: snowflake?.keyMetricValue ?? "",
+        keyMetricValue: metricsByOrg[config.slug]?.key_metric_value || "",
         keyMetricTarget: snowflake?.keyMetricTarget ?? "",
         adoptionLabel: snowflake?.adoptionLabel ?? "",
-        adoptionValue: snowflake?.adoptionValue ?? "",
+        adoptionValue: metricsByOrg[config.slug]?.adoption_value || "",
         adoptionTarget: snowflake?.adoptionTarget ?? "",
       };
     });
