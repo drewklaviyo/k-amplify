@@ -37,6 +37,13 @@ const HEALTH_DOT_CLASS: Record<HealthStatus, string> = {
   none: "bg-text-secondary/40",
 };
 
+interface MilestoneMarker {
+  milestoneId: string;
+  milestoneName: string;
+  milestoneDate: string;
+  project: ProjectSummary;
+}
+
 interface MonthBucket {
   key: string; // "2026-04"
   label: string; // "Apr 2026"
@@ -46,6 +53,7 @@ interface MonthBucket {
   month: number; // 0-indexed
   isCurrent: boolean;
   projects: ProjectSummary[];
+  milestones: MilestoneMarker[];
 }
 
 function getMonthKey(dateStr: string): string {
@@ -166,6 +174,67 @@ function ProjectCard({
   );
 }
 
+function MilestoneCard({
+  milestone,
+  zoom,
+  onClick,
+}: {
+  milestone: MilestoneMarker;
+  zoom: ZoomLevel;
+  onClick: () => void;
+}) {
+  const orgColor = ORG_COLORS[milestone.project.orgSlug];
+  const isCompact = zoom === "quarter";
+  const dateLabel = new Date(milestone.milestoneDate + "T00:00:00").toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+
+  return (
+    <button
+      onClick={onClick}
+      className="w-full text-left bg-accent/5 border border-accent/20 rounded-lg p-2.5 hover:border-accent/40 hover:bg-accent/10 transition-all cursor-pointer relative overflow-hidden"
+    >
+      {/* Accent left border */}
+      <div
+        className="absolute left-0 top-0 w-1 h-full rounded-l-lg"
+        style={{ backgroundColor: orgColor }}
+      />
+
+      {/* Diamond + milestone name */}
+      <div className="flex items-start gap-2 ml-1.5">
+        <span className="text-accent-light text-xs mt-0.5 shrink-0">◇</span>
+        <div className="min-w-0 flex-1">
+          <p className={`font-medium text-accent-light/90 truncate ${isCompact ? "text-[11px]" : "text-xs"}`}>
+            {milestone.milestoneName}
+          </p>
+          {!isCompact && (
+            <>
+              <p className="text-[10px] text-text-secondary/60 truncate mt-0.5">
+                {milestone.project.name}
+              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-[10px] text-accent-light/60">
+                  {dateLabel}
+                </span>
+                <span
+                  className="text-[9px] px-1.5 py-0.5 rounded-md"
+                  style={{
+                    backgroundColor: orgColor + "1F",
+                    color: orgColor,
+                  }}
+                >
+                  {ORG_BY_SLUG[milestone.project.orgSlug]?.label}
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </button>
+  );
+}
+
 export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
   const [zoom, setZoom] = useState<ZoomLevel>("month");
   const [showBacklog, setShowBacklog] = useState(false);
@@ -187,6 +256,7 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
 
     // Collect all projects by month key
     const byMonth = new Map<string, ProjectSummary[]>();
+    const milestonesByMonth = new Map<string, MilestoneMarker[]>();
     const backlog: ProjectSummary[] = []; // Status = "Backlog" — hidden by default
     const undated: ProjectSummary[] = []; // No date but not Backlog status — always visible
 
@@ -199,6 +269,22 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
         backlog.push(p);
       } else {
         undated.push(p);
+      }
+
+      // Place milestones in their target month (if different from the project's month)
+      const projectMonthKey = p.targetDate ? getMonthKey(p.targetDate) : null;
+      for (const ms of p.milestones) {
+        if (!ms.targetDate) continue;
+        const msMonthKey = getMonthKey(ms.targetDate);
+        // Only show milestone marker if it's in a DIFFERENT month than the project
+        if (msMonthKey === projectMonthKey) continue;
+        if (!milestonesByMonth.has(msMonthKey)) milestonesByMonth.set(msMonthKey, []);
+        milestonesByMonth.get(msMonthKey)!.push({
+          milestoneId: ms.id,
+          milestoneName: ms.name,
+          milestoneDate: ms.targetDate,
+          project: p,
+        });
       }
     }
 
@@ -242,6 +328,11 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
       const key = `${y}-${String(m + 1).padStart(2, "0")}`;
       const date = new Date(y, m, 1);
       const q = Math.floor(m / 3) + 1;
+      // Sort milestones by date
+      const monthMilestones = (milestonesByMonth.get(key) ?? []).sort(
+        (a, b) => a.milestoneDate.localeCompare(b.milestoneDate),
+      );
+
       buckets.push({
         key,
         label: date.toLocaleDateString("en-US", {
@@ -254,6 +345,7 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
         month: m,
         isCurrent: y === currentYear && m === currentMonth,
         projects: sortProjects(byMonth.get(key) ?? []),
+        milestones: monthMilestones,
       });
 
       m++;
@@ -463,37 +555,56 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
                     >
                       {bucket.label}
                     </span>
-                    {bucket.projects.length > 0 && (
-                      <span
-                        className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md ${
-                          bucket.isCurrent
-                            ? "bg-accent/15 text-accent-light"
-                            : "bg-bg text-text-secondary"
-                        }`}
-                      >
-                        {bucket.projects.length}
-                      </span>
+                    {(bucket.projects.length > 0 || bucket.milestones.length > 0) && (
+                      <div className="flex items-center gap-1">
+                        {bucket.projects.length > 0 && (
+                          <span
+                            className={`text-[10px] font-medium px-1.5 py-0.5 rounded-md ${
+                              bucket.isCurrent
+                                ? "bg-accent/15 text-accent-light"
+                                : "bg-bg text-text-secondary"
+                            }`}
+                          >
+                            {bucket.projects.length}
+                          </span>
+                        )}
+                        {bucket.milestones.length > 0 && (
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-accent/10 text-accent-light/70">
+                            ◇{bucket.milestones.length}
+                          </span>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
 
                 {/* Cards */}
                 <div className="p-2 space-y-2 min-h-[80px]">
-                  {bucket.projects.length === 0 ? (
+                  {bucket.projects.length === 0 && bucket.milestones.length === 0 ? (
                     <div className="flex items-center justify-center h-16">
                       <span className="text-[11px] text-text-secondary/40">
                         No projects
                       </span>
                     </div>
                   ) : (
-                    bucket.projects.map((project) => (
-                      <ProjectCard
-                        key={project.id}
-                        project={project}
-                        zoom={zoom}
-                        onClick={() => handleCardClick(project.id)}
-                      />
-                    ))
+                    <>
+                      {bucket.projects.map((project) => (
+                        <ProjectCard
+                          key={project.id}
+                          project={project}
+                          zoom={zoom}
+                          onClick={() => handleCardClick(project.id)}
+                        />
+                      ))}
+                      {bucket.milestones.map((ms) => (
+                        <MilestoneCard
+                          key={ms.milestoneId}
+                          milestone={ms}
+                          zoom={zoom}
+                          onClick={() => handleCardClick(ms.project.id)}
+                        />
+                      ))}
+                    </>
                   )}
                 </div>
               </div>
