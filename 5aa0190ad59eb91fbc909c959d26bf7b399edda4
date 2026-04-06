@@ -1,0 +1,29 @@
+app/api/org-metrics/route.ts
+  6936130eadf6a10e 1-65
+app/scoreboard/page.tsx
+  6936130eadf6a10e 403-406,408,411-414,416
+app/admin/page.tsx
+  6936130eadf6a10e 7-90,106-109,174-195,205,539-575
+app/api/scoreboard/route.ts
+  6936130eadf6a10e 160,163-167,204,207
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "5aa0190ad59eb91fbc909c959d26bf7b399edda4",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 231,
+      "total_deletions": 10,
+      "accepted_lines": 231,
+      "overriden_lines": 0
+    }
+  }
+}
