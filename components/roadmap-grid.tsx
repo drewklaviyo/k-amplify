@@ -497,7 +497,7 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
           tabIndex={0}
           role="region"
           aria-label="Roadmap grid -- use arrow keys to scroll horizontally"
-          className="overflow-x-auto pb-4 timeline-scroll focus:outline-none"
+          className="overflow-x-auto pb-4 timeline-scroll focus:outline-none min-h-[calc(100vh-280px)]"
         >
           {/* Quarter headers */}
           <div className="flex gap-0" style={{ minWidth: "max-content" }}>
@@ -528,7 +528,7 @@ export function RoadmapGrid({ goals }: { goals: GoalSummary[] }) {
           </div>
 
           {/* Month columns */}
-          <div className="flex gap-3" style={{ minWidth: "max-content" }}>
+          <div className="flex gap-3 items-stretch" style={{ minWidth: "max-content", minHeight: "calc(100vh - 340px)" }}>
             {monthBuckets.map((bucket) => (
               <div
                 key={bucket.key}
