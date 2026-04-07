@@ -1,0 +1,23 @@
+public/how-we-work.html
+  6936130eadf6a10e 180,288,315,321,341,343-344,347,353-357,362-366,378,383,388-389,392-394,400,404-405,464,481,504,519-521,615,672,685,701,723,741-742,811-812,865,913,934,943,948,987,994,999,1018,1039,1043-1047,1051
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "14b01f7efbaff75bebaab0ce307c5c36098038f7",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 60,
+      "total_deletions": 178,
+      "accepted_lines": 59,
+      "overriden_lines": 0
+    }
+  }
+}
