@@ -177,7 +177,7 @@
     position: relative;
   }
   .h-level::after {
-    content: '→'; position: absolute; right: -14px; top: 50%;
+    content: '\2192'; position: absolute; right: -14px; top: 50%;
     transform: translateY(-50%); color: var(--border); font-size: 0.9rem;
   }
   .h-level:last-child::after { display: none; }
@@ -285,7 +285,7 @@
 
 <div class="hero">
   <h1>Amplify Operating Rhythm</h1>
-  <p>How every Amplify PM, engineer, and designer operates &mdash; daily, weekly, monthly, and quarterly. Centered on Linear, driven by Kanban, with continuous planning built in.</p>
+  <p>How every Amplify PM, engineer, and designer operates &mdash; daily, weekly, monthly, and quarterly. Centered on Linear, with continuous planning built in.</p>
 </div>
 
 <!-- CONTEXT -->
@@ -312,13 +312,13 @@
     <div class="h-level">
       <div class="hl-tag">Issues</div>
       <div class="hl-name">Execution</div>
-      <p class="hl-desc">Individual tasks on the Kanban board.</p>
+      <p class="hl-desc">Individual tasks on the board.</p>
     </div>
   </div>
 
   <div class="callout" style="margin-bottom: 1.5rem;">
     <div class="ct">The Triad</div>
-    <p>Each team is led by a <strong>PM + Eng Lead + Design Lead</strong> (4 of 6 teams have all three &mdash; still hiring the EM for Amplify R&D and Amplify Sales). They co-own the what, why, and how &mdash; PMs represent partner needs, eng leads own technical execution, design leads shape solutions. The triad maintains the Kanban board and pipeline together.</p>
+    <p>Each team is led by a <strong>PM + Eng Lead + Design Lead</strong> (4 of 6 teams have all three &mdash; still hiring the EM for Amplify R&D and Amplify Sales). They co-own the what, why, and how &mdash; PMs represent partner needs, eng leads own technical execution, design leads shape solutions. The triad maintains the board and pipeline together.</p>
   </div>
 
   <div class="table-wrap">
@@ -338,28 +338,30 @@
 
 <div class="divider"></div>
 
-<!-- PIPELINE & KANBAN -->
+<!-- PIPELINE -->
 <section id="pipeline">
-  <h2>How We Plan: Kanban + Continuous Pipeline</h2>
-  <p class="desc">We use Kanban, not sprints. Every team maintains a prioritized board. Whoever has capacity pulls from the top. Teams are collectively responsible for quarterly commitments &mdash; but priorities can shift freely within the quarter.</p>
+  <h2>How We Plan: Continuous Pipeline</h2>
+  <p class="desc">Every team maintains a prioritized board. Whoever has capacity pulls from the top. Teams are collectively responsible for quarterly commitments &mdash; but priorities can shift freely within the quarter.</p>
 
   <h3>Project Pipeline Stages</h3>
-  <p style="margin-bottom: 0.75rem; font-size: 0.87rem; color: var(--text-secondary);">Every project flows through these stages in Linear. PMs drive the early stages; the triad shapes the middle; engineers and designers execute.</p>
+  <p style="margin-bottom: 0.75rem; font-size: 0.87rem; color: var(--text-secondary);">Every project flows through these stages in Linear. The goal: solid upfront understanding of the problem, rapid prototyping and testing of hypotheses, and launching iteratively.</p>
 
   <div class="table-wrap">
     <table>
       <thead><tr><th>Stage</th><th>Who Drives</th><th>What Happens</th></tr></thead>
       <tbody>
-        <tr><td><strong>Backlog</strong></td><td>PM</td><td>Raw ideas, partner requests, intake items. Unvetted.</td></tr>
-        <tr><td><strong>Understand</strong></td><td>PM + Design (+ Eng)</td><td>Investigating the problem. Discovery, partner interviews, data analysis. Engineering involvement early is often valuable for feasibility and technical context.</td></tr>
-        <tr><td><strong>Accepted</strong></td><td>PM</td><td>Problem validated, worth pursuing. Prioritized against other work.</td></tr>
-        <tr><td><strong>Identify</strong></td><td>PM + Design + Eng</td><td>Shaping the solution. Design explores approaches, eng assesses feasibility and dependencies.</td></tr>
-        <tr><td><strong>On Deck</strong></td><td>PM + Eng Lead</td><td>Fully shaped, ready to be pulled. Brief written, design done, technical approach clear.</td></tr>
-        <tr><td><strong>In Progress</strong></td><td>Eng + Design</td><td>Being built. Whoever has capacity pulls from On Deck.</td></tr>
-        <tr><td><strong>Execute</strong></td><td>Eng</td><td>Final stages &mdash; launching, shipping, validating with partner.</td></tr>
-        <tr><td><strong>Done</strong></td><td>PM</td><td>Shipped. Final status update written. Appears on K Amplify changelog.</td></tr>
+        <tr><td><strong>Identify</strong></td><td>PM + Design</td><td>Understand the problem. PM and Design do discovery &mdash; partner interviews, data analysis, user research.</td></tr>
+        <tr><td><strong>Define</strong></td><td>PM + Design + Eng</td><td>Scope the solution. Design creates prototypes, PM writes requirements. Eng assesses feasibility and dependencies.</td></tr>
+        <tr><td><strong>Build</strong></td><td>Eng + Design</td><td>Engineers build. Design reviews and iterates. Whoever has capacity pulls from the top of the queue.</td></tr>
+        <tr><td><strong>Ship</strong></td><td>Eng + PM</td><td>Launch iteratively. Measure impact. Validate with partners.</td></tr>
+        <tr><td><strong>Learn</strong></td><td>Triad</td><td>Retrospect and improve. What worked, what didn't, what changes for the next cycle.</td></tr>
       </tbody>
     </table>
+  </div>
+
+  <div class="callout" style="margin-top: 1rem;">
+    <div class="ct">Design is embedded</div>
+    <p>Designers are embedded into initiatives and projects (added as members). When design is needed, issues are created with type "Design" and attached to respective milestones. Designers participate in all team and project rituals.</p>
   </div>
 
   <h3>Maintaining a Healthy Pipeline</h3>
@@ -373,35 +375,34 @@
     </div>
     <div class="format-item">
       <div class="num">1&ndash;2</div>
-      <div class="ft">Understand</div>
+      <div class="ft">Identify</div>
       <p class="fd">Active discovery</p>
     </div>
     <div class="format-item">
       <div class="num">1&ndash;2</div>
-      <div class="ft">Identify</div>
+      <div class="ft">Define</div>
       <p class="fd">Shaping with triad</p>
     </div>
     <div class="format-item">
       <div class="num">2&ndash;3</div>
-      <div class="ft">On Deck</div>
-      <p class="fd">Ready to pull</p>
+      <div class="ft">Build</div>
+      <p class="fd">Active work</p>
     </div>
     <div class="format-item">
-      <div class="num">2&ndash;4</div>
-      <div class="ft">In Progress</div>
-      <p class="fd">Active work</p>
+      <div class="num">1&ndash;2</div>
+      <div class="ft">Ship</div>
+      <p class="fd">Launching &amp; measuring</p>
     </div>
   </div>
 
   <div class="callout gold" style="margin-top: 1rem;">
     <div class="ct">Pro tip</div>
-    <p>If your pipeline is bottom-heavy (all In Progress, nothing in Understand), you're going to run out of shaped work. If it's top-heavy (all Backlog, nothing On Deck), your team is starving. Check your pipeline balance at every Monday Flow Review.</p>
+    <p>If your pipeline is bottom-heavy (all in Build, nothing in Identify), you're going to run out of shaped work. If it's top-heavy (all Backlog, nothing ready to Build), your team is starving. Check your pipeline balance regularly.</p>
   </div>
 
-  <h3>Why Kanban, Not Sprints</h3>
   <div class="callout green">
-    <div class="ct">The shift</div>
-    <p>The 2-week sprint model was too ceremony-heavy and too rigid for shifting priorities. With Kanban, we maintain a prioritized board for each team. PMs work with eng leads to keep the backlog prioritized, represent partners, and clarify requirements. Engineers pull work from the top when they have capacity. Priorities can move freely &mdash; but we're still collectively accountable for quarterly commitments.</p>
+    <div class="ct">Continuous flow</div>
+    <p>We maintain a prioritized board for each team. PMs work with eng leads to keep the backlog prioritized, represent partners, and clarify requirements. Engineers pull work from the top when they have capacity. Priorities can move freely &mdash; but we're still collectively accountable for quarterly commitments.</p>
   </div>
 </section>
 
@@ -460,7 +461,7 @@ Blocked: Need RISE API access &mdash; @spencer can you unblock?</div>
 <section id="weekly">
   <div class="cadence-header">
     <span class="cadence-badge weekly">Weekly</span>
-    <span class="cadence-title">Flow Reviews &amp; Project Updates</span>
+    <span class="cadence-title">Team Rituals (Eng, PM &amp; Design)</span>
   </div>
 
   <div class="ritual" id="pm-sync">
@@ -477,7 +478,7 @@ Blocked: Need RISE API access &mdash; @spencer can you unblock?</div>
       <p style="margin-top: 0.4rem;"><strong>Come prepared with:</strong> One thing that's changed for your partner this week, any capacity asks, and any intake items to triage.</p>
 
       <div class="artifact-label">Artifact: Running Slack thread or Linear doc</div>
-      <div class="example-block">Jay: Sales Ops wants to accelerate BDR rollout from 10 → 50 users.
+      <div class="example-block">Jay: Sales Ops wants to accelerate BDR rollout from 10 &rarr; 50 users.
       Need 2 more eng days from infra for load testing.
 Tyler: CS built their own AtScale scoring &mdash; scheduling reset meeting Wed.
       Need to align on ownership before we shape the next project.
@@ -486,35 +487,6 @@ Christina: R&D leadership wants auto-status POC demo by end of month.
       Need design review slot Thursday.
 Richard: CMS migration blocked on content model approval from marketing VP.
       Escalating in their weekly sync.</div>
-    </div>
-  </div>
-
-  <div class="ritual" id="flow-review">
-    <div class="ritual-header">
-      <div class="ritual-name">Flow Review</div>
-      <div class="ritual-meta">
-        <span class="tag">Monday</span>
-        20 min
-      </div>
-    </div>
-    <div class="ritual-body">
-      <div class="who">PM + Eng Lead + Design Lead (per team, each team runs their own)</div>
-      <p>Walk the Kanban board together. The triad reviews:</p>
-      <div class="format-grid" style="margin-top: 0.5rem;">
-        <div class="format-item">
-          <div class="ft">What's blocked?</div>
-          <p class="fd">Anything stuck &mdash; unblock or escalate now.</p>
-        </div>
-        <div class="format-item">
-          <div class="ft">What's ready to pull?</div>
-          <p class="fd">Is On Deck stocked? Does the team have enough shaped work?</p>
-        </div>
-        <div class="format-item">
-          <div class="ft">Pipeline health</div>
-          <p class="fd">Are projects balanced across stages? Anything stale?</p>
-        </div>
-      </div>
-      <p style="margin-top: 0.5rem;">PMs share partner context from PM Sync that should shift priorities. Re-order the board if needed &mdash; that's the point.</p>
     </div>
   </div>
 
@@ -529,7 +501,7 @@ Richard: CMS migration blocked on content model approval from marketing VP.
     <div class="ritual-body">
       <div class="who">All Amplify + open invite to partners</div>
       <p>Show working software. Every demo ties back to a partner use case and metric. Partners can attend and react in real time. This is our most powerful trust-building mechanism &mdash; protect it.</p>
-      <p style="margin-top: 0.4rem;"><strong>Note:</strong> Demos can include design explorations and prototypes &mdash; not just shipped code. If a designer is shaping something in the Identify stage, showing it at demo gets early partner feedback.</p>
+      <p style="margin-top: 0.4rem;"><strong>Note:</strong> Demos can include design explorations and prototypes &mdash; not just shipped code. If a designer is shaping something in the Define stage, showing it at demo gets early partner feedback.</p>
       <p style="margin-top: 0.4rem;"><strong>Post the recording:</strong> After every demo, post the Loom link in Linear &mdash; either as a <strong>comment on the relevant issue</strong> or in a <strong>project status update</strong>. This is how demos get archived on K Amplify and how partners who missed the live session can catch up.</p>
 
       <div class="artifact-label">Artifact: Loom link in Linear</div>
@@ -543,34 +515,11 @@ Feedback from CS Ops: want to add "last contacted" column.
 <strong>Demo:</strong> https://www.loom.com/share/abc123
 Demoed BDR enrichment pipeline to Sales Ops.
 3 BDRs tried it live &mdash; avg time to research dropped from 12 min to 4 min.</div>
-    </div>
-  </div>
 
-  <div class="ritual" id="goat-awards" style="border-color: var(--orange); border-width: 1.5px;">
-    <div class="ritual-header">
-      <div class="ritual-name">GOAT Awards</div>
-      <div class="ritual-meta">
-        <span class="tag" style="background: var(--orange); color: #000;">Weekly</span>
-        Peer-voted
+      <div class="callout gold" style="margin-top: 0.75rem;">
+        <div class="ct">GOAT Awards</div>
+        <p>Best Builder and Learner demos each week win a $15 gift card + 3D printed goat trophy. Post a Loom, vote on <strong>kamplify.team/demos</strong>. Details on the Demos page.</p>
       </div>
-    </div>
-    <div class="ritual-body">
-      <div class="who">Everyone on Amplify</div>
-      <p>Two weekly awards to recognize the best work across Amplify:</p>
-      <ul style="margin: 0.5rem 0; padding-left: 1.2rem;">
-        <li><strong>GOAT Builder</strong> &mdash; Best thing shipped this week. Winner gets a $15 Visa gift card + 3D printed goat with a wrench.</li>
-        <li><strong>GOAT Learner</strong> &mdash; Best learning shared this week. Winner gets a $15 Visa gift card + 3D printed goat with a light bulb.</li>
-      </ul>
-      <p style="margin-top: 0.6rem;"><strong>How to submit:</strong> Post a Loom to any Linear project update or issue comment. It auto-appears on K Amplify within 30 minutes. No form &mdash; just post and go.</p>
-      <p style="margin-top: 0.4rem;"><strong>Demos are expected to be posted throughout the week</strong> &mdash; not just at Thursday demo. Anytime you ship something, learn something, or have a prototype to show, record a quick Loom and post it. The more demos, the more visibility.</p>
-      <p style="margin-top: 0.6rem;"><strong>Voting:</strong></p>
-      <ul style="margin: 0.3rem 0; padding-left: 1.2rem;">
-        <li>2 votes per week &mdash; one Builder, one Learner</li>
-        <li>Anyone with access can vote</li>
-        <li>Voting opens Monday, closes Friday 4:00 PM ET</li>
-        <li>Winners announced by noon Friday</li>
-      </ul>
-      <p style="margin-top: 0.6rem;"><strong>Summit Board:</strong> Cumulative awards unlock camp tiers. Reach GOAT of GOATs (12 awards) for a gold-painted goat + $100 gift card.</p>
     </div>
   </div>
 
@@ -650,8 +599,6 @@ Ship outreach draft quality scoring to eval pipeline.</div>
     <div class="flow-step"><strong>Week 4 Mon&ndash;Wed:</strong> PMs write Goal updates</div>
     <span class="flow-arrow">&rarr;</span>
     <div class="flow-step"><strong>Week 4 Thu/Fri:</strong> MER</div>
-    <span class="flow-arrow">&rarr;</span>
-    <div class="flow-step"><strong>After MER:</strong> Partner Digest</div>
   </div>
 
   <div class="ritual" id="goal-updates" style="border-color: var(--orange); border-width: 1.5px;">
@@ -665,6 +612,7 @@ Ship outreach draft quality scoring to eval pipeline.</div>
     <div class="ritual-body">
       <div class="who">Every PM &mdash; on the Goal (sub-initiative) they own</div>
       <p>Synthesize your weekly project updates into a single goal-level narrative. This update <strong>feeds directly into the MER</strong> &mdash; Drew and leadership read it before the meeting. Write it before MER, not after.</p>
+      <p style="margin-top: 0.4rem;"><strong>Share your goal update with partner stakeholders</strong> &mdash; this replaces the separate partner digest.</p>
 
       <div class="format-grid" style="margin-top: 0.75rem;">
         <div class="format-item">
@@ -719,37 +667,9 @@ movement by mid-April.</div>
     </div>
   </div>
 
-  <div class="ritual" id="partner-digest">
-    <div class="ritual-header">
-      <div class="ritual-name">Monthly Partner Digest</div>
-      <div class="ritual-meta">
-        <span class="tag">After MER</span>
-        Async
-      </div>
-    </div>
-    <div class="ritual-body">
-      <div class="who">PMs &rarr; partner stakeholders</div>
-      <p>One-page summary per partner org, posted to <code>#amplify-x-[org]</code> Slack channels. Generated from your goal update &mdash; not a separate artifact. What shipped, what's next, metrics, asks/blockers.</p>
-
-      <div class="artifact-label">Artifact: Slack post to partner channel</div>
-      <div class="example-block"><strong>Amplify x Sales &mdash; March Update</strong>
-
-&#9679; Status: At Risk (Salesforce data blocking expansion)
-
-Shipped: BDR pilot expanded to 20 users, outreach draft
-  quality scoring live, meeting attribution tracking deployed.
-Metrics: 24 accounts/day researched (target 25-30),
-  11 agent-sourced meetings booked in March.
-Next: Cohort 2 expansion (50 BDRs) pending data fix.
-  POC go/no-go decision tracking for May.
-Need from Sales: Salesforce data hygiene fix prioritized.
-  Escalating to VP if no movement by mid-April.</div>
-    </div>
-  </div>
-
   <div class="callout gold">
     <div class="ct">Pro tip</div>
-    <p>Don't wait for MER to update your partners. Run <strong>bi-weekly syncs with your partner's core group</strong> (e.g., Sales Ops lead, CS Ops lead) so there are no surprises at MER. The monthly digest confirms what partners already know &mdash; it doesn't break news. If your partner is surprised by your MER update, you're behind.</p>
+    <p>Don't wait for MER to update your partners. Run <strong>bi-weekly syncs with your partner's core group</strong> (e.g., Sales Ops lead, CS Ops lead) so there are no surprises at MER. The monthly goal update confirms what partners already know &mdash; it doesn't break news. If your partner is surprised by your MER update, you're behind.</p>
   </div>
 
   <div class="ritual" id="discovery-hours">
@@ -762,40 +682,7 @@ Need from Sales: Salesforce data hygiene fix prioritized.
     </div>
     <div class="ritual-body">
       <div class="who">Every PM + Designers (at least 1x/month)</div>
-      <p>Spend time in your partner's world every month. Shadow sales calls, listen to Gong recordings, sit in on their team standups, pull their data, watch how they use (or don't use) what you've built. The goal is to see their reality firsthand &mdash; not filtered through a status update or a Slack thread. Designers should join at least once a month so they're designing from firsthand understanding.</p>
-      <p style="margin-top: 0.4rem;"><strong>Capture one insight</strong> that changes how you think about your roadmap. Bring it to PM Sync.</p>
-
-      <div class="artifact-label">Artifact: Insight shared at PM Sync</div>
-      <div class="example-block">Jay: Shadowed 3 BDR calls this week. Reps are copy-pasting
-enrichment data from the agent into SFDC manually because
-the auto-sync only updates overnight. If we push real-time
-sync, that's ~10 min saved per account &mdash; across 100 BDRs
-that's 16 hrs/day. Moving this up in the backlog.
-
-Tyler: Sat in on CS team standup. CSMs are building their own
-account health spreadsheets because they don't trust the
-agent's scoring. Need to dig into why &mdash; scheduling 3
-ride-alongs next week to watch them work.</div>
-    </div>
-  </div>
-
-  <div class="callout green">
-    <div class="ct">Why discovery matters</div>
-    <p>The best product decisions come from direct observation, not secondhand reports. If you haven't been in your partner's world this month, your roadmap is based on assumptions. Discovery hours are how you pressure-test those assumptions.</p>
-  </div>
-
-  <div class="ritual" id="retro">
-    <div class="ritual-header">
-      <div class="ritual-name">Bi-weekly Retro</div>
-      <div class="ritual-meta">
-        <span class="tag">Every 2 weeks</span>
-        30 min
-      </div>
-    </div>
-    <div class="ritual-body">
-      <div class="who">Per team: PM + Eng Lead + Design Lead + Engineers</div>
-      <p>What went well, what didn't, what should we change. Lightweight &mdash; 2-3 action items max. Focus on flow: are we pulling work smoothly? Is the pipeline healthy? Are handoffs between Identify &rarr; On Deck &rarr; In Progress working? Are blockers getting resolved fast enough?</p>
-      <p style="margin-top: 0.4rem;">Kanban removes sprint planning and scheduled refinement &mdash; but retros stay. Every two weeks keeps the feedback loop tight without waiting a full month to surface problems.</p>
+      <p>Spend time with your partner org. Shadow a call, watch them use your tool, sit in on their standup. Do this at least once a month. The best product decisions come from direct observation, not secondhand reports.</p>
     </div>
   </div>
 </section>
@@ -811,7 +698,7 @@ ride-alongs next week to watch them work.</div>
 
   <div class="callout" style="margin-bottom: 1.25rem;">
     <div class="ct">Continuous planning makes quarterly planning lighter</div>
-    <p>Because your pipeline is always being refined (Backlog → Understand → Identify → On Deck), quarterly planning is a <strong>commitment checkpoint</strong> &mdash; not a cold-start planning exercise. The plan already exists in your pipeline; quarterly is when you lock it in with partners.</p>
+    <p>Because your pipeline is always being refined (Backlog &rarr; Identify &rarr; Define &rarr; Build), quarterly planning is a <strong>commitment checkpoint</strong> &mdash; not a cold-start planning exercise. The plan already exists in your pipeline; quarterly is when you lock it in with partners.</p>
   </div>
 
   <div class="flow">
@@ -833,7 +720,7 @@ ride-alongs next week to watch them work.</div>
     <div class="ritual-body">
       <div class="who">All PMs + Eng leads + Design leads + Drew</div>
       <p>Lock next quarter's commitments per partner org. Because you've been continuously shaping your pipeline, this is a 1-2 week exercise, not 3.</p>
-      <p style="margin-top: 0.5rem;"><strong>1. Crystallize (week 1):</strong> Each PM reviews their pipeline &mdash; what's in Identify and On Deck becomes the basis for next quarter's commitments. Partner input has been flowing in continuously through syncs and discovery. Write a one-page quarterly plan: what you'll commit to, milestones, metrics, and what you need.</p>
+      <p style="margin-top: 0.5rem;"><strong>1. Crystallize (week 1):</strong> Each PM reviews their pipeline &mdash; what's in Define and Build becomes the basis for next quarter's commitments. Partner input has been flowing in continuously through syncs and discovery. Write a one-page quarterly plan: what you'll commit to, milestones, metrics, and what you need.</p>
       <p><strong>2. Planning review (week 2):</strong> All PMs + Drew review plans together. Resolve cross-cutting tradeoffs (capacity, shared infra). Finalize commitments. Update Linear: set milestones, update goal descriptions with new targets.</p>
 
       <div class="artifact-label">Artifact: Quarterly plan per goal (Linear doc or project description)</div>
@@ -851,8 +738,8 @@ Milestones:
   &bull; Jun 15: MEDDPICC v1 in staging
 
 Metrics to move:
-  &bull; Accounts researched/day: 24 → 30+
-  &bull; Meetings booked from agent: 11/mo → 50/mo
+  &bull; Accounts researched/day: 24 &rarr; 30+
+  &bull; Meetings booked from agent: 11/mo &rarr; 50/mo
   &bull; BDR daily active rate: maintain 80%+
 
 Need:
@@ -921,8 +808,8 @@ Need:
   </div>
   <div class="rule" id="rule-7">
     <div class="rn">Rule 7</div>
-    <div class="rt">Keep the Kanban board honest</div>
-    <p class="rd">If someone is working on it, it should be In Progress. If it's blocked, mark it Blocked. Don't let the board lie &mdash; it's how the triad spots problems at Flow Review.</p>
+    <div class="rt">Keep the board honest</div>
+    <p class="rd">If someone is working on it, it should be In Progress. If it's blocked, mark it Blocked. Don't let the board lie &mdash; it's how the triad spots problems.</p>
   </div>
   <div class="rule" id="rule-8">
     <div class="rn">Rule 8</div>
@@ -975,17 +862,12 @@ Need:
 
   <div class="faq-item" id="faq-eng-lead">
     <div class="faq-q"><span class="arrow">&#9654;</span> Who is my eng lead and what's their role?</div>
-    <div class="faq-a">Each team is led by a <strong>triad: PM + Eng Lead + Design Lead</strong> (4 of 6 teams currently have all three). The PM owns the what and why (scope, priorities, partner alignment). The eng lead owns the how (technical approach, issue breakdown, code review). The design lead shapes solutions in the Understand and Identify stages. The triad reviews the Kanban board together at Monday Flow Review. You write the Friday project update; the triad can contribute but the PM is accountable.</div>
+    <div class="faq-a">Each team is led by a <strong>triad: PM + Eng Lead + Design Lead</strong> (4 of 6 teams currently have all three). The PM owns the what and why (scope, priorities, partner alignment). The eng lead owns the how (technical approach, issue breakdown, code review). The design lead shapes solutions in the Identify and Define stages. The triad reviews the board together regularly. You write the Friday project update; the triad can contribute but the PM is accountable.</div>
   </div>
 
   <div class="faq-item" id="faq-partner-meetings">
     <div class="faq-q"><span class="arrow">&#9654;</span> Should I be meeting with my partner org outside of MER?</div>
     <div class="faq-a"><strong>Yes &mdash; and this is what separates good from great.</strong> Every PM should have a regular cadence with their partner's core group (e.g., Sales Ops lead, CS Ops lead, Support Eng lead). At minimum bi-weekly, ideally weekly for active partners like Sales and CS. These aren't in the "required" cadence because the format varies per org &mdash; but if your partner is ever surprised by your MER update, you're not meeting enough. Set these up in your first two weeks.</div>
-  </div>
-
-  <div class="faq-item" id="faq-digest-format">
-    <div class="faq-q"><span class="arrow">&#9654;</span> What does a Monthly Partner Digest look like?</div>
-    <div class="faq-a">It's a Slack post &mdash; not a doc, not a deck. 10-15 lines max. Structure: status (On Track / At Risk / Off Track), what shipped, key metrics, what's next, what you need from them. See the example in the Monthly section above. Keep it scannable &mdash; your partner VP should be able to read it in 30 seconds.</div>
   </div>
 
   <div class="faq-item" id="faq-no-slides">
@@ -1028,7 +910,7 @@ Need:
             <tr><td><strong>Drew</strong></td><td>30-min all-hands kickoff: share operating model + K Amplify site, explain the 5-week plan</td><td>Mon</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Audit Linear: every project connected to goal, no orphans. Pipeline stages set. 1+ milestone per project.</td><td>Wed</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Start daily standups: in-person Mon/Tue/Thu, async in team Slack Wed/Fri</td><td>Mon&ndash;Fri</td></tr>
-            <tr><td><strong>Each PM</strong></td><td>Meet eng lead 1:1 &mdash; align on triad model and Kanban</td><td>Thu</td></tr>
+            <tr><td><strong>Each PM</strong></td><td>Meet eng lead 1:1 &mdash; align on triad model and pipeline</td><td>Thu</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Write first Friday project update on every active project (Metric Impact, Blockers, Next Week + health)</td><td>Fri</td></tr>
             <tr><td><strong>Each PM</strong></td><td><strong>Start Q2 Strategy Doc</strong> for your sub-initiative in Linear. Derives from Drew's <em>Working AI First</em> agentic Amplify doc. Must include: (1) Jobs to be done for your partner org, (2) Prioritization rubric/framework, (3) Q2 success metrics with concrete targets, (4) Agent roadmap &mdash; what agents will you build for each prioritized JTBD? What metric does each agent tackle, and what's the target? Link the doc to your Linear sub-initiative. Some teams have started &mdash; build on what you have.</td><td>Due Apr 7</td></tr>
             <tr><td><strong>Drew</strong></td><td>Finalize and share the <em>Working AI First</em> agentic Amplify strategy doc as the source doc for PM strategy docs</td><td>By end of month</td></tr>
@@ -1049,22 +931,21 @@ Need:
       </div>
     </div>
     <div class="ritual-body">
-      <p style="font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">PM Sync, Flow Reviews, pipeline discipline</p>
+      <p style="font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">PM Sync, pipeline discipline</p>
       <div class="table-wrap" style="margin: 0.5rem 0;">
         <table>
           <thead><tr><th>Who</th><th>What</th><th>By</th></tr></thead>
           <tbody>
             <tr><td><strong>Drew</strong></td><td>Run first PM Sync (15 min) &mdash; model the format</td><td>Mon</td></tr>
-            <tr><td><strong>Each triad</strong></td><td>Run first Flow Review (20 min) &mdash; walk the board: blocked, ready to pull, pipeline balance</td><td>Mon</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Roadmap review with eng lead: confirm project priorities, dates, and milestones reflect reality. Update K:Amplify timeline view.</td><td>Wed</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Define 2&ndash;3 leading metrics per project</td><td>Fri</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Schedule bi-weekly partner sync (Sales Ops lead, CS Ops lead, etc.)</td><td>Fri</td></tr>
-            <tr><td><strong>Eng leads</strong></td><td>Tell engineers: pull from top of On Deck, keep issue status honest</td><td>Mon</td></tr>
+            <tr><td><strong>Eng leads</strong></td><td>Tell engineers: pull from top of queue, keep issue status honest</td><td>Mon</td></tr>
             <tr><td><strong>Drew</strong></td><td>Spot-check 2&ndash;3 boards for pipeline balance</td><td>Fri</td></tr>
           </tbody>
         </table>
       </div>
-      <p style="font-size: 0.8rem; color: var(--accent-light); font-weight: 600; margin-top: 0.5rem;">&#10003; Done when: Flow Reviews are happening, boards reflect reality, PMs know their leading metrics.</p>
+      <p style="font-size: 0.8rem; color: var(--accent-light); font-weight: 600; margin-top: 0.5rem;">&#10003; Done when: PM Sync is running, boards reflect reality, PMs know their leading metrics.</p>
     </div>
   </div>
 
@@ -1103,20 +984,19 @@ Need:
       </div>
     </div>
     <div class="ritual-body">
-      <p style="font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">Goal updates, MER, partner digests, discovery hours, retros</p>
+      <p style="font-weight: 600; color: var(--text); margin-bottom: 0.5rem;">Goal updates, MER, discovery hours</p>
       <div class="table-wrap" style="margin: 0.5rem 0;">
         <table>
           <thead><tr><th>Who</th><th>What</th><th>By</th></tr></thead>
           <tbody>
             <tr><td><strong>Each PM</strong></td><td>Write Goal Status Update in Linear (Where We Are, Working/Not, What We Need + health)</td><td>Wed</td></tr>
             <tr><td><strong>All PMs + eng leads</strong></td><td>Attend MER (60 min) &mdash; decisions and escalations, not presentations</td><td>Thu/Fri</td></tr>
-            <tr><td><strong>Each PM</strong></td><td>Post Monthly Partner Digest to <code>#amplify-x-[org]</code> Slack</td><td>After MER</td></tr>
+            <tr><td><strong>Each PM</strong></td><td>Share goal update with partner stakeholders (replaces separate partner digest)</td><td>After MER</td></tr>
             <tr><td><strong>Each PM</strong></td><td>One Discovery Hour: shadow a partner call, watch them use your tool</td><td>This week</td></tr>
-            <tr><td><strong>Each triad</strong></td><td>30-min Bi-weekly Retro: what's working, what's not, 2&ndash;3 action items</td><td>Fri</td></tr>
           </tbody>
         </table>
       </div>
-      <p style="font-size: 0.8rem; color: var(--blue); font-weight: 600; margin-top: 0.5rem;">&#10003; Done when: Full monthly cycle completed once &mdash; goal updates, MER, digests, discovery, retros.</p>
+      <p style="font-size: 0.8rem; color: var(--blue); font-weight: 600; margin-top: 0.5rem;">&#10003; Done when: Full monthly cycle completed once &mdash; goal updates, MER, partner stakeholders updated, discovery done.</p>
     </div>
   </div>
 
@@ -1135,7 +1015,7 @@ Need:
           <thead><tr><th>Who</th><th>What</th><th>By</th></tr></thead>
           <tbody>
             <tr><td><strong>Drew</strong></td><td>PM Sync retro: what worked, what's friction across the rollout?</td><td>Mon</td></tr>
-            <tr><td><strong>Each PM</strong></td><td>Self-check: 4 weeks of standups, updates, Flow Reviews, partner syncs?</td><td>Mon</td></tr>
+            <tr><td><strong>Each PM</strong></td><td>Self-check: 4 weeks of standups, updates, partner syncs?</td><td>Mon</td></tr>
             <tr><td><strong>Each PM</strong></td><td>Start drafting Q2 quarterly plan (commitments, milestones, metrics, needs)</td><td>Fri</td></tr>
             <tr><td><strong>Drew</strong></td><td>Publish Operating Health Check scorecard per PM</td><td>Wed</td></tr>
             <tr><td><strong>Drew</strong></td><td>1:1 with any PM below 100% &mdash; "what's getting in the way?"</td><td>Thu</td></tr>
@@ -1156,15 +1036,19 @@ Need:
       <tbody>
         <tr>
           <td><strong>PMs</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">The drivers</span></td>
-          <td>Daily standups, Friday project updates, monthly goal updates + partner digests. Run Flow Review with triad, attend PM Sync, drive demos, do discovery hours. Own the pipeline.</td>
+          <td>Daily standups, Friday project updates, monthly goal updates shared with partner stakeholders. Attend PM Sync, drive demos, do discovery hours. Own the pipeline.</td>
         </tr>
         <tr>
           <td><strong>Eng Leads</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">The partners</span></td>
-          <td>Co-own the Kanban board at Flow Review. Ensure engineers pull from On Deck and keep statuses honest. Participate in retros.</td>
+          <td>Co-own the board with the triad. Ensure engineers pull from the top and keep statuses honest.</td>
+        </tr>
+        <tr>
+          <td><strong>Designers</strong><br><span style="font-size: 0.75rem; color: var(--text-secondary);">Embedded in teams</span></td>
+          <td>Participate in all team rituals. Drive Identify and Define stages. Create prototypes, review during Build. Join discovery hours monthly.</td>
         </tr>
         <tr>
           <td><strong>Engineers</strong></td>
-          <td>Daily standups in team Slack. Pull work from top of On Deck. Keep issue status current.</td>
+          <td>Daily standups in team Slack. Pull work from top of queue. Keep issue status current.</td>
         </tr>
         <tr>
           <td><strong>Drew</strong></td>
@@ -1197,6 +1081,5 @@ Need:
     if (main) main.style.paddingTop = '1.5rem';
   }
 </script>
-
 </body>
 </html>
