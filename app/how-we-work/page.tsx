@@ -7,6 +7,7 @@ const sections = [
   { id: "pipeline", label: "Pipeline" },
   { id: "daily", label: "Daily" },
   { id: "weekly", label: "Weekly" },
+  { id: "swarming", label: "Swarming", highlight: true },
   { id: "monthly", label: "Monthly" },
   { id: "quarterly", label: "Quarterly" },
   { id: "rules", label: "Rules" },
