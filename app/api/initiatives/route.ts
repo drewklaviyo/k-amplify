@@ -45,6 +45,18 @@ interface InitiativeResponse {
   } | null;
 }
 
+export interface SubInitiativeUpdate {
+  name: string;
+  url: string;
+  health: string | null;
+  latestUpdate: {
+    body: string;
+    health: string | null;
+    date: string;
+    author: string;
+  } | null;
+}
+
 export interface InitiativeUpdateData {
   slug: InitiativeSlug;
   name: string;
@@ -56,6 +68,7 @@ export interface InitiativeUpdateData {
     date: string;
     author: string;
   } | null;
+  subInitiatives: SubInitiativeUpdate[];
 }
 
 export async function GET() {
@@ -70,6 +83,7 @@ export async function GET() {
           health: null,
           url: details.linearUrl,
           latestUpdate: null,
+          subInitiatives: [],
         });
         continue;
       }
@@ -82,6 +96,32 @@ export async function GET() {
 
         const init = data.initiative;
         const update = init?.initiativeUpdates?.nodes?.[0];
+
+        // Fetch sub-initiative updates
+        const subUpdates: SubInitiativeUpdate[] = [];
+        for (const subId of details.linearSubInitiativeIds ?? []) {
+          try {
+            const subData = await linearGraphQL<InitiativeResponse>(
+              INITIATIVE_UPDATES_QUERY,
+              { id: subId },
+            );
+            const sub = subData.initiative;
+            const subUpdate = sub?.initiativeUpdates?.nodes?.[0];
+            subUpdates.push({
+              name: sub?.name ?? "Sub-initiative",
+              url: sub?.url ?? "",
+              health: subUpdate?.health ?? sub?.health ?? null,
+              latestUpdate: subUpdate
+                ? {
+                    body: subUpdate.body,
+                    health: subUpdate.health,
+                    date: subUpdate.createdAt,
+                    author: subUpdate.user?.name ?? "Unknown",
+                  }
+                : null,
+            });
+          } catch {}
+        }
 
         results.push({
           slug: slug as InitiativeSlug,
@@ -96,6 +136,7 @@ export async function GET() {
                 author: update.user?.name ?? "Unknown",
               }
             : null,
+          subInitiatives: subUpdates,
         });
       } catch {
         results.push({
@@ -104,6 +145,7 @@ export async function GET() {
           health: null,
           url: details.linearUrl,
           latestUpdate: null,
+          subInitiatives: [],
         });
       }
     }

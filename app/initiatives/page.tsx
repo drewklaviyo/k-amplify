@@ -224,6 +224,47 @@ export default function InitiativesPage() {
                   </div>
                 </div>
               )}
+
+              {/* Sub-initiative updates */}
+              {(updates[init.slug]?.subInitiatives ?? []).filter(s => s.latestUpdate || s.name).length > 0 && (
+                <div className="ml-[18px] mt-4 space-y-4">
+                  {(updates[init.slug]?.subInitiatives ?? []).map((sub) => (
+                    <div key={sub.name} className="border-l-2 border-accent/20 pl-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <a
+                          href={sub.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[0.82rem] font-medium text-text hover:text-accent-light transition-colors"
+                        >
+                          {sub.name}
+                        </a>
+                        {sub.health && healthLabel(sub.health) && (
+                          <span className={`text-[0.7rem] font-semibold ${healthTextColor(sub.health)}`}>
+                            {healthLabel(sub.health)}
+                          </span>
+                        )}
+                      </div>
+                      {sub.latestUpdate ? (
+                        <>
+                          <p className="text-[0.7rem] text-text-secondary/60 mb-1.5">
+                            {sub.latestUpdate.author} · {new Date(sub.latestUpdate.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                          </p>
+                          <div className="text-[0.82rem] leading-relaxed text-text">
+                            <MarkdownContent>
+                              {sub.latestUpdate.body.length > 300
+                                ? sub.latestUpdate.body.substring(0, 300).replace(/\s\S*$/, "").trim() + "..."
+                                : sub.latestUpdate.body}
+                            </MarkdownContent>
+                          </div>
+                        </>
+                      ) : (
+                        <p className="text-[0.75rem] text-text-secondary/40">No update yet</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
