@@ -28,6 +28,10 @@ export default function DemosPage() {
   const [archiveSubmissions, setArchiveSubmissions] = useState<SubmissionWithVotes[]>([]);
   const [loading, setLoading] = useState(true);
   const [showHelp, setShowHelp] = useState(false);
+  const [showSubmit, setShowSubmit] = useState(false);
+  const [submitUrl, setSubmitUrl] = useState("");
+  const [submitTitle, setSubmitTitle] = useState("");
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   // Voting state
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -198,6 +202,30 @@ export default function DemosPage() {
     setUserName(name);
   };
 
+  const handleSubmitLoom = async () => {
+    if (!submitUrl || !submitTitle || !userEmail) return;
+    setSubmitLoading(true);
+    try {
+      const res = await fetch("/api/demos/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          loomUrl: submitUrl,
+          title: submitTitle,
+          submitterName: userName ?? userEmail,
+        }),
+      });
+      if (res.ok) {
+        setSubmitUrl("");
+        setSubmitTitle("");
+        setShowSubmit(false);
+        // Refresh submissions
+        if (tab === "this-week") fetchThisWeek();
+      }
+    } catch {}
+    setSubmitLoading(false);
+  };
+
   const handleLike = (submissionId: string) => {
     const wasLiked = userLikes.has(submissionId);
     setUserLikes((prev) => {
@@ -276,8 +304,8 @@ export default function DemosPage() {
         Loom walkthroughs from project updates and issue comments.
       </p>
 
-      {/* Tabs */}
-      <div className="flex gap-1 mb-6" role="tablist">
+      {/* Tabs + Submit */}
+      <div className="flex items-center gap-1 mb-6" role="tablist">
         {[
           { id: "this-week" as Tab, label: "This Week" },
           { id: "archive" as Tab, label: "Archive" },
@@ -297,7 +325,53 @@ export default function DemosPage() {
             {t.label}
           </button>
         ))}
+        <div className="ml-auto">
+          <button
+            onClick={() => setShowSubmit(!showSubmit)}
+            className="text-[0.78rem] font-medium px-3 py-1.5 rounded-lg border border-accent/25 text-accent-light bg-accent/8 hover:bg-accent/15 transition-all flex items-center gap-1.5"
+          >
+            <span>+</span> Submit Loom
+          </button>
+        </div>
       </div>
+
+      {/* Submit Loom form */}
+      {showSubmit && (
+        <div className="rounded-xl border border-accent/20 bg-accent/5 p-4 mb-6">
+          <div className="flex gap-3 flex-wrap items-end">
+            <div className="flex-1 min-w-[200px]">
+              <label className="block text-xs font-medium text-text-secondary mb-1">Loom URL</label>
+              <input
+                type="url"
+                value={submitUrl}
+                onChange={(e) => setSubmitUrl(e.target.value)}
+                placeholder="https://www.loom.com/share/..."
+                className="w-full bg-surface border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/40 focus:outline-none focus:border-accent/50"
+              />
+            </div>
+            <div className="flex-1 min-w-[200px]">
+              <label className="block text-xs font-medium text-text-secondary mb-1">Title</label>
+              <input
+                type="text"
+                value={submitTitle}
+                onChange={(e) => setSubmitTitle(e.target.value)}
+                placeholder="What did you demo?"
+                className="w-full bg-surface border border-border rounded-lg px-3 py-2 text-sm text-text placeholder-text-secondary/40 focus:outline-none focus:border-accent/50"
+              />
+            </div>
+            <button
+              onClick={handleSubmitLoom}
+              disabled={submitLoading || !submitUrl || !submitTitle}
+              className="px-4 py-2 bg-accent/15 text-accent-light text-sm font-medium rounded-lg hover:bg-accent/25 border border-accent/20 transition-all disabled:opacity-50"
+            >
+              {submitLoading ? "Submitting..." : "Submit"}
+            </button>
+          </div>
+          <p className="text-[0.68rem] text-text-secondary/50 mt-2">
+            Paste any Loom URL to add it to this week&apos;s demos. No Linear link required.
+          </p>
+        </div>
+      )}
 
       {tab === "summit-board" ? (
         <SummitBoard />
