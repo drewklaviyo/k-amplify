@@ -750,10 +750,10 @@ export function MountainViz() {
                   x={todayX} y={Math.min(todayY + 18, 310)}
                   textAnchor="middle"
                   fill="var(--color-red)"
-                  fontSize="8"
+                  fontSize="11"
                   fontWeight="700"
                   fontFamily="Inter, sans-serif"
-                  opacity="0.7"
+                  opacity="0.8"
                 >
                   Target: {todayTargetK}K
                 </text>
