@@ -219,8 +219,8 @@ export default function DemosPage() {
         setSubmitUrl("");
         setSubmitTitle("");
         setShowSubmit(false);
-        // Refresh submissions
-        if (tab === "this-week") fetchThisWeek();
+        // Force refresh submissions regardless of tab
+        fetchThisWeek();
       }
     } catch {}
     setSubmitLoading(false);
