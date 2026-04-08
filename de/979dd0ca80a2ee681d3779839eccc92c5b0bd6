@@ -1,0 +1,23 @@
+app/demos/page.tsx
+  6936130eadf6a10e 280-297,299
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "de979dd0ca80a2ee681d3779839eccc92c5b0bd6",
+  "prompts": {
+    "6936130eadf6a10e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "192bd3dc-ce8f-4a82-99ec-0ecbb4dbeb75",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "drewklaviyo",
+      "messages": [],
+      "total_additions": 19,
+      "total_deletions": 1,
+      "accepted_lines": 19,
+      "overriden_lines": 0
+    }
+  }
+}
