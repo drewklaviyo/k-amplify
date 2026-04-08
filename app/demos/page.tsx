@@ -277,8 +277,26 @@ export default function DemosPage() {
     },
   );
 
+  // Dedupe by loom_url — keep the one with most votes, then earliest date
+  const deduped = (() => {
+    const seen = new Map<string, typeof filteredSubmissions[0]>();
+    for (const sub of filteredSubmissions) {
+      const existing = seen.get(sub.loom_url);
+      if (!existing) {
+        seen.set(sub.loom_url, sub);
+      } else {
+        const existingVotes = existing.builder_votes + existing.learner_votes;
+        const subVotes = sub.builder_votes + sub.learner_votes;
+        if (subVotes > existingVotes || (subVotes === existingVotes && sub.posted_at < existing.posted_at)) {
+          seen.set(sub.loom_url, sub);
+        }
+      }
+    }
+    return Array.from(seen.values());
+  })();
+
   // Sort by total votes (this week) or date (archive)
-  const sortedSubmissions = [...filteredSubmissions].sort((a, b) => {
+  const sortedSubmissions = [...deduped].sort((a, b) => {
     if (tab === "this-week") {
       const aTotal = a.builder_votes + a.learner_votes;
       const bTotal = b.builder_votes + b.learner_votes;
