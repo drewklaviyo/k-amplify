@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { HealthBadge } from "./health-badge";
+import { MarkdownContent } from "./markdown-content";
 import { DigestEntry } from "@/lib/types";
 import { ORG_BY_SLUG } from "@/lib/config";
 
@@ -33,8 +34,8 @@ export function DigestEntryCard({ entry }: { entry: DigestEntry }) {
         </svg>
       </button>
       {expanded && (
-        <div className="px-5 pb-5 text-text-secondary text-[0.78rem] whitespace-pre-wrap border-t border-border pt-4 animate-in">
-          {entry.content}
+        <div className="px-5 pb-5 text-[0.78rem] border-t border-border pt-4 animate-in">
+          <MarkdownContent>{entry.content}</MarkdownContent>
         </div>
       )}
     </div>
