@@ -9,13 +9,13 @@ export const INITIATIVES: Record<InitiativeSlug, InitiativeTag> = {
   },
   enterprise: {
     slug: "enterprise",
-    name: "Enterprise",
+    name: "Enterprise: Demo & Sandbox",
     color: "#74b9ff",
     colorVar: "var(--color-blue)",
   },
   growth: {
     slug: "growth",
-    name: "Growth",
+    name: "Growth: Increase Sign Ups",
     color: "#00b894",
     colorVar: "var(--color-green)",
   },

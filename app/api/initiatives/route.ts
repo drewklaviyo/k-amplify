@@ -287,10 +287,22 @@ export async function GET() {
 
         const parentUpdate = init.initiativeUpdates?.nodes?.[0];
 
-        // Filter sub-initiatives to Amplify-owned only
-        const amplifySubInits = (init.subInitiatives?.nodes ?? []).filter(
-          (sub) => sub.owner?.id && amplifyMemberIds.has(sub.owner.id),
-        );
+        // Collect ALL Amplify-owned sub-initiatives at any depth (up to 3 levels)
+        // Level 1: direct children of parent that are Amplify-owned
+        const amplifySubInits: SubInitiativeNode[] = [];
+
+        for (const l1 of init.subInitiatives?.nodes ?? []) {
+          if (l1.owner?.id && amplifyMemberIds.has(l1.owner.id)) {
+            amplifySubInits.push(l1);
+          } else {
+            // Level 2: check children of non-Amplify L1 parents
+            for (const l2 of l1.subInitiatives?.nodes ?? []) {
+              if (l2.owner?.id && amplifyMemberIds.has(l2.owner.id)) {
+                amplifySubInits.push(l2);
+              }
+            }
+          }
+        }
 
         // Fetch details for each Amplify-owned sub-initiative (in parallel, batched)
         const subInitiativeResults: SubInitiativeData[] = [];
