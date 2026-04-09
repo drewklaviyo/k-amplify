@@ -3,6 +3,7 @@
 import { useRef, useCallback } from "react";
 
 const sections = [
+  { id: "mission", label: "Mission" },
   { id: "context", label: "Context" },
   { id: "pipeline", label: "Pipeline" },
   { id: "daily", label: "Daily" },
