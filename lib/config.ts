@@ -31,7 +31,6 @@ export const INITIATIVE_DETAILS: Record<
     owner: string;
     linearInitiative: string;
     linearInitiativeId: string | null;
-    linearSubInitiativeIds?: string[];
     linearUrl: string;
     keyProduct?: string;
     keyWork?: string;
@@ -51,10 +50,6 @@ export const INITIATIVE_DETAILS: Record<
     owner: "Drew Kull / Jenna Eldredge",
     linearInitiative: "Deliver a Secure, Scalable Global Enterprise Platform",
     linearInitiativeId: "7f621067-21a7-401f-87b5-82e7c74acbea",
-    linearSubInitiativeIds: [
-      "4e2f1ca6-4263-4e2e-a5d7-06979c8ad15a", // Demo and Sandbox Environments (Jenna)
-      "69d835d6-5677-4ee6-a749-b0b58e56d13c", // Organizations (Jenna)
-    ],
     linearUrl: "https://linear.app/klaviyo/initiative/1-deliver-a-secure-scalable-global-enterprise-platform-b6d02ef57e39",
     keyProduct: "KDS (Klaviyo Demo Studio)",
   },

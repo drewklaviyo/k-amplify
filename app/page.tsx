@@ -153,6 +153,11 @@ export default function HomePage() {
                         >
                           {details.targetMetric}
                         </span>
+                        {(update?.subInitiatives?.length ?? 0) > 0 && (
+                          <span className="inline-flex items-center gap-1 text-[0.68rem] text-text-secondary bg-surface-2 border border-border px-1.5 py-0.5 rounded-md tabular-nums">
+                            {update!.subInitiatives.length} sub-initiative{update!.subInitiatives.length !== 1 ? "s" : ""}
+                          </span>
+                        )}
                         <div className="flex gap-1 ml-auto">
                           {orgs.map((org) => (
                             <span key={org.slug} className="text-[0.62rem] text-text-secondary bg-surface-2 px-1.5 py-0.5 rounded border border-border">

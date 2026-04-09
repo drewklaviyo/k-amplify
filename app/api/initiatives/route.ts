@@ -5,20 +5,61 @@ import type { InitiativeSlug } from "@/lib/types";
 
 export const revalidate = 300; // 5 minutes
 
-const INITIATIVE_UPDATES_QUERY = `
-  query InitiativeUpdate($id: String!) {
+// ---------------------------------------------------------------------------
+// GraphQL queries
+// ---------------------------------------------------------------------------
+
+const AMPLIFY_MEMBER_IDS_QUERY = `
+  query AmplifyMembers {
+    teams(filter: { name: { startsWithIgnoreCase: "Amplify" } }) {
+      nodes {
+        members(first: 50) {
+          nodes { id }
+        }
+      }
+    }
+  }
+`;
+
+const SUB_INITIATIVES_QUERY = `
+  query SubInitiatives($id: String!) {
     initiative(id: $id) {
       id
       name
       health
-      status
       url
       initiativeUpdates(first: 1, orderBy: createdAt) {
         nodes {
-          id
-          body
-          health
-          createdAt
+          id body health createdAt
+          user { name }
+        }
+      }
+      subInitiatives(first: 30) {
+        nodes {
+          id name health url status
+          owner { id name }
+          subInitiatives(first: 20) {
+            nodes {
+              id name health url status
+              owner { id name }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+const SUB_INITIATIVE_DETAILS_QUERY = `
+  query SubInitiativeDetails($id: String!) {
+    initiative(id: $id) {
+      id name health url
+      documents(first: 5) {
+        nodes { id title url }
+      }
+      initiativeUpdates(first: 1, orderBy: createdAt) {
+        nodes {
+          id body health createdAt
           user { name }
         }
       }
@@ -26,13 +67,79 @@ const INITIATIVE_UPDATES_QUERY = `
   }
 `;
 
-interface InitiativeResponse {
+const SUB_INITIATIVE_DETAILS_WITH_LINKS_QUERY = `
+  query SubInitiativeDetailsWithLinks($id: String!) {
+    initiative(id: $id) {
+      id name health url
+      documents(first: 5) {
+        nodes { id title url }
+      }
+      links(first: 5) {
+        nodes { id url label }
+      }
+      initiativeUpdates(first: 1, orderBy: createdAt) {
+        nodes {
+          id body health createdAt
+          user { name }
+        }
+      }
+    }
+  }
+`;
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+interface AmplifyMembersResponse {
+  teams: {
+    nodes: {
+      members: { nodes: { id: string }[] };
+    }[];
+  };
+}
+
+interface SubInitiativeNode {
+  id: string;
+  name: string;
+  health: string | null;
+  url: string;
+  status: string | null;
+  owner: { id: string; name: string } | null;
+  subInitiatives?: {
+    nodes: SubInitiativeNode[];
+  };
+}
+
+interface ParentInitiativeResponse {
   initiative: {
     id: string;
     name: string;
     health: string | null;
-    status: string;
     url: string;
+    initiativeUpdates: {
+      nodes: {
+        id: string;
+        body: string;
+        health: string | null;
+        createdAt: string;
+        user: { name: string } | null;
+      }[];
+    };
+    subInitiatives: {
+      nodes: SubInitiativeNode[];
+    };
+  } | null;
+}
+
+interface SubInitiativeDetailsResponse {
+  initiative: {
+    id: string;
+    name: string;
+    health: string | null;
+    url: string;
+    documents: { nodes: { id: string; title: string; url: string }[] };
+    links?: { nodes: { id: string; url: string; label: string | null }[] };
     initiativeUpdates: {
       nodes: {
         id: string;
@@ -45,10 +152,33 @@ interface InitiativeResponse {
   } | null;
 }
 
-export interface SubInitiativeUpdate {
+// ---------------------------------------------------------------------------
+// Exported types for the page
+// ---------------------------------------------------------------------------
+
+export interface SubInitiativeData {
+  id: string;
   name: string;
-  url: string;
+  owner: string;
   health: string | null;
+  url: string;
+  documents: { title: string; url: string }[];
+  links: { label: string; url: string }[];
+  latestUpdate: {
+    body: string;
+    health: string | null;
+    date: string;
+    author: string;
+  } | null;
+  subInitiatives: SubInitiativeChild[];
+}
+
+export interface SubInitiativeChild {
+  id: string;
+  name: string;
+  owner: string;
+  health: string | null;
+  url: string;
   latestUpdate: {
     body: string;
     health: string | null;
@@ -68,13 +198,60 @@ export interface InitiativeUpdateData {
     date: string;
     author: string;
   } | null;
-  subInitiatives: SubInitiativeUpdate[];
+  subInitiatives: SubInitiativeData[];
 }
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+async function fetchAmplifyMemberIds(): Promise<Set<string>> {
+  const data = await linearGraphQL<AmplifyMembersResponse>(AMPLIFY_MEMBER_IDS_QUERY);
+  const ids = new Set<string>();
+  for (const team of data.teams.nodes) {
+    for (const member of team.members.nodes) {
+      ids.add(member.id);
+    }
+  }
+  return ids;
+}
+
+async function fetchSubInitiativeDetails(
+  id: string,
+): Promise<SubInitiativeDetailsResponse["initiative"]> {
+  // Try with links first, fall back without if it errors
+  try {
+    const data = await linearGraphQL<SubInitiativeDetailsResponse>(
+      SUB_INITIATIVE_DETAILS_WITH_LINKS_QUERY,
+      { id },
+    );
+    return data.initiative;
+  } catch {
+    // links field might not exist — retry without it
+    try {
+      const data = await linearGraphQL<SubInitiativeDetailsResponse>(
+        SUB_INITIATIVE_DETAILS_QUERY,
+        { id },
+      );
+      return data.initiative;
+    } catch {
+      return null;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// GET handler
+// ---------------------------------------------------------------------------
 
 export async function GET() {
   try {
+    // Step 1: Fetch all Amplify team member IDs
+    const amplifyMemberIds = await fetchAmplifyMemberIds();
+
     const results: InitiativeUpdateData[] = [];
 
+    // Step 2: For each parent initiative, discover Amplify-owned sub-initiatives
     for (const [slug, details] of Object.entries(INITIATIVE_DETAILS)) {
       if (!details.linearInitiativeId) {
         results.push({
@@ -89,54 +266,129 @@ export async function GET() {
       }
 
       try {
-        const data = await linearGraphQL<InitiativeResponse>(
-          INITIATIVE_UPDATES_QUERY,
+        // Fetch parent initiative + sub-initiatives (2 levels)
+        const data = await linearGraphQL<ParentInitiativeResponse>(
+          SUB_INITIATIVES_QUERY,
           { id: details.linearInitiativeId },
         );
 
         const init = data.initiative;
-        const update = init?.initiativeUpdates?.nodes?.[0];
+        if (!init) {
+          results.push({
+            slug: slug as InitiativeSlug,
+            name: details.linearInitiative,
+            health: null,
+            url: details.linearUrl,
+            latestUpdate: null,
+            subInitiatives: [],
+          });
+          continue;
+        }
 
-        // Fetch sub-initiative updates
-        const subUpdates: SubInitiativeUpdate[] = [];
-        for (const subId of details.linearSubInitiativeIds ?? []) {
+        const parentUpdate = init.initiativeUpdates?.nodes?.[0];
+
+        // Filter sub-initiatives to Amplify-owned only
+        const amplifySubInits = (init.subInitiatives?.nodes ?? []).filter(
+          (sub) => sub.owner?.id && amplifyMemberIds.has(sub.owner.id),
+        );
+
+        // Fetch details for each Amplify-owned sub-initiative (in parallel, batched)
+        const subInitiativeResults: SubInitiativeData[] = [];
+
+        const detailsPromises = amplifySubInits.map(async (sub) => {
           try {
-            const subData = await linearGraphQL<InitiativeResponse>(
-              INITIATIVE_UPDATES_QUERY,
-              { id: subId },
-            );
-            const sub = subData.initiative;
-            const subUpdate = sub?.initiativeUpdates?.nodes?.[0];
-            subUpdates.push({
-              name: sub?.name ?? "Sub-initiative",
-              url: sub?.url ?? "",
-              health: subUpdate?.health ?? sub?.health ?? null,
-              latestUpdate: subUpdate
+            const detail = await fetchSubInitiativeDetails(sub.id);
+
+            // Also collect Amplify-owned level-2 sub-initiatives
+            const childSubs: SubInitiativeChild[] = [];
+            for (const child of sub.subInitiatives?.nodes ?? []) {
+              if (child.owner?.id && amplifyMemberIds.has(child.owner.id)) {
+                // Fetch latest update for child (lightweight — reuse details query)
+                let childUpdate: SubInitiativeChild["latestUpdate"] = null;
+                try {
+                  const childDetail = await fetchSubInitiativeDetails(child.id);
+                  const cu = childDetail?.initiativeUpdates?.nodes?.[0];
+                  if (cu) {
+                    childUpdate = {
+                      body: cu.body,
+                      health: cu.health,
+                      date: cu.createdAt,
+                      author: cu.user?.name ?? "Unknown",
+                    };
+                  }
+                } catch {
+                  // skip
+                }
+                childSubs.push({
+                  id: child.id,
+                  name: child.name,
+                  owner: child.owner?.name ?? "Unknown",
+                  health: child.health,
+                  url: child.url,
+                  latestUpdate: childUpdate,
+                });
+              }
+            }
+
+            const update = detail?.initiativeUpdates?.nodes?.[0];
+
+            return {
+              id: sub.id,
+              name: detail?.name ?? sub.name,
+              owner: sub.owner?.name ?? "Unknown",
+              health: detail?.health ?? sub.health,
+              url: detail?.url ?? sub.url,
+              documents: (detail?.documents?.nodes ?? []).map((d) => ({
+                title: d.title,
+                url: d.url,
+              })),
+              links: (detail?.links?.nodes ?? []).map((l) => ({
+                label: l.label ?? l.url,
+                url: l.url,
+              })),
+              latestUpdate: update
                 ? {
-                    body: subUpdate.body,
-                    health: subUpdate.health,
-                    date: subUpdate.createdAt,
-                    author: subUpdate.user?.name ?? "Unknown",
+                    body: update.body,
+                    health: update.health,
+                    date: update.createdAt,
+                    author: update.user?.name ?? "Unknown",
                   }
                 : null,
-            });
-          } catch {}
-        }
+              subInitiatives: childSubs,
+            } satisfies SubInitiativeData;
+          } catch {
+            // If fetching details fails, return basic info from parent query
+            return {
+              id: sub.id,
+              name: sub.name,
+              owner: sub.owner?.name ?? "Unknown",
+              health: sub.health,
+              url: sub.url,
+              documents: [],
+              links: [],
+              latestUpdate: null,
+              subInitiatives: [],
+            } satisfies SubInitiativeData;
+          }
+        });
+
+        const settled = await Promise.all(detailsPromises);
+        subInitiativeResults.push(...settled);
 
         results.push({
           slug: slug as InitiativeSlug,
-          name: init?.name ?? details.linearInitiative,
-          health: update?.health ?? init?.health ?? null,
-          url: init?.url ?? details.linearUrl,
-          latestUpdate: update
+          name: init.name ?? details.linearInitiative,
+          health: parentUpdate?.health ?? init.health ?? null,
+          url: init.url ?? details.linearUrl,
+          latestUpdate: parentUpdate
             ? {
-                body: update.body,
-                health: update.health,
-                date: update.createdAt,
-                author: update.user?.name ?? "Unknown",
+                body: parentUpdate.body,
+                health: parentUpdate.health,
+                date: parentUpdate.createdAt,
+                author: parentUpdate.user?.name ?? "Unknown",
               }
             : null,
-          subInitiatives: subUpdates,
+          subInitiatives: subInitiativeResults,
         });
       } catch {
         results.push({

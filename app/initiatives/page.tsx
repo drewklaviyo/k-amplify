@@ -11,9 +11,14 @@ import {
 import { MarkdownContent } from "@/components/markdown-content";
 import Link from "next/link";
 import type { InitiativeSlug } from "@/lib/types";
-import type { InitiativeUpdateData } from "@/app/api/initiatives/route";
+import type {
+  InitiativeUpdateData,
+  SubInitiativeData,
+  SubInitiativeChild,
+} from "@/app/api/initiatives/route";
 
 const UPDATE_COLLAPSE_THRESHOLD = 400;
+const SUB_UPDATE_COLLAPSE_THRESHOLD = 300;
 
 function HealthDot({ health }: { health: string | null }) {
   const color =
@@ -41,11 +46,205 @@ function healthTextColor(health: string | null): string {
   return "text-text-secondary";
 }
 
+function ExternalLinkIcon() {
+  return (
+    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+      />
+    </svg>
+  );
+}
+
+function getStrategyDocLink(sub: SubInitiativeData): { label: string; url: string } | null {
+  if (sub.documents.length > 0) {
+    return { label: sub.documents[0].title || "Strategy Doc", url: sub.documents[0].url };
+  }
+  if (sub.links.length > 0) {
+    return { label: sub.links[0].label || "Strategy Doc", url: sub.links[0].url };
+  }
+  return null;
+}
+
+function LatestUpdateBlock({
+  update,
+  expandedKey,
+  expanded,
+  toggleExpanded,
+  threshold,
+}: {
+  update: { body: string; health: string | null; date: string; author: string };
+  expandedKey: string;
+  expanded: Record<string, boolean>;
+  toggleExpanded: (key: string) => void;
+  threshold: number;
+}) {
+  const isLong = update.body.length > threshold;
+  const isExpanded = expanded[expandedKey] ?? false;
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 text-[0.75rem] text-text-secondary mb-2">
+        <span className="font-medium uppercase tracking-wider">Latest Update</span>
+        <span className="text-text-secondary/30">---</span>
+        {healthLabel(update.health) && (
+          <span className={`font-semibold ${healthTextColor(update.health)}`}>
+            {healthLabel(update.health)}
+          </span>
+        )}
+        <span className="text-text-secondary/50">&middot;</span>
+        <span>{update.author}</span>
+        <span className="text-text-secondary/50">&middot;</span>
+        <span>
+          {new Date(update.date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
+        </span>
+      </div>
+      <div className="text-[0.875rem] leading-relaxed text-text">
+        {isLong && !isExpanded ? (
+          <>
+            <MarkdownContent>
+              {update.body
+                .substring(0, threshold)
+                .replace(/\s\S*$/, "")
+                .trim() + "..."}
+            </MarkdownContent>
+            <button
+              onClick={() => toggleExpanded(expandedKey)}
+              className="text-[0.8rem] text-text-secondary hover:text-text mt-1.5 transition-colors"
+            >
+              Show more
+            </button>
+          </>
+        ) : (
+          <>
+            <MarkdownContent>{update.body}</MarkdownContent>
+            {isLong && (
+              <button
+                onClick={() => toggleExpanded(expandedKey)}
+                className="text-[0.8rem] text-text-secondary hover:text-text mt-1.5 transition-colors"
+              >
+                Show less
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SubInitiativeChildRow({ child }: { child: SubInitiativeChild }) {
+  return (
+    <div className="flex items-center gap-2 py-1">
+      <HealthDot health={child.health} />
+      <a
+        href={child.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[0.78rem] text-text hover:text-accent-light transition-colors"
+      >
+        {child.name}
+      </a>
+      <span className="text-[0.68rem] text-text-secondary">{child.owner}</span>
+      {child.latestUpdate && (
+        <span className="text-[0.65rem] text-text-secondary/50 ml-auto">
+          Updated {new Date(child.latestUpdate.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+        </span>
+      )}
+    </div>
+  );
+}
+
+function SubInitiativeCard({
+  sub,
+  expanded,
+  toggleExpanded,
+}: {
+  sub: SubInitiativeData;
+  expanded: Record<string, boolean>;
+  toggleExpanded: (key: string) => void;
+}) {
+  const strategyDoc = getStrategyDocLink(sub);
+
+  return (
+    <div className="border-l-2 border-accent/20 pl-4">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-1 flex-wrap">
+        <HealthDot health={sub.health} />
+        <a
+          href={sub.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[0.85rem] font-medium text-text hover:text-accent-light transition-colors"
+        >
+          {sub.name}
+        </a>
+        {sub.health && healthLabel(sub.health) && (
+          <span className={`text-[0.7rem] font-semibold ${healthTextColor(sub.health)}`}>
+            {healthLabel(sub.health)}
+          </span>
+        )}
+      </div>
+
+      {/* Owner + strategy doc */}
+      <div className="flex items-center gap-3 mb-2 ml-[16px]">
+        <span className="text-[0.75rem] text-text-secondary">{sub.owner}</span>
+        {strategyDoc && (
+          <>
+            <span className="text-text-secondary/30">&middot;</span>
+            <a
+              href={strategyDoc.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[0.75rem] text-accent-light hover:text-accent transition-colors"
+            >
+              Strategy Doc &rarr;
+            </a>
+          </>
+        )}
+      </div>
+
+      {/* Latest update */}
+      {sub.latestUpdate && (
+        <div className="ml-[16px] mb-2">
+          <LatestUpdateBlock
+            update={sub.latestUpdate}
+            expandedKey={`sub-${sub.id}`}
+            expanded={expanded}
+            toggleExpanded={toggleExpanded}
+            threshold={SUB_UPDATE_COLLAPSE_THRESHOLD}
+          />
+        </div>
+      )}
+      {!sub.latestUpdate && (
+        <p className="text-[0.75rem] text-text-secondary/40 ml-[16px] mb-2">No update yet</p>
+      )}
+
+      {/* Nested sub-sub-initiatives */}
+      {sub.subInitiatives.length > 0 && (
+        <div className="ml-[16px] mt-2 pl-3 border-l border-border/50">
+          <p className="text-[0.68rem] font-medium text-text-secondary uppercase tracking-wider mb-1">
+            Sub-initiatives
+          </p>
+          {sub.subInitiatives.map((child) => (
+            <SubInitiativeChildRow key={child.id} child={child} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function InitiativesPage() {
   usePageTitle("Initiatives");
-  const [updates, setUpdates] = useState<Record<string, InitiativeUpdateData>>(
-    {}
-  );
+  const [updates, setUpdates] = useState<Record<string, InitiativeUpdateData>>({});
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -59,8 +258,8 @@ export default function InitiativesPage() {
       .catch(() => {});
   }, []);
 
-  const toggleExpanded = (slug: string) =>
-    setExpanded((prev) => ({ ...prev, [slug]: !prev[slug] }));
+  const toggleExpanded = (key: string) =>
+    setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
 
   return (
     <div className="pt-10 animate-in">
@@ -70,7 +269,8 @@ export default function InitiativesPage() {
         </h1>
         <p className="text-text-secondary text-[0.92rem] max-w-lg">
           The three strategic initiatives that drive Amplify&apos;s work across
-          all partner orgs.
+          all partner orgs. Sub-initiatives are auto-discovered from Linear based
+          on Amplify team ownership.
         </p>
       </div>
 
@@ -82,6 +282,7 @@ export default function InitiativesPage() {
           );
           const update = updates[init.slug]?.latestUpdate;
           const initHealth = updates[init.slug]?.health ?? null;
+          const subInits = updates[init.slug]?.subInitiatives ?? [];
           const isLong =
             update && update.body.length > UPDATE_COLLAPSE_THRESHOLD;
           const isExpanded = expanded[init.slug] ?? false;
@@ -101,6 +302,11 @@ export default function InitiativesPage() {
                   >
                     {init.name}
                   </h2>
+                  {subInits.length > 0 && (
+                    <span className="text-[0.68rem] text-text-secondary bg-surface-2 border border-border px-1.5 py-0.5 rounded-md tabular-nums">
+                      {subInits.length} sub-initiative{subInits.length !== 1 ? "s" : ""}
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-center gap-4 shrink-0 text-[0.82rem] text-text-secondary">
                   <span>{details.owner}</span>
@@ -111,19 +317,7 @@ export default function InitiativesPage() {
                     className="inline-flex items-center gap-1 text-text-secondary hover:text-text transition-colors"
                   >
                     Linear
-                    <svg
-                      className="w-3.5 h-3.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      />
-                    </svg>
+                    <ExternalLinkIcon />
                   </a>
                 </div>
               </div>
@@ -168,100 +362,29 @@ export default function InitiativesPage() {
               {/* Latest Update */}
               {update && (
                 <div className="ml-[18px]">
-                  <div className="flex items-center gap-2 text-[0.75rem] text-text-secondary mb-2">
-                    <span className="font-medium uppercase tracking-wider">
-                      Latest Update
-                    </span>
-                    <span className="text-text-secondary/30">---</span>
-                    {healthLabel(update.health) && (
-                      <span
-                        className={`font-semibold ${healthTextColor(update.health)}`}
-                      >
-                        {healthLabel(update.health)}
-                      </span>
-                    )}
-                    <span className="text-text-secondary/50">·</span>
-                    <span>{update.author}</span>
-                    <span className="text-text-secondary/50">·</span>
-                    <span>
-                      {new Date(update.date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-
-                  <div className="text-[0.875rem] leading-relaxed text-text">
-                    {isLong && !isExpanded ? (
-                      <>
-                        <MarkdownContent>
-                          {update.body
-                            .substring(0, UPDATE_COLLAPSE_THRESHOLD)
-                            .replace(/\s\S*$/, "")
-                            .trim() + "..."}
-                        </MarkdownContent>
-                        <button
-                          onClick={() => toggleExpanded(init.slug)}
-                          className="text-[0.8rem] text-text-secondary hover:text-text mt-1.5 transition-colors"
-                        >
-                          Show more
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <MarkdownContent>{update.body}</MarkdownContent>
-                        {isLong && (
-                          <button
-                            onClick={() => toggleExpanded(init.slug)}
-                            className="text-[0.8rem] text-text-secondary hover:text-text mt-1.5 transition-colors"
-                          >
-                            Show less
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
+                  <LatestUpdateBlock
+                    update={update}
+                    expandedKey={init.slug}
+                    expanded={expanded}
+                    toggleExpanded={toggleExpanded}
+                    threshold={UPDATE_COLLAPSE_THRESHOLD}
+                  />
                 </div>
               )}
 
-              {/* Sub-initiative updates */}
-              {(updates[init.slug]?.subInitiatives ?? []).filter(s => s.latestUpdate || s.name).length > 0 && (
-                <div className="ml-[18px] mt-4 space-y-4">
-                  {(updates[init.slug]?.subInitiatives ?? []).map((sub) => (
-                    <div key={sub.name} className="border-l-2 border-accent/20 pl-4">
-                      <div className="flex items-center gap-2 mb-1">
-                        <a
-                          href={sub.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[0.82rem] font-medium text-text hover:text-accent-light transition-colors"
-                        >
-                          {sub.name}
-                        </a>
-                        {sub.health && healthLabel(sub.health) && (
-                          <span className={`text-[0.7rem] font-semibold ${healthTextColor(sub.health)}`}>
-                            {healthLabel(sub.health)}
-                          </span>
-                        )}
-                      </div>
-                      {sub.latestUpdate ? (
-                        <>
-                          <p className="text-[0.7rem] text-text-secondary/60 mb-1.5">
-                            {sub.latestUpdate.author} · {new Date(sub.latestUpdate.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                          </p>
-                          <div className="text-[0.82rem] leading-relaxed text-text">
-                            <MarkdownContent>
-                              {sub.latestUpdate.body.length > 300
-                                ? sub.latestUpdate.body.substring(0, 300).replace(/\s\S*$/, "").trim() + "..."
-                                : sub.latestUpdate.body}
-                            </MarkdownContent>
-                          </div>
-                        </>
-                      ) : (
-                        <p className="text-[0.75rem] text-text-secondary/40">No update yet</p>
-                      )}
-                    </div>
+              {/* Sub-initiatives (auto-discovered) */}
+              {subInits.length > 0 && (
+                <div className="ml-[18px] mt-6 space-y-5">
+                  <p className="text-[0.72rem] font-semibold text-text-secondary uppercase tracking-wider">
+                    Amplify-owned sub-initiatives ({subInits.length})
+                  </p>
+                  {subInits.map((sub) => (
+                    <SubInitiativeCard
+                      key={sub.id}
+                      sub={sub}
+                      expanded={expanded}
+                      toggleExpanded={toggleExpanded}
+                    />
                   ))}
                 </div>
               )}
