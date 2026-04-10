@@ -77,7 +77,7 @@ export function OrgCard({ goal, demoCount }: OrgCardProps) {
                     borderColor: `${init.color}33`,
                   }}
                 >
-                  {slug === "waif" ? "WAIF" : init.name}
+                  {slug === "waif" ? "WAIF" : slug === "enterprise" ? "ENT" : slug === "growth" ? "GROWTH" : init.name}
                 </span>
               );
             })}

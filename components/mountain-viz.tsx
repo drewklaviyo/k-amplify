@@ -853,7 +853,7 @@ export function MountainViz() {
                     className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center"
                     style={{ left: `${q.pct}%` }}
                   >
-                    <div className="w-0.5 h-5 bg-text-secondary/30 -mt-1" />
+                    <div className="w-0.5 h-8 bg-text-secondary/30 -mt-1" />
                   </div>
                 ))}
 
@@ -866,8 +866,20 @@ export function MountainViz() {
                 </div>
               </div>
 
-              {/* Labels below the bar */}
-              <div className="relative h-8 mt-1">
+              {/* Pace label — right below bar */}
+              <div className="relative h-5 mt-0.5">
+                <div
+                  className="absolute flex flex-col items-center -translate-x-1/2"
+                  style={{ left: `${Math.min(Math.max(todayPct, 3), 97)}%` }}
+                >
+                  <span className={`text-[11px] font-bold ${isAhead ? "text-green" : "text-red"}`}>
+                    Pace: {todayK}K
+                  </span>
+                </div>
+              </div>
+
+              {/* Quarter labels — separate row */}
+              <div className="relative h-6">
                 {/* Quarter labels */}
                 {quarters.map((q) => (
                   <div
@@ -880,15 +892,6 @@ export function MountainViz() {
                   </div>
                 ))}
 
-                {/* Pace label */}
-                <div
-                  className="absolute flex flex-col items-center -translate-x-1/2"
-                  style={{ left: `${Math.min(Math.max(todayPct, 3), 97)}%` }}
-                >
-                  <span className={`text-[11px] font-bold ${isAhead ? "text-green" : "text-red"}`}>
-                    Pace: {todayK}K
-                  </span>
-                </div>
               </div>
             </div>
           );
