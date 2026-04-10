@@ -651,116 +651,6 @@ export function MountainViz() {
             clipPath="url(#mountainClip)"
           />
 
-          {/* ═══ GLIDE PATH — quarterly targets on the mountain ridge ═══ */}
-          {(() => {
-            // Both X and Y use the same progress axis as camp markers
-            // This ensures glide path dots align with 100K/200K/etc markers
-            const glideData = [
-              { label: "Q1", hoursFrac: 17604 / 501000, hours: 17604 },     // 3.5%
-              { label: "Q2", hoursFrac: 95844 / 501000, hours: 95844 },     // 19.1%
-              { label: "Q3", hoursFrac: 293268 / 501000, hours: 293268 },   // 58.5%
-              { label: "Q4", hoursFrac: 1.0, hours: 501000 },               // 100%
-            ];
-
-            const points = glideData.map((gd) => ({
-              ...gd,
-              x: getX(gd.hoursFrac),
-              y: getY(gd.hoursFrac),
-            }));
-
-            // Build smooth cubic bezier curve from base through quarter points
-            const startX = getX(0);
-            const startY = getY(0);
-            const p = points;
-            const pathD = `M${startX},${startY} C${startX + 40},${startY} ${p[0].x - 20},${p[0].y} ${p[0].x},${p[0].y} C${p[0].x + 30},${p[0].y} ${p[1].x - 30},${p[1].y} ${p[1].x},${p[1].y} C${p[1].x + 25},${p[1].y} ${p[2].x - 25},${p[2].y} ${p[2].x},${p[2].y} C${p[2].x + 15},${p[2].y} ${p[3].x - 15},${p[3].y} ${p[3].x},${p[3].y}`;
-
-            // Today marker — interpolate based on day of year
-            const now = new Date();
-            const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
-            const yearProgress = Math.min(dayOfYear / 365, 1);
-
-            // Interpolate hours target for today on the glide path
-            const quarterBounds = [
-              { time: 0, hoursFrac: 0 },
-              { time: 0.25, hoursFrac: 17604 / 501000 },
-              { time: 0.5, hoursFrac: 95844 / 501000 },
-              { time: 0.75, hoursFrac: 293268 / 501000 },
-              { time: 1.0, hoursFrac: 1.0 },
-            ];
-            let todayHoursFrac = 0;
-            for (let i = 0; i < quarterBounds.length - 1; i++) {
-              if (yearProgress >= quarterBounds[i].time && yearProgress <= quarterBounds[i + 1].time) {
-                const seg = (yearProgress - quarterBounds[i].time) / (quarterBounds[i + 1].time - quarterBounds[i].time);
-                todayHoursFrac = quarterBounds[i].hoursFrac + seg * (quarterBounds[i + 1].hoursFrac - quarterBounds[i].hoursFrac);
-                break;
-              }
-            }
-            const todayX = getX(todayHoursFrac);
-            const todayY = getY(todayHoursFrac);
-            const todayTargetK = Math.round(todayHoursFrac * 501);
-
-            return (
-              <g>
-                {/* Glide path curve — red dashed */}
-                <path
-                  d={pathD}
-                  fill="none"
-                  stroke="var(--color-red)"
-                  strokeWidth="2"
-                  strokeDasharray="6,4"
-                  opacity="0.5"
-                  clipPath="url(#mountainMasterClip)"
-                />
-
-                {/* Quarter target dots (skip Jan start) */}
-                {points.slice(1).map((pt) => (
-                  <g key={pt.label}>
-                    <circle
-                      cx={pt.x} cy={pt.y} r="3"
-                      fill="var(--color-red)"
-                      opacity="0.6"
-                    />
-                    <text
-                      x={pt.x} y={Math.min(pt.y + 14, 310)}
-                      textAnchor="middle"
-                      fill="var(--color-red)"
-                      fontSize="8"
-                      fontWeight="600"
-                      fontFamily="Inter, sans-serif"
-                      opacity="0.5"
-                    >
-                      {pt.label}
-                    </text>
-                  </g>
-                ))}
-
-                {/* Today's target marker — where you SHOULD be */}
-                <circle
-                  cx={todayX} cy={todayY} r="6"
-                  fill="none"
-                  stroke="var(--color-red)"
-                  strokeWidth="1.5"
-                  opacity="0.7"
-                />
-                <circle
-                  cx={todayX} cy={todayY} r="2.5"
-                  fill="var(--color-red)"
-                  opacity="0.8"
-                />
-                <text
-                  x={todayX} y={Math.min(todayY + 18, 310)}
-                  textAnchor="middle"
-                  fill="var(--color-red)"
-                  fontSize="11"
-                  fontWeight="700"
-                  fontFamily="Inter, sans-serif"
-                  opacity="0.8"
-                >
-                  Target: {todayTargetK}K
-                </text>
-              </g>
-            );
-          })()}
 
           {/* Camp markers along the ridge */}
           {CAMPS.map((camp, i) => {
@@ -904,7 +794,7 @@ export function MountainViz() {
         </svg>
       </div>
 
-      {/* Progress bar + stats */}
+      {/* Progress bar + glide path milestones */}
       <div className="px-5 pb-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-text">
@@ -914,16 +804,97 @@ export function MountainViz() {
             {pct}%
           </span>
         </div>
-        <div className="h-2 rounded-full bg-surface-2 border border-border overflow-hidden">
-          <div
-            className="h-full rounded-full transition-all duration-1000"
-            style={{
-              width: `${pct}%`,
-              background: "linear-gradient(90deg, var(--color-accent), var(--color-accent-light))",
-            }}
-          />
-        </div>
-        <p className="text-[0.68rem] text-text-secondary mt-2">
+
+        {/* Progress bar with quarter milestones and pace marker */}
+        {(() => {
+          const quarters = [
+            { label: "Q1", pct: (17604 / 501000) * 100, k: "18K" },
+            { label: "Q2", pct: (95844 / 501000) * 100, k: "96K" },
+            { label: "Q3", pct: (293268 / 501000) * 100, k: "293K" },
+          ];
+
+          // Today's target pace
+          const now = new Date();
+          const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
+          const yearProgress = Math.min(dayOfYear / 365, 1);
+          const qBounds = [
+            { t: 0, f: 0 }, { t: 0.25, f: 17604 / 501000 },
+            { t: 0.5, f: 95844 / 501000 }, { t: 0.75, f: 293268 / 501000 }, { t: 1.0, f: 1.0 },
+          ];
+          let todayFrac = 0;
+          for (let i = 0; i < qBounds.length - 1; i++) {
+            if (yearProgress >= qBounds[i].t && yearProgress <= qBounds[i + 1].t) {
+              const s = (yearProgress - qBounds[i].t) / (qBounds[i + 1].t - qBounds[i].t);
+              todayFrac = qBounds[i].f + s * (qBounds[i + 1].f - qBounds[i].f);
+              break;
+            }
+          }
+          const todayPct = todayFrac * 100;
+          const todayK = Math.round(todayFrac * 501);
+          const isAhead = pct >= todayPct;
+
+          return (
+            <div className="relative">
+              {/* Bar track */}
+              <div className="h-3 rounded-full bg-surface-2 border border-border overflow-visible relative">
+                {/* Progress fill */}
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full transition-all duration-1000"
+                  style={{
+                    width: `${pct}%`,
+                    background: "linear-gradient(90deg, var(--color-accent), var(--color-accent-light))",
+                  }}
+                />
+
+                {/* Quarter milestone markers */}
+                {quarters.map((q) => (
+                  <div
+                    key={q.label}
+                    className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center"
+                    style={{ left: `${q.pct}%` }}
+                  >
+                    <div className="w-0.5 h-5 bg-text-secondary/30 -mt-1" />
+                  </div>
+                ))}
+
+                {/* Pace marker — where you should be today */}
+                <div
+                  className="absolute top-1/2 -translate-y-1/2"
+                  style={{ left: `${todayPct}%` }}
+                >
+                  <div className="w-3 h-3 rounded-full border-2 border-red bg-bg -ml-1.5" />
+                </div>
+              </div>
+
+              {/* Labels below the bar */}
+              <div className="relative h-8 mt-1">
+                {/* Quarter labels */}
+                {quarters.map((q) => (
+                  <div
+                    key={q.label}
+                    className="absolute flex flex-col items-center -translate-x-1/2"
+                    style={{ left: `${q.pct}%` }}
+                  >
+                    <span className="text-[9px] text-text-secondary/50 font-medium">{q.label}</span>
+                    <span className="text-[9px] text-text-secondary/40 tabular-nums">{q.k}</span>
+                  </div>
+                ))}
+
+                {/* Pace label */}
+                <div
+                  className="absolute flex flex-col items-center -translate-x-1/2"
+                  style={{ left: `${Math.min(Math.max(todayPct, 3), 97)}%` }}
+                >
+                  <span className={`text-[10px] font-bold ${isAhead ? "text-green" : "text-red"}`}>
+                    Pace: {todayK}K
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
+        <p className="text-[0.68rem] text-text-secondary -mt-1">
           Estimated cumulative hours — updated weekly
         </p>
       </div>
