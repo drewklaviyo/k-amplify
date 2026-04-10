@@ -879,7 +879,7 @@ export function MountainViz() {
               </div>
 
               {/* Quarter labels — separate row */}
-              <div className="relative h-6">
+              <div className="relative h-10">
                 {/* Quarter labels */}
                 {quarters.map((q) => (
                   <div
