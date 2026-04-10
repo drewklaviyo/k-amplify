@@ -875,8 +875,8 @@ export function MountainViz() {
                     className="absolute flex flex-col items-center -translate-x-1/2"
                     style={{ left: `${q.pct}%` }}
                   >
-                    <span className="text-[9px] text-text-secondary/50 font-medium">{q.label}</span>
-                    <span className="text-[9px] text-text-secondary/40 tabular-nums">{q.k}</span>
+                    <span className="text-[11px] text-text font-semibold">{q.label}</span>
+                    <span className="text-[11px] text-text/70 tabular-nums">{q.k}</span>
                   </div>
                 ))}
 
@@ -885,7 +885,7 @@ export function MountainViz() {
                   className="absolute flex flex-col items-center -translate-x-1/2"
                   style={{ left: `${Math.min(Math.max(todayPct, 3), 97)}%` }}
                 >
-                  <span className={`text-[10px] font-bold ${isAhead ? "text-green" : "text-red"}`}>
+                  <span className={`text-[11px] font-bold ${isAhead ? "text-green" : "text-red"}`}>
                     Pace: {todayK}K
                   </span>
                 </div>
