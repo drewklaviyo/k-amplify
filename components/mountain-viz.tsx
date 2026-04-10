@@ -651,50 +651,51 @@ export function MountainViz() {
             clipPath="url(#mountainClip)"
           />
 
-          {/* ═══ GLIDE PATH — J-curve showing time (X) vs hours target (Y) ═══ */}
+          {/* ═══ GLIDE PATH — quarterly targets on the mountain ridge ═══ */}
           {(() => {
-            // X axis = time through the year (0% = Jan 1, 100% = Dec 31)
-            // Y axis = hours target as fraction of 501K (mapped to mountain height)
-            // This creates the J-curve: flat in Q1, steep ramp Q3-Q4
-
+            // Both X and Y use the same progress axis as camp markers
+            // This ensures glide path dots align with 100K/200K/etc markers
             const glideData = [
-              { label: "Jan", timeFrac: 0.0, hoursFrac: 0 },
-              { label: "Q1",  timeFrac: 0.25, hoursFrac: 17604 / 501000 },   // 3.5%
-              { label: "Q2",  timeFrac: 0.5,  hoursFrac: 95844 / 501000 },   // 19.1%
-              { label: "Q3",  timeFrac: 0.75, hoursFrac: 293268 / 501000 },  // 58.5%
-              { label: "Q4",  timeFrac: 1.0,  hoursFrac: 1.0 },              // 100%
+              { label: "Q1", hoursFrac: 17604 / 501000, hours: 17604 },     // 3.5%
+              { label: "Q2", hoursFrac: 95844 / 501000, hours: 95844 },     // 19.1%
+              { label: "Q3", hoursFrac: 293268 / 501000, hours: 293268 },   // 58.5%
+              { label: "Q4", hoursFrac: 1.0, hours: 501000 },               // 100%
             ];
-
-            // Map time to X position (left edge to right edge of mountain)
-            const minX = 40;  // left edge of mountain
-            const maxX = 760; // right edge of mountain
-            const timeToX = (t: number) => minX + t * (maxX - minX);
 
             const points = glideData.map((gd) => ({
               ...gd,
-              x: timeToX(gd.timeFrac),
+              x: getX(gd.hoursFrac),
               y: getY(gd.hoursFrac),
             }));
 
-            // Build smooth cubic bezier curve through points
+            // Build smooth cubic bezier curve from base through quarter points
+            const startX = getX(0);
+            const startY = getY(0);
             const p = points;
-            const pathD = `M${p[0].x},${p[0].y} C${p[0].x + 60},${p[0].y} ${p[1].x - 40},${p[1].y} ${p[1].x},${p[1].y} C${p[1].x + 50},${p[1].y} ${p[2].x - 50},${p[2].y} ${p[2].x},${p[2].y} C${p[2].x + 40},${p[2].y} ${p[3].x - 40},${p[3].y} ${p[3].x},${p[3].y} C${p[3].x + 30},${p[3].y} ${p[4].x - 30},${p[4].y} ${p[4].x},${p[4].y}`;
+            const pathD = `M${startX},${startY} C${startX + 40},${startY} ${p[0].x - 20},${p[0].y} ${p[0].x},${p[0].y} C${p[0].x + 30},${p[0].y} ${p[1].x - 30},${p[1].y} ${p[1].x},${p[1].y} C${p[1].x + 25},${p[1].y} ${p[2].x - 25},${p[2].y} ${p[2].x},${p[2].y} C${p[2].x + 15},${p[2].y} ${p[3].x - 15},${p[3].y} ${p[3].x},${p[3].y}`;
 
-            // Today marker — interpolate on the curve
+            // Today marker — interpolate based on day of year
             const now = new Date();
             const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000);
             const yearProgress = Math.min(dayOfYear / 365, 1);
 
-            // Interpolate hours target for today
+            // Interpolate hours target for today on the glide path
+            const quarterBounds = [
+              { time: 0, hoursFrac: 0 },
+              { time: 0.25, hoursFrac: 17604 / 501000 },
+              { time: 0.5, hoursFrac: 95844 / 501000 },
+              { time: 0.75, hoursFrac: 293268 / 501000 },
+              { time: 1.0, hoursFrac: 1.0 },
+            ];
             let todayHoursFrac = 0;
-            for (let i = 0; i < glideData.length - 1; i++) {
-              if (yearProgress >= glideData[i].timeFrac && yearProgress <= glideData[i + 1].timeFrac) {
-                const segProgress = (yearProgress - glideData[i].timeFrac) / (glideData[i + 1].timeFrac - glideData[i].timeFrac);
-                todayHoursFrac = glideData[i].hoursFrac + segProgress * (glideData[i + 1].hoursFrac - glideData[i].hoursFrac);
+            for (let i = 0; i < quarterBounds.length - 1; i++) {
+              if (yearProgress >= quarterBounds[i].time && yearProgress <= quarterBounds[i + 1].time) {
+                const seg = (yearProgress - quarterBounds[i].time) / (quarterBounds[i + 1].time - quarterBounds[i].time);
+                todayHoursFrac = quarterBounds[i].hoursFrac + seg * (quarterBounds[i + 1].hoursFrac - quarterBounds[i].hoursFrac);
                 break;
               }
             }
-            const todayX = timeToX(yearProgress);
+            const todayX = getX(todayHoursFrac);
             const todayY = getY(todayHoursFrac);
             const todayTargetK = Math.round(todayHoursFrac * 501);
 
