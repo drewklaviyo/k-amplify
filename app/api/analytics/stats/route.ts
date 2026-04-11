@@ -117,97 +117,48 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    if (tab === "features") {
-      // Feature usage ranking
-      const { data: featureEvents } = await supabase
+    if (tab === "pages") {
+      // Page views breakdown by path
+      const { data: pageEvents } = await supabase
         .from("analytics_events")
-        .select("event_name, created_at")
-        .in("event_type", ["click", "feature"])
+        .select("page_path, created_at")
+        .eq("event_type", "pageview")
         .gte("created_at", since);
 
-      // Aggregate by event_name
-      const featureMap = new Map<string, number>();
-      for (const e of featureEvents ?? []) {
-        featureMap.set(e.event_name, (featureMap.get(e.event_name) ?? 0) + 1);
+      // Aggregate by page path
+      const pageMap = new Map<string, number>();
+      for (const e of pageEvents ?? []) {
+        const path = e.page_path ?? "/";
+        pageMap.set(path, (pageMap.get(path) ?? 0) + 1);
       }
-      const featureRanking = [...featureMap.entries()]
-        .map(([name, count]) => ({ name, count }))
+      const pageRanking = [...pageMap.entries()]
+        .map(([path, count]) => ({ name: path, count }))
         .sort((a, b) => b.count - a.count);
 
-      // Daily trend for top 5 features (last 30 days)
-      const top5Names = featureRanking.slice(0, 5).map((f) => f.name);
-      const { data: dailyFeatures } = await supabase
+      // Daily page view trend (last 30 days)
+      const { data: dailyPages } = await supabase
         .from("analytics_events")
-        .select("event_name, created_at")
-        .in("event_name", top5Names.length ? top5Names : ["__none__"])
+        .select("created_at")
+        .eq("event_type", "pageview")
         .gte("created_at", getRangeDate("30d"));
 
-      // Group by date + feature
-      const dailyMap = new Map<string, Map<string, number>>();
-      for (const e of dailyFeatures ?? []) {
+      const dailyMap = new Map<string, number>();
+      for (const e of dailyPages ?? []) {
         const date = e.created_at.slice(0, 10);
-        if (!dailyMap.has(date)) dailyMap.set(date, new Map());
-        const dayMap = dailyMap.get(date)!;
-        dayMap.set(e.event_name, (dayMap.get(e.event_name) ?? 0) + 1);
+        dailyMap.set(date, (dailyMap.get(date) ?? 0) + 1);
       }
-      const featureTrend = [...dailyMap.entries()]
-        .map(([date, features]) => ({
-          date,
-          ...Object.fromEntries(features),
-        }))
+      const pageTrend = [...dailyMap.entries()]
+        .map(([date, count]) => ({ date, views: count }))
         .sort((a, b) => a.date.localeCompare(b.date));
 
-      // Unused features (zero events in last 7 days)
-      const { data: recentFeatures } = await supabase
-        .from("analytics_events")
-        .select("event_name")
-        .in("event_type", ["click", "feature"])
-        .gte("created_at", getRangeDate("7d"));
-
-      const recentSet = new Set(
-        (recentFeatures ?? []).map((e) => e.event_name),
-      );
-      const unusedFeatures = featureRanking
-        .filter((f) => !recentSet.has(f.name))
-        .map((f) => f.name);
-
-      // Feature adoption funnel: count distinct users at each stage
-      const { data: funnelEvents } = await supabase
-        .from("analytics_events")
-        .select("user_email, event_type, event_name, page_path")
-        .gte("created_at", since);
-
-      const funnelUsers = new Set<string>();
-      const dashboardUsers = new Set<string>();
-      const askAiUsers = new Set<string>();
-      const generateUsers = new Set<string>();
-      const expandUsers = new Set<string>();
-
-      for (const e of funnelEvents ?? []) {
-        if (!e.user_email) continue;
-        funnelUsers.add(e.user_email);
-        if (e.page_path === "/") dashboardUsers.add(e.user_email);
-        if (e.page_path === "/chat" || e.event_name === "ask_ai_query")
-          askAiUsers.add(e.user_email);
-        if (e.event_name === "generate-intelligence")
-          generateUsers.add(e.user_email);
-        if (e.event_name === "expand-issue")
-          expandUsers.add(e.user_email);
-      }
-
-      const funnel = [
-        { step: "Signed In", users: funnelUsers.size },
-        { step: "Viewed Dashboard", users: dashboardUsers.size },
-        { step: "Used Ask AI", users: askAiUsers.size },
-        { step: "Generated Intelligence", users: generateUsers.size },
-        { step: "Expanded Top Issues", users: expandUsers.size },
-      ];
+      const totalPageviews = (pageEvents ?? []).length;
 
       return NextResponse.json({
-        featureRanking,
-        featureTrend,
-        unusedFeatures,
-        funnel,
+        featureRanking: pageRanking,
+        featureTrend: pageTrend,
+        totalPageviews,
+        unusedFeatures: [],
+        funnel: [],
       });
     }
 

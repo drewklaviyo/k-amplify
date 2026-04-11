@@ -152,7 +152,7 @@ function MetricsDashboard() {
 
       {/* Tab bar */}
       <div className="flex gap-1 border-b border-border">
-        {["users", "features", "live"].map((tab) => (
+        {["users", "pages", "live"].map((tab) => (
           <button
             key={tab}
             onClick={() => setTab(tab)}
@@ -169,7 +169,7 @@ function MetricsDashboard() {
 
       {/* Tab content */}
       {activeTab === "users" && <UsersTab range={range} />}
-      {activeTab === "features" && <FeaturesTab range={range} />}
+      {activeTab === "pages" && <FeaturesTab range={range} />}
       {activeTab === "live" && <LiveTab />}
     </div>
   );
@@ -311,7 +311,7 @@ function FeaturesTab({ range }: { range: string }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/analytics/stats?tab=features&range=${range}`)
+    fetch(`/api/analytics/stats?tab=pages&range=${range}`)
       .then((r) => r.json())
       .then(setData)
       .finally(() => setLoading(false));
