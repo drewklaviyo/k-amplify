@@ -19,6 +19,9 @@ export function Nav() {
   const pathname = usePathname();
   const { isWide } = useLayout();
 
+  // Hide nav on signin page
+  if (pathname === "/signin") return null;
+
   return (
     <>
       {/* Skip to content link for accessibility */}
