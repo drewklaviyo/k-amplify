@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
+import { getSessionEmail } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -34,9 +35,14 @@ export async function GET(request: NextRequest) {
 // Toggle a like
 export async function POST(request: NextRequest) {
   try {
-    const { submissionId, userEmail } = await request.json();
-    if (!submissionId || !userEmail) {
-      return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    const userEmail = await getSessionEmail();
+    if (!userEmail) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { submissionId } = await request.json();
+    if (!submissionId) {
+      return NextResponse.json({ error: "Missing submissionId" }, { status: 400 });
     }
 
     const supabase = createServerSupabase();

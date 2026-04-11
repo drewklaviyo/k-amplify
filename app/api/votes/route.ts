@@ -1,17 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
-import { normalizeEmail } from "@/lib/auth";
+import { getSessionEmail } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { submissionId, category, userEmail, userName } = body;
+    const sessionEmail = await getSessionEmail();
+    if (!sessionEmail) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    if (!submissionId || !category || !userEmail) {
+    const body = await request.json();
+    const { submissionId, category } = body;
+
+    if (!submissionId || !category) {
       return NextResponse.json(
-        { error: "Missing required fields: submissionId, category, userEmail" },
+        { error: "Missing required fields: submissionId, category" },
         { status: 400 },
       );
     }
@@ -23,7 +28,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const email = normalizeEmail(userEmail);
+    const email = sessionEmail.toLowerCase().trim();
     if (!email.endsWith("@klaviyo.com")) {
       return NextResponse.json(
         { error: "Must use a @klaviyo.com email" },
@@ -66,7 +71,7 @@ export async function POST(request: NextRequest) {
       .upsert(
         {
           user_email: email,
-          user_name: userName || email,
+          user_name: email,
           submission_id: submissionId,
           category,
           voting_period_id: submission.voting_period_id,

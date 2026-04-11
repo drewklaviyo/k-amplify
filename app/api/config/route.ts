@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
-import { isAdminEmail } from "@/lib/auth";
+import { requireAdmin } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +22,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ config: data });
     }
 
-    // Return all config
     const { data, error } = await supabase
       .from("config")
       .select("*");
@@ -40,12 +39,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { adminEmail, key, value } = body;
+    const admin = await requireAdmin();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
 
-    if (!adminEmail || !isAdminEmail(adminEmail)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
+    const body = await request.json();
+    const { key, value } = body;
 
     if (!key || value === undefined) {
       return NextResponse.json({ error: "key and value are required" }, { status: 400 });

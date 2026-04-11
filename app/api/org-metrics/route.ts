@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
+import { requireAdmin } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +34,9 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const admin = await requireAdmin();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+
     const body = await request.json();
     const { orgSlug, keyMetricValue, adoptionValue } = body;
 

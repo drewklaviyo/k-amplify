@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
-import { isAdminEmail, normalizeEmail } from "@/lib/auth";
+import { requireAdmin } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -33,12 +33,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { adminEmail, awards: awardEntries } = body;
+    const admin = await requireAdmin();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
 
-    if (!adminEmail || !isAdminEmail(adminEmail)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
+    const body = await request.json();
+    const { awards: awardEntries } = body;
 
     const supabase = createServerSupabase();
 

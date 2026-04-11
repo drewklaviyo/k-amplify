@@ -1,15 +1,39 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// API routes that must work without auth (crons, auth handlers, analytics beacon)
+const PUBLIC_API_PREFIXES = [
+  "/api/auth",                // NextAuth handlers
+  "/api/demos/sync",          // cron
+  "/api/people/sync",         // cron
+  "/api/voting-period/close", // cron
+  "/api/analytics/compute",   // cron
+  "/api/analytics/collect",   // beacon from authenticated pages
+];
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // Skip API routes entirely — cron jobs and internal calls need unauthenticated access
-  if (pathname.startsWith("/api")) return NextResponse.next();
 
   // Skip public pages and assets
   if (pathname === "/signin") return NextResponse.next();
 
-  // Check for NextAuth session cookie
+  // API routes: only allow specific public endpoints unauthenticated
+  if (pathname.startsWith("/api")) {
+    const isPublicApi = PUBLIC_API_PREFIXES.some((p) => pathname.startsWith(p));
+    if (isPublicApi) return NextResponse.next();
+
+    // All other API routes require a valid session cookie
+    const sessionToken =
+      request.cookies.get("authjs.session-token")?.value ||
+      request.cookies.get("__Secure-authjs.session-token")?.value;
+
+    if (!sessionToken) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    return NextResponse.next();
+  }
+
+  // Page routes: require session cookie, redirect to signin if missing
   const sessionToken =
     request.cookies.get("authjs.session-token")?.value ||
     request.cookies.get("__Secure-authjs.session-token")?.value;

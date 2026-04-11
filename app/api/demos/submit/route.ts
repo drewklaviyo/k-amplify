@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
+import { getSessionEmail } from "@/lib/server-auth";
+import { auth } from "@/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const { loomUrl, title, submitterName } = await request.json();
+    const session = await auth();
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const submitterName = session.user.name ?? session.user.email;
+
+    const { loomUrl, title } = await request.json();
 
     if (!loomUrl || !title) {
       return NextResponse.json({ error: "loomUrl and title required" }, { status: 400 });

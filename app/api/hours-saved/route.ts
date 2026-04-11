@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
+import { requireAdmin } from "@/lib/server-auth";
 import type { HoursSaved } from "@/lib/supabase-types";
 
 export const dynamic = "force-dynamic";
@@ -37,26 +38,17 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { adminEmail, orgSlug, weekLabel, hours, note } = body;
+    const admin = await requireAdmin();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
 
-    if (!adminEmail || !orgSlug || !weekLabel || hours == null) {
+    const body = await request.json();
+    const { orgSlug, weekLabel, hours, note } = body;
+
+    if (!orgSlug || !weekLabel || hours == null) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const supabase = createServerSupabase();
-
-    // Verify admin
-    const { data: config } = await supabase
-      .from("config")
-      .select("value")
-      .eq("key", "admin_emails")
-      .single();
-
-    const adminEmails = (config?.value as string[]) ?? [];
-    if (!adminEmails.includes(adminEmail)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
-    }
 
     const { data, error } = await supabase
       .from("hours_saved")
@@ -66,7 +58,7 @@ export async function POST(request: NextRequest) {
           week_label: weekLabel,
           hours: Number(hours),
           note: note || null,
-          updated_by: adminEmail,
+          updated_by: admin.email,
         },
         { onConflict: "org_slug,week_label" },
       )
@@ -87,6 +79,9 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
+    const admin = await requireAdmin();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+
     const body = await request.json();
     const { id, hours, note } = body;
 
@@ -113,6 +108,9 @@ export async function PATCH(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    const admin = await requireAdmin();
+    if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+
     const { id } = await request.json();
 
     if (!id) {
